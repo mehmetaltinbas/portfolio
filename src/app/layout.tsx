@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
-import Link from 'next/link';
+import NavBar from '@/components/NavBar';
 
 const geistSans = Geist({
     variable: '--font-geist-sans',
@@ -23,21 +23,6 @@ interface Link {
     href: string;
 }
 
-const links: Link[] = [
-    {
-        name: 'Home',
-        href: '/',
-    },
-    {
-        name: 'Resume',
-        href: '/resume',
-    },
-    {
-        name: 'Portfolio',
-        href: '/portfolio',
-    },
-];
-
 export default function RootLayout({
     children,
 }: Readonly<{
@@ -47,21 +32,7 @@ export default function RootLayout({
         <html lang="en" className='w-full h-full'>
             <body className={`w-full h-full ${geistSans.variable} ${geistMono.variable} antialiased`}>
                 <div className="flex flex-col justify-center items-center">
-                    <div // navigation bar
-                        className="w-full h-[50px] bg-black shadow-2xl
-                        flex justify-center items-center gap-12
-                        text-white text-sm"
-                    >
-                        {links.map((link, index) => (
-                            <Link
-                                key={`link-${index}-${link.name}`}
-                                href={link.href}
-                                className="hover:text-gray-400 duration-250"
-                            >
-                                <p>{link.name}</p>
-                            </Link>
-                        ))}
-                    </div>
+                    <NavBar />
 
                     {children}
                 </div>
