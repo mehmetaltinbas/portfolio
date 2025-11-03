@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import { Link as LinkInterface } from '@/types/link';
 import { Menu, X } from 'lucide-react';
@@ -24,12 +24,10 @@ export default function NavBar() {
     const [isOpen, setIsOpen] = useState(false);
 
     return (
-        <nav className='w-full h-auto flex flex-col justify-center items-center bg-black'> 
-            <div className='w-full h-auto bg-black flex justify-end md:hidden py-2 pr-2'>
-                <button onClick={() => setIsOpen(prev => !prev)}>
-                    {isOpen ?
-                        ( <X className='text-white' /> ) : ( <Menu className='text-white' /> )
-                    }
+        <nav className="w-full h-auto flex flex-col justify-center items-center bg-black">
+            <div className="w-full h-auto bg-black flex justify-end md:hidden py-2 pr-2">
+                <button onClick={() => setIsOpen((prev) => !prev)}>
+                    {isOpen ? <X className="text-white" /> : <Menu className="text-white" />}
                 </button>
             </div>
 
@@ -49,5 +47,5 @@ export default function NavBar() {
                 ))}
             </div>
         </nav>
-    )
+    );
 }

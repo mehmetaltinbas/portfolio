@@ -12,6 +12,7 @@ model User {
     id String @id @default(uuid())
     email String
     userName String
+    passwordHash String
     fullName String
     headline String
     bio String
