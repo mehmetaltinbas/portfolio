@@ -1,4 +1,4 @@
-import { UserRow } from '@/types/db-row/user.row';
+import { UserRow } from '@/types/db/user-row';
 import { ResponseBase } from '@/types/response/response-base';
 
 export interface ReadUserByIdResponse extends ResponseBase {

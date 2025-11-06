@@ -1,5 +1,6 @@
 'use client';
 
+import { useAppSelector } from '@/store/hooks';
 import { Link as LinkInterface } from '@/types/link';
 import { Menu, X } from 'lucide-react';
 import Link from 'next/link';
@@ -22,9 +23,12 @@ const links: LinkInterface[] = [
 
 export default function NavBar() {
     const [isOpen, setIsOpen] = useState(false);
+    const isAdmin = useAppSelector(state => state.isAdmin);
 
     return (
-        <nav className="w-full h-auto flex flex-col justify-center items-center bg-black">
+        <nav className="relative w-full h-auto flex flex-col justify-center items-center bg-black">
+            {isAdmin && (<p className='absolute left-0 top-0 text-red-500'>Admin</p>)}
+
             <div className="w-full h-auto bg-black flex justify-end md:hidden py-2 pr-2">
                 <button onClick={() => setIsOpen((prev) => !prev)}>
                     {isOpen ? <X className="text-white" /> : <Menu className="text-white" />}

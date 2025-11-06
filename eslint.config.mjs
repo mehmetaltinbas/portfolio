@@ -39,7 +39,7 @@ const eslintConfig = defineConfig([
             'no-console': 'warn', // warn on console.log usage
             'no-debugger': 'error', // disallow debugger statements
             'no-unused-vars': 'off', // disable JS version; use TS version instead
-            curly: 'warn', // require braces for all control statements
+            curly: 'off', // require braces for all control statements
             'no-undef': 'error', // disallow use of undeclared variables
             'no-redeclare': 'error', // disallow variable redeclaration
             'no-unreachable': 'error', // disallow unreachable code after return/throw
