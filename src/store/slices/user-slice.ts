@@ -3,7 +3,7 @@ import { ReadExtendedUserByIdResponse } from '@/types/response/user/read-extende
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 const refresh = createAsyncThunk('user/refresh', async () => {
-    const response: ReadExtendedUserByIdResponse = await (await fetch('/api/admin', {
+    const response: ReadExtendedUserByIdResponse = await (await fetch('/api/visitor/user/read', {
         method: 'GET'
     })).json();
     return response.user;
@@ -13,6 +13,7 @@ const initialState: ExtendedUserRow = {
     id: '',
     email: '',
     userName: '',
+    passwordHash: '',
     fullName: '',
     headline: '',
     bio: '',

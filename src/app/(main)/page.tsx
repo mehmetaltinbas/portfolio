@@ -2,6 +2,7 @@
 
 import WhiteButton from '@/components/WhiteButton';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { isAdminActions } from '@/store/slices/is-admin-slice';
 import { userActions } from '@/store/slices/user-slice';
 import { ResponseBase } from '@/types/response/response-base';
 import Image from 'next/image';
@@ -18,6 +19,14 @@ export default function Page() {
         bio: user.bio
     });
 
+    function resetProfileInfo() {
+        setProfileInfo({
+            fullName: user.fullName,
+            headline: user.headline,
+            bio: user.bio
+        });
+    }
+
     function handleOnChange(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
         const name = event.currentTarget.name;
         const value = event.currentTarget.value;
@@ -28,7 +37,7 @@ export default function Page() {
     }
 
     async function updateProfileInfo() {
-        const response: ResponseBase = await (await fetch('/api/admin', {
+        const response: ResponseBase = await (await fetch('/api/admin/user/update', {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(profileInfo),
@@ -36,6 +45,8 @@ export default function Page() {
         if (response.isSuccess) {
             await dispatch(userActions.refresh());
         } else if (!response.isSuccess) {
+            dispatch(isAdminActions.set(false));
+            resetProfileInfo();
             alert(response.message);
         }
     }

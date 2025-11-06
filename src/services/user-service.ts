@@ -56,9 +56,6 @@ async function readExtendedById(): Promise<ReadExtendedUserByIdResponse> {
         where: {
             id: userId,
         },
-        omit: {
-            passwordHash: true
-        },
         include: {
             contacts: true,
             experiences: true,
