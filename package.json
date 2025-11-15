@@ -9,7 +9,7 @@
         "lint": "eslint",
         "format": "npx prettier . --write",
         "prisma:push": "npx prisma db push",
-        "postinstall": "prisma generate"
+        "postinstall": "npx prisma generate"
     },
     "dependencies": {
         "@next/env": "^16.0.0",
