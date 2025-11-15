@@ -12,7 +12,7 @@ export default function PortfolioItemCard({ portfolioItem }: { portfolioItem: Po
             <p className="text-lg font-semibold">{portfolioItem.title}</p>
             <p className="text-gray-600">{portfolioItem.description}</p>
             <div className="w-full flex items-center gap-[10px] overflow-x-auto">
-                project skills
+                project skills...
             </div>
         </div>
     );

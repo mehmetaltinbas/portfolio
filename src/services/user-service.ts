@@ -1,16 +1,31 @@
 import { UpdateUserDto } from '@/types/dto/user/update-user-dto';
 import { UserSignInDto } from '@/types/dto/user/user-sign-in-dto';
+import { UserSignUpDto } from '@/types/dto/user/user-sign-up-dto';
 import { ResponseBase } from '@/types/response/response-base';
 import { ReadExtendedUserByIdResponse } from '@/types/response/user/read-extended-user-by-id-response';
 import { ReadUserByIdResponse } from '@/types/response/user/read-user-by-id-response';
 import { UserSignInResponse } from '@/types/response/user/user-sign-in-response';
 import bcrypt from 'bcrypt';
-import { User } from 'generated/prisma/client';
-import { PrismaClientKnownRequestError } from 'generated/prisma/internal/prismaNamespace';
 import jwt from 'jsonwebtoken';
 import { prisma } from 'prisma/prisma-client';
 
 const userId = process.env.USER_ID;
+
+async function signUp(userSignInDto: UserSignUpDto): Promise<ResponseBase> {
+    try {
+        const { password, ...restOfDto } = userSignInDto;
+        const passwordHash = bcrypt.hashSync(password, 10);
+        await prisma.user.create({ data: {
+            ...restOfDto,
+            passwordHash
+        } });
+        return { isSuccess: true, message: 'success' };
+    } catch (error) {
+        console.log(error);
+        console.log(JSON.stringify(error, null, 2));
+        return { isSuccess: false, message: 'error' };
+    }
+}
 
 async function signIn(userSignInDto: UserSignInDto): Promise<UserSignInResponse> {
     const user = await prisma.user.findUnique({ where: {
@@ -52,26 +67,31 @@ async function readById(): Promise<ReadUserByIdResponse> {
 }
 
 async function readExtendedById(): Promise<ReadExtendedUserByIdResponse> {
-    const user = await prisma.user.findUnique({
-        where: {
-            id: userId,
-        },
-        include: {
-            contacts: true,
-            experiences: true,
-            educations: true,
-            portfolioItems: true
+    try {
+        const user = await prisma.user.findUnique({
+            where: {
+                id: userId,
+            },
+            include: {
+                contacts: true,
+                experiences: true,
+                educations: true,
+                portfolioItems: true
+            }
+        });
+        // also fetch the educations, experiences.. along with the user data
+        if (!user) {
+            return { isSuccess: false, message: 'no user found' };
         }
-    });
-    // also fetch the educations, experiences.. along with the user data
-    if (!user) {
-        return { isSuccess: false, message: 'no user found' };
+        return {
+            isSuccess: true,
+            message: 'user read',
+            user,
+        };
+    } catch(error) {
+        console.log(error);
+        return { isSuccess: false, message: "couldn't read user" };
     }
-    return {
-        isSuccess: true,
-        message: 'user read',
-        user,
-    };
 }
 
 async function update(updateUserDto: UpdateUserDto): Promise<ResponseBase> {
@@ -91,6 +111,7 @@ async function update(updateUserDto: UpdateUserDto): Promise<ResponseBase> {
 }
 
 export const userService = {
+    signUp,
     signIn,
     authorize,
     readById,

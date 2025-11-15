@@ -60,7 +60,7 @@ export default function Page() {
             <div className="relative w-[600px] h-[300px] grid grid-cols-1 md:grid-cols-2 gap-12 pt-10">
                 {!isEditMode ? (
                     <Fragment>
-                        {/* {isAdmin && */<WhiteButton onClick={toggleEditMode} className='absolute top-0 right-0'>Edit</WhiteButton>}
+                        {isAdmin && <WhiteButton onClick={toggleEditMode} className='absolute top-0 right-0'>Edit</WhiteButton>}
 
                         <div className="w-full h-full flex justify-center items-start">
                             <Image

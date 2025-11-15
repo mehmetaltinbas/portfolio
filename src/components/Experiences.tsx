@@ -1,6 +1,5 @@
 'use client';
 
-import { ExperienceRow } from '@/types/db/experience-row';
 import { ExtendedUserRow } from '@/types/db/extended-user-row';
 
 export default function Experiences({ user }: { user: ExtendedUserRow }) {
