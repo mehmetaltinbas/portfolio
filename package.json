@@ -8,8 +8,7 @@
         "start": "next start",
         "lint": "eslint",
         "format": "npx prettier . --write",
-        "prisma:push": "npx prisma db push",
-        "postinstall": "npx prisma generate"
+        "prisma:push": "npx prisma db push"
     },
     "dependencies": {
         "@next/env": "^16.0.0",
