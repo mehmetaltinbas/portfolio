@@ -51,6 +51,7 @@ async function authorize(): Promise<ResponseBase> {
 }
 
 async function readById(): Promise<ReadUserByIdResponse> {
+    console.log(userId);
     const user = await prisma.user.findUnique({
         where: {
             id: userId,
