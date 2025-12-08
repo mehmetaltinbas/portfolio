@@ -4,7 +4,7 @@ import { FaFolder } from 'react-icons/fa';
 export default function PortfolioItemCard({ portfolioItem }: { portfolioItem: PortfolioItemRow }) {
     return (
         <div
-            className="bg-white p-6 rounded-2xl shadow-md border flex flex-col justify-center items-center gap-2 transition hover:border-[#00316E] duration-300 hover:cursor-pointer"
+            className="w-full h-full bg-white p-6 rounded-2xl shadow-md border flex flex-col justify-center items-center gap-2 transition hover:border-[#00316E] duration-300 hover:cursor-pointer"
         >
             <div className="w-full flex justify-between items-center gap-2">
                 <FaFolder className="text-xl" />

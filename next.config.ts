@@ -12,7 +12,10 @@ const nextConfig: NextConfig = {
         }
         return config;
     },
-    turbopack: {}
+    turbopack: {},
+    images: {
+        remotePatterns: [new URL(`${process.env.NEXT_PUBLIC_APP_BASE_URL}/**`)]
+    }
 };
 
 export default nextConfig;

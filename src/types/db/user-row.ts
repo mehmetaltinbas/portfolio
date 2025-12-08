@@ -6,6 +6,7 @@ export interface UserRow {
     fullName: string;
     headline: string;
     bio: string;
+    profilePhotoUrl: string;
     about: string;
     location: string;
     skills: string[];

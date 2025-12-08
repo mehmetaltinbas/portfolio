@@ -57,22 +57,23 @@ export default function Page() {
 
     return (
         <div className='w-full h-full flex justify-center items-start'>
-            <div className="relative w-[600px] h-[300px] grid grid-cols-1 md:grid-cols-2 gap-12 pt-10">
+            <div className="relative w-[700px] h-[300px] grid grid-cols-1 md:grid-cols-2 gap-0 pt-10">
                 {!isEditMode ? (
                     <Fragment>
                         {isAdmin && <WhiteButton onClick={toggleEditMode} className='absolute top-0 right-0'>Edit</WhiteButton>}
 
-                        <div className="w-full h-full flex justify-center items-start">
+                        <div className="h-full flex justify-center items-start">
                             <Image
-                                src="/batfleck-symbol.jpg"
+                                src={user.profilePhotoUrl ?? `${process.env.NEXT_PUBLIC_APP_BASE_URL}/default-avatar-profile-icon.jpg`}
                                 width={200}
                                 height={200}
                                 className="rounded-[10px]"
                                 alt="profile photo"
+                                unoptimized={true}
                             />
                         </div>
 
-                        <div className="w-full h-full flex flex-col justify-start items-center gap-2">
+                        <div className="h-full flex flex-col justify-start items-center gap-2">
                             <p className="text-2xl font-bold text-center text-[#003366]">{user.fullName}</p>
                             <p className="text-l font-semibold text-center text-[#174978]">{user.headline}</p>
                             <p className="text-center">{user.bio}</p>

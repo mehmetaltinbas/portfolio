@@ -17,6 +17,7 @@ const initialState: ExtendedUserRow = {
     fullName: '',
     headline: '',
     bio: '',
+    profilePhotoUrl: '',
     about: '',
     location: '',
     skills: [],
