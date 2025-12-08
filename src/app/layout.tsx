@@ -15,8 +15,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-    title: 'nextjs portfolio',
-    description: 'Portfolio',
+    title: 'Mehmet Altınbaş',
+    description: "Mehmet Altınbaş's personal portfolio website.",
+    icons: `${process.env.APP_BASE_URL}/icon.jpg`
 };
 
 export default function RootLayout({
