@@ -1,31 +1,13 @@
-import { ResponseBase } from '@/types/response/response-base';
-import { NextResponse, NextRequest } from 'next/server';
-import jsonwebtoken from 'jsonwebtoken';
-import { DecodedJwtPayload } from '@/types/decoded-jwt-payload';
-
-const userId = process.env.USER_ID;
+import { userService } from '@/services/user-service';
+import { NextRequest, NextResponse } from 'next/server';
  
-// This function can be marked `async` if using `await` inside
 export function proxy(request: NextRequest) {
     const jwt = request.cookies.get('jwt')?.value;
-    if (!jwt) {
-        const response: ResponseBase = {
-            isSuccess: false,
-            message: 'no jwt found in cookies'
-        };
-        return NextResponse.json(response);
+    const authorizationResponse = userService.authorize(jwt);
+    if (!authorizationResponse.isSuccess) {
+        return NextResponse.json(authorizationResponse);
     }
-
-    const decoded = jsonwebtoken.verify(jwt, process.env.JWT_SECRET!) as DecodedJwtPayload;
-
-    if (!(decoded.userId === userId)) {
-        const response: ResponseBase = {
-            isSuccess: false,
-            message: 'userId is not matching'
-        };
-        return NextResponse.json(response);
-    }
-
+    
     return NextResponse.next();
 }
  

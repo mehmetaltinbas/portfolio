@@ -1,10 +1,11 @@
 'use client';
 
-import { useEditor, EditorContent } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
+import EditorToolbar from '@/components/EditorToolbar';
+import LoadingSpinner from '@/components/LoadingSpinner';
 import Image from '@tiptap/extension-image';
 import Link from '@tiptap/extension-link';
-import EditorToolbar from '@/components/EditorToolbar';
+import { EditorContent, useEditor } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
 
 export default function PortfolioItemEditor({ 
     initialContent, 
@@ -35,12 +36,12 @@ export default function PortfolioItemEditor({
         },
     });
 
-    if (!editor) return <div>Loading editor...</div>;
-
-    return (
+    return editor ? (
         <div>
             <EditorToolbar editor={editor} />
             <EditorContent editor={editor} />
         </div>
+    ) : (
+        <LoadingSpinner />
     );
 }

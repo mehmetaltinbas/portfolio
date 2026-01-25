@@ -1,3 +1,4 @@
+import { DecodedJwtPayload } from '@/types/decoded-jwt-payload';
 import { UpdateUserDto } from '@/types/dto/user/update-user-dto';
 import { UserSignInDto } from '@/types/dto/user/user-sign-in-dto';
 import { UserSignUpDto } from '@/types/dto/user/user-sign-up-dto';
@@ -6,7 +7,7 @@ import { ReadExtendedUserByIdResponse } from '@/types/response/user/read-extende
 import { ReadUserByIdResponse } from '@/types/response/user/read-user-by-id-response';
 import { UserSignInResponse } from '@/types/response/user/user-sign-in-response';
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
+import jsonwebtoken from 'jsonwebtoken';
 import { prisma } from 'prisma/prisma-client';
 
 const userId = process.env.USER_ID;
@@ -40,15 +41,29 @@ export const userService = {
         const jwtSecret = process.env.JWT_SECRET;
         const jwtExpiresIn = Number(process.env.JWT_EXPIRES_IN);
         if (!jwtSecret || !jwtExpiresIn) return { isSuccess: false, message: 'secret is undefined'};
-        const token = jwt.sign({ userId: user.id }, jwtSecret, {
+        const token = jsonwebtoken.sign({ userId: user.id }, jwtSecret, {
             expiresIn: jwtExpiresIn,
         });
 
         return { isSuccess: true, message: 'signed in', jwt: token };
     },
 
-    async authorize(): Promise<ResponseBase> {
-        return { isSuccess: true, message: 'authorized' };
+    authorize(jwt: string | undefined): ResponseBase {
+        if (!jwt) return {
+            isSuccess: false,
+            message: 'no jwt found in cookies'
+        };
+
+        try {
+            const decoded = jsonwebtoken.verify(jwt, process.env.JWT_SECRET!) as DecodedJwtPayload;
+            if (!(decoded.userId === userId)) return {
+                isSuccess: false,
+                message: 'userId is not matching'
+            };
+            return { isSuccess: true, message: 'authorized' };
+        } catch (error: any) {
+            return { isSuccess: false, message: 'unauthorized' };
+        }
     },
 
     async readById(): Promise<ReadUserByIdResponse> {
@@ -81,7 +96,6 @@ export const userService = {
                     portfolioItems: true
                 }
             });
-            // also fetch the educations, experiences.. along with the user data
             if (!user) {
                 return { isSuccess: false, message: 'no user found' };
             }

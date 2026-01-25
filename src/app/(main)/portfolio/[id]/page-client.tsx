@@ -1,7 +1,7 @@
 'use client';
 
 import { Button } from "@/components/Button";
-import PortfolioEItemditor from "@/components/PortfolioItemEditor";
+import PortfolioItemEditor from "@/components/PortfolioItemEditor";
 import PortfolioViewer from "@/components/PortfolioItemViewer";
 import { useAppSelector } from "@/store/hooks";
 import { PortfolioItemRow } from "@/types/db/portfolio-item-row";
@@ -52,7 +52,7 @@ export default function PageClient({ portfolioItem }: {
             <div className="p-[25px]">
                 {isAdmin ? (
                     <>
-                        <PortfolioEItemditor 
+                        <PortfolioItemEditor 
                             initialContent={content}
                             onContentChange={setContent}
                         />
