@@ -12,7 +12,7 @@ import { useEffect, useState } from "react";
 export default function PageClient({ portfolioItem }: {
     portfolioItem: PortfolioItemRow;
 }) {
-    const [content, setContent] = useState<object>({});
+    const [content, setContent] = useState<object>(portfolioItem.content as object);
     const isAdmin = useAppSelector(state => state.isAdmin);
     const [isSaving, setIsSaving] = useState(false);
 
@@ -68,7 +68,7 @@ export default function PageClient({ portfolioItem }: {
                     </>
                 ): (
                     <PortfolioViewer 
-                        content={portfolioItem.content as object}
+                        content={content}
                     />
                 )}
             </div>
