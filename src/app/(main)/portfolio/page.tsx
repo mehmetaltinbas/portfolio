@@ -1,6 +1,6 @@
 'use client';
 
-import { BlackButton } from "@/components/BlackButton";
+import { Button } from "@/components/Button";
 import PortfolioItemCard from "@/components/PortfolioItemCard";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { isAdminActions } from "@/store/slices/is-admin-slice";
@@ -58,17 +58,20 @@ export default function Page() {
         <div className="w-full h-full flex flex-col items-center gap-16 px-24">
             <div className="relative w-[700px] h-auto grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="flex justify-center items-center gap-4 md:col-span-2 xl:col-span-3">
-                    <p className="text-2xl font-bold text-center md:col-span-2 xl:col-span-3">Portfolio</p>
-                    {isAdmin && <BlackButton onClick={event => toggleCreatePortfolioItemForm(event.currentTarget)}>+</BlackButton>}
+                    <p className="text-2xl font-bold text-center md:col-span-2 xl:col-span-3 p-4">Portfolio</p>
+                    {isAdmin && <Button onClick={event => toggleCreatePortfolioItemForm(event.currentTarget)}>+</Button>}
                 </div>
                 {user.portfolioItems.map((portfolioItem, index) => (
-                    <PortfolioItemCard key={portfolioItem.id} portfolioItem={portfolioItem} />
+                    <PortfolioItemCard 
+                        key={portfolioItem.id} 
+                        portfolioItem={portfolioItem} 
+                    />
                 ))}
 
                 <div ref={createPortfolioItemForm} className={`${isPortfolioItemFormHidden ? 'hidden' : ''} absolute w-auto h-auto p-4 border rounded-xl flex flex-col justify-start items-center`}>
                     <input onChange={event => handleOnChange(event)} name="title" placeholder="name..." />
                     <input onChange={event => handleOnChange(event)} name="description" placeholder="description..." />
-                    <BlackButton onClick={async (event) => await createPortfolioItem()}>submit</BlackButton>
+                    <Button onClick={async (event) => await createPortfolioItem()}>submit</Button>
                 </div>
             </div>
         </div>

@@ -1,6 +1,6 @@
 'use client';
 
-import { BlackButton } from "@/components/BlackButton";
+import { Button } from "@/components/Button";
 import { useAppDispatch } from "@/store/hooks";
 import { isAdminActions } from "@/store/slices/is-admin-slice";
 import { UserSignInDto } from "@/types/dto/user/user-sign-in-dto";
@@ -48,11 +48,11 @@ export default function Page() {
                     placeholder="password..."
                     className="py-1 px-2 rounded-full border"
                 />
-                <BlackButton
+                <Button
                     type="submit"
                 >
                     Sign In
-                </BlackButton>
+                </Button>
             </form>
         </div>
     );

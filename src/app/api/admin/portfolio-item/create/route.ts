@@ -4,7 +4,6 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
     const responseBody: CreatePortfolioItemDto = await req.json();
-    console.log(responseBody);
     const response = await portfolioItemService.create(responseBody);
     return NextResponse.json(response);
 }

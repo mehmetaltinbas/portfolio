@@ -26,7 +26,7 @@ export default function NavBar() {
     const isAdmin = useAppSelector(state => state.isAdmin);
 
     return (
-        <nav className="relative w-full h-auto flex flex-col justify-center items-center bg-black">
+        <nav className="fixed top-0 z-50 w-full h-auto flex flex-col justify-center items-center bg-black">
             {isAdmin && (<p className='absolute left-0 top-0 text-red-500'>Admin</p>)}
 
             <div className="w-full h-auto bg-black flex justify-end md:hidden py-2 pr-2">

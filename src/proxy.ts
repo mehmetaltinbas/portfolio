@@ -1,7 +1,7 @@
 import { ResponseBase } from '@/types/response/response-base';
 import { NextResponse, NextRequest } from 'next/server';
 import jsonwebtoken from 'jsonwebtoken';
-import { DecodedJwtPayload } from '@/types/jwt-payload';
+import { DecodedJwtPayload } from '@/types/decoded-jwt-payload';
 
 const userId = process.env.USER_ID;
  

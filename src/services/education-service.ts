@@ -3,11 +3,9 @@ import { prisma } from "prisma/prisma-client";
 
 const userId = process.env.USER_ID;
 
-async function readAllByUserId(): Promise<ReadAllEducationsResponse> {
-    const educations = await prisma.education.findMany({ where: { userId }});
-    return { isSuccess: true, message: 'all educations read', educations };
-}
-
 export const educationService = {
-    readAllByUserId,
+    async readAllByUserId(): Promise<ReadAllEducationsResponse> {
+        const educations = await prisma.education.findMany({ where: { userId }});
+        return { isSuccess: true, message: 'all educations read', educations };
+    },
 };
