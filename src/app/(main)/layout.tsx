@@ -1,30 +1,20 @@
-'use client';
+'use server';
 
-import LoadingSpinner from "@/components/LoadingSpinner";
-import NavBar from "@/components/NavBar";
-import { useAppDispatch } from "@/store/hooks";
-import { userActions } from "@/store/slices/user-slice";
-import React, { useEffect, useState } from "react";
+import LayoutClient from "@/app/(main)/layout-client";
+import { userService } from "@/services/user-service";
+import { cookies } from "next/headers";
+import React from "react";
 
-export default function Layout({ children }: { children: React.ReactNode }) {
-    const dispatch = useAppDispatch();
-    const [isReady, setIsReady] = useState<boolean>(false);
-
-    useEffect(() => {
-        (async () => {
-            await dispatch(userActions.refresh());
-            setIsReady(true);
-        })();
-    }, [dispatch]);
+export default async function Layout({ children }: { children: React.ReactNode }) {
+    const extractedCookies = await cookies();
+    const jwt = extractedCookies.get('jwt')?.value;
+    const authorizationResponse = userService.authorize(jwt);
 
     return (
-        <div className="w-ful h-full flex flex-col justify-start items-center">
-            <NavBar />
-            {isReady ? (
-                <div className="w-full h-full p-4 pt-[52px]">{children}</div>
-            ): (
-                <LoadingSpinner isHidden={false} />
-            )}
-        </div>
+        <LayoutClient 
+            isAuthorized={authorizationResponse.isSuccess}
+        >
+            {children}
+        </LayoutClient>
     );
 }
