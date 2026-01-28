@@ -1,6 +1,6 @@
 'use client';
 
-import WhiteButton from '@/components/WhiteButton';
+import { Button } from '@/components/Button';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { isAdminActions } from '@/store/slices/is-admin-slice';
 import { userActions } from '@/store/slices/user-slice';
@@ -60,7 +60,7 @@ export default function Page() {
             <div className="relative w-[700px] h-[300px] grid grid-cols-1 md:grid-cols-2 gap-0 pt-10">
                 {!isEditMode ? (
                     <Fragment>
-                        {isAdmin && <WhiteButton onClick={toggleEditMode} className='absolute top-0 right-0'>Edit</WhiteButton>}
+                        {isAdmin && <Button onClick={toggleEditMode} className='absolute top-2 right-2'>Edit</Button>}
 
                         <div className="h-full flex justify-center items-start">
                             <Image
@@ -77,14 +77,14 @@ export default function Page() {
                             <p className="text-2xl font-bold text-center text-[#003366]">{user.fullName}</p>
                             <p className="text-l font-semibold text-center text-[#174978]">{user.headline}</p>
                             <p className="text-center">{user.bio}</p>
-                            <button className="py-1 px-4 border-[1px] border-gray rounded-full hover:border-black">
+                            <Button>
                                 Download CV
-                            </button>
+                            </Button>
                         </div>
                     </Fragment>
                 ) : (
                     <Fragment>
-                        <WhiteButton onClick={event => { updateProfileInfo(); toggleEditMode(); }} className='absolute top-0 right-0'>Save</WhiteButton>
+                        <Button onClick={event => { updateProfileInfo(); toggleEditMode(); }} className='absolute top-2 right-2'>Save</Button>
 
                         <div className="w-full h-full flex justify-center items-start">
                             <Image
@@ -100,9 +100,9 @@ export default function Page() {
                             <input name='fullName' onChange={event => handleOnChange(event)} value={profileInfo.fullName} className="w-full text-2xl font-bold text-center text-[#003366]" placeholder='fullname...' />
                             <textarea name='headline' onChange={event => handleOnChange(event)} value={profileInfo.headline} className="w-full text-l font-semibold text-center text-[#174978] resize-none whitespace-pre-wrap break-words" placeholder='headline...' />
                             <textarea name='bio' onChange={event => handleOnChange(event)} value={profileInfo.bio} className="w-full text-center resize-none whitespace-pre-wrap break-words" placeholder='bio...' />
-                            <WhiteButton className="py-1 px-4 border-[1px] border-gray rounded-full hover:border-black">
+                            <Button>
                                 Download CV
-                            </WhiteButton>
+                            </Button>
                         </div>
                     </Fragment>
                 )}
