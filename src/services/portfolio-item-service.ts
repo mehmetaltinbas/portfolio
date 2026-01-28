@@ -1,3 +1,4 @@
+import { userId } from "@/constants/user-id.constant";
 import { InputJsonValue } from "@/generated/client/runtime/library";
 import { CreatePortfolioItemDto } from "@/types/dto/portfolio-item/create-portfolio-item-dto";
 import { UpdatePortfolioItemDto } from "@/types/dto/portfolio-item/update-portfolio-item-dto";
@@ -5,8 +6,6 @@ import { ReadAllPortfolioItemsResponse } from "@/types/response/portfolio-item/r
 import { ReadSinglePortfolioItemResponse } from "@/types/response/portfolio-item/read-single-portfolio-item-response";
 import { ResponseBase } from "@/types/response/response-base";
 import { prisma } from "prisma/prisma-client";
-
-const userId = process.env.USER_ID;
 
 export const portfolioItemService = {
     async create(createPortfolioItemDto: CreatePortfolioItemDto): Promise<ResponseBase> {

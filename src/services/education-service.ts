@@ -1,7 +1,6 @@
+import { userId } from "@/constants/user-id.constant";
 import { ReadAllEducationsResponse } from "@/types/response/education/read-all-educations-response";
 import { prisma } from "prisma/prisma-client";
-
-const userId = process.env.USER_ID;
 
 export const educationService = {
     async readAllByUserId(): Promise<ReadAllEducationsResponse> {

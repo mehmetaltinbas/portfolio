@@ -1,3 +1,4 @@
+import { userId } from '@/constants/user-id.constant';
 import { DecodedJwtPayload } from '@/types/decoded-jwt-payload';
 import { UpdateUserDto } from '@/types/dto/user/update-user-dto';
 import { UserSignInDto } from '@/types/dto/user/user-sign-in-dto';
@@ -10,8 +11,6 @@ import bcrypt from 'bcrypt';
 import jsonwebtoken from 'jsonwebtoken';
 import { prisma } from 'prisma/prisma-client';
 
-const userId = process.env.USER_ID;
-
 export const userService = {
     async signUp(userSignInDto: UserSignUpDto): Promise<ResponseBase> {
         try {
@@ -23,8 +22,6 @@ export const userService = {
             } });
             return { isSuccess: true, message: 'success' };
         } catch (error) {
-            console.log(error);
-            console.log(JSON.stringify(error, null, 2));
             return { isSuccess: false, message: 'error' };
         }
     },
@@ -61,13 +58,12 @@ export const userService = {
                 message: 'userId is not matching'
             };
             return { isSuccess: true, message: 'authorized' };
-        } catch (error: any) {
+        } catch (error) {
             return { isSuccess: false, message: 'unauthorized' };
         }
     },
 
     async readById(): Promise<ReadUserByIdResponse> {
-        console.log(userId);
         const user = await prisma.user.findUnique({
             where: {
                 id: userId,
@@ -105,7 +101,6 @@ export const userService = {
                 user,
             };
         } catch(error) {
-            console.log(error);
             return { isSuccess: false, message: "couldn't read user" };
         }
     },
