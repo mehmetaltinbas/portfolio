@@ -2,7 +2,7 @@
 
 import LoadingSpinner from "@/components/LoadingSpinner";
 import NavBar from "@/components/NavBar";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { useAppDispatch } from "@/store/hooks";
 import { isAdminActions } from "@/store/slices/is-admin-slice";
 import { userActions } from "@/store/slices/user-slice";
 import React, { useEffect, useState } from "react";
@@ -18,7 +18,6 @@ export default function LayoutClient(
 ){
     const dispatch = useAppDispatch();
     const [isReady, setIsReady] = useState<boolean>(false);
-    const isAdmin = useAppSelector(state => state.isAdmin);
 
     useEffect(() => {
         (async () => {

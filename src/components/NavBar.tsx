@@ -1,7 +1,10 @@
 'use client';
 
-import { useAppSelector } from '@/store/hooks';
+import { Button } from '@/components/Button';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { isAdminActions } from '@/store/slices/is-admin-slice';
 import { Link as LinkInterface } from '@/types/link';
+import { ResponseBase } from '@/types/response/response-base';
 import { Menu, X } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
@@ -22,12 +25,28 @@ const links: LinkInterface[] = [
 ];
 
 export default function NavBar() {
+    const dispatch = useAppDispatch();
     const [isOpen, setIsOpen] = useState(false);
     const isAdmin = useAppSelector(state => state.isAdmin);
 
+    async function signOut() {
+        const response: ResponseBase = await (await fetch(`/api/admin/sign-out`, {
+            method: 'POST',
+        })).json();
+        if (response.isSuccess) await dispatch(isAdminActions.set(false));
+    }
+
     return (
         <nav className="fixed top-0 z-50 w-full h-auto flex flex-col justify-center items-center bg-black">
-            {isAdmin && (<p className='absolute left-0 top-0 text-red-500'>Admin</p>)}
+            {isAdmin && (
+                <div className='absolute left-4 top-0.5 flex flex-col justify-center items-center'>
+                    <p className='text-s text-red-500'>Admin</p>
+                    <Button 
+                        onClick={signOut}
+                        className='text-xs'
+                    >SignOut</Button>
+                </div>
+            )}
 
             <div className="w-full h-auto bg-black flex justify-end md:hidden py-2 pr-2">
                 <button onClick={() => setIsOpen((prev) => !prev)}>
