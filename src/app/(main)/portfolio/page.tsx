@@ -1,57 +1,30 @@
 'use client';
 
 import { Button } from "@/components/Button";
+import CreatePortfolioItemForm from "@/components/CreatePortfolioItemForm";
 import PortfolioItemCard from "@/components/PortfolioItemCard";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { isAdminActions } from "@/store/slices/is-admin-slice";
-import { userActions } from "@/store/slices/user-slice";
-import { CreatePortfolioItemDto } from "@/types/dto/portfolio-item/create-portfolio-item-dto";
-import { ResponseBase } from "@/types/response/response-base";
-import { ChangeEvent, useRef, useState } from "react";
+import { useAppSelector } from "@/store/hooks";
+import { useRef, useState } from "react";
 
 export default function Page() {
-    const dispatch = useAppDispatch();
     const user = useAppSelector(state => state.user);
     const isAdmin = useAppSelector(state => state.isAdmin);
-    const [isPortfolioItemFormHidden, setIsPortfolioItemFormHidden] = useState<boolean>(true);
-    const createPortfolioItemForm = useRef<HTMLDivElement>(null);
-    const [createPortfolioItemDto, setCreatePortfolioItemDto] = useState<CreatePortfolioItemDto>({
-        title: '',
-        description: ''
-    });
+    const [isCreatePortfolioItemFormHidden, setIsCreatePortfolioItemFormHidden] = useState<boolean>(true);
+    const createPortfolioItemFormRef = useRef<HTMLDivElement>(null);
 
     function toggleCreatePortfolioItemForm(button: HTMLButtonElement) {
-        if (!createPortfolioItemForm.current) return;
-        setIsPortfolioItemFormHidden(prev => !prev);
-        const rects = button.getBoundingClientRect();
-        createPortfolioItemForm.current.style.left = `${rects.left}px`;
-        createPortfolioItemForm.current.style.top = `${rects.top - 52}px`;
-    }
+        if (!createPortfolioItemFormRef.current) return;
+        setIsCreatePortfolioItemFormHidden(prev => !prev);
 
-    function handleOnChange(event: ChangeEvent<HTMLInputElement>) {
-        const inputElement = event.currentTarget;
-        setCreatePortfolioItemDto(prev => {
-            return {
-                ...prev,
-                [inputElement.name]: inputElement.value
-            };
-        });
-    }
+        const buttonRect = button.getBoundingClientRect();
+        const parentRect = createPortfolioItemFormRef.current.offsetParent?.getBoundingClientRect();
+        if (!parentRect) return;
 
-    async function createPortfolioItem() {
-        const response = await (await fetch('/api/admin/portfolio-item/create', {
-            method: 'POST',
-            body: JSON.stringify(createPortfolioItemDto),
-            headers: {
-                "Content-Type": 'application/json'
-            },
-        })).json() as ResponseBase;
-        setIsPortfolioItemFormHidden(prev => !prev);
-        alert(response.message);
-        if (!response.isSuccess) dispatch(isAdminActions.set(false));
-        else if (response.isSuccess) {
-            dispatch(userActions.refresh());
-        }
+        const buttonCenterX = buttonRect.left + Math.floor(buttonRect.width / 2);
+        const formWidth = createPortfolioItemFormRef.current.offsetWidth;
+
+        createPortfolioItemFormRef.current.style.left = `${buttonCenterX - parentRect.left - formWidth / 2}px`;
+        createPortfolioItemFormRef.current.style.top = `${buttonRect.bottom - parentRect.top + 4}px`;
     }
 
     return (
@@ -68,11 +41,11 @@ export default function Page() {
                     />
                 ))}
 
-                <div ref={createPortfolioItemForm} className={`${isPortfolioItemFormHidden ? 'hidden' : ''} absolute w-auto h-auto p-4 border rounded-xl flex flex-col justify-start items-center`}>
-                    <input onChange={event => handleOnChange(event)} name="title" placeholder="name..." />
-                    <input onChange={event => handleOnChange(event)} name="description" placeholder="description..." />
-                    <Button onClick={async (event) => await createPortfolioItem()}>submit</Button>
-                </div>
+                <CreatePortfolioItemForm
+                    createPortfolioItemFormRef={createPortfolioItemFormRef}
+                    isCreatePortfolioItemFormHidden={isCreatePortfolioItemFormHidden}
+                    setIsCreatePortfolioItemFormHidden={setIsCreatePortfolioItemFormHidden}
+                />
             </div>
         </div>
     );

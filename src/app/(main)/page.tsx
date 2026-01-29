@@ -1,12 +1,13 @@
 'use client';
 
 import { Button } from '@/components/Button';
+import { Input } from '@/components/Input';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { isAdminActions } from '@/store/slices/is-admin-slice';
 import { userActions } from '@/store/slices/user-slice';
 import { ResponseBase } from '@/types/response/response-base';
 import Image from 'next/image';
-import { ChangeEvent, Fragment, useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 
 export default function Page() {
     const dispatch = useAppDispatch();
@@ -59,7 +60,7 @@ export default function Page() {
         <div className='w-full h-full flex justify-center items-start'>
             <div className="relative w-[700px] h-[300px] grid grid-cols-1 md:grid-cols-2 gap-0 pt-10">
                 {!isEditMode ? (
-                    <Fragment>
+                    <>
                         {isAdmin && <Button onClick={toggleEditMode} className='absolute top-2 right-2'>Edit</Button>}
 
                         <div className="h-full flex justify-center items-start">
@@ -81,9 +82,9 @@ export default function Page() {
                                 Download CV
                             </Button>
                         </div>
-                    </Fragment>
+                    </>
                 ) : (
-                    <Fragment>
+                    <>
                         <Button onClick={event => { updateProfileInfo(); toggleEditMode(); }} className='absolute top-2 right-2'>Save</Button>
 
                         <div className="w-full h-full flex justify-center items-start">
@@ -97,14 +98,14 @@ export default function Page() {
                         </div>
 
                         <div className="w-full h-full  flex flex-col justify-start items-center gap-2">
-                            <input name='fullName' onChange={event => handleOnChange(event)} value={profileInfo.fullName} className="w-full text-2xl font-bold text-center text-[#003366]" placeholder='fullname...' />
+                            <Input name='fullName' onChange={event => handleOnChange(event)} value={profileInfo.fullName} className="text-2xl font-bold text-center text-[#003366]" placeholder='fullname...' />
                             <textarea name='headline' onChange={event => handleOnChange(event)} value={profileInfo.headline} className="w-full text-l font-semibold text-center text-[#174978] resize-none whitespace-pre-wrap break-words" placeholder='headline...' />
                             <textarea name='bio' onChange={event => handleOnChange(event)} value={profileInfo.bio} className="w-full text-center resize-none whitespace-pre-wrap break-words" placeholder='bio...' />
                             <Button>
                                 Download CV
                             </Button>
                         </div>
-                    </Fragment>
+                    </>
                 )}
 
             </div>

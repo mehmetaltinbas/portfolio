@@ -1,6 +1,7 @@
 'use client';
 
 import { Button } from "@/components/Button";
+import { Input } from "@/components/Input";
 import { useAppDispatch } from "@/store/hooks";
 import { isAdminActions } from "@/store/slices/is-admin-slice";
 import { UserSignInDto } from "@/types/dto/user/user-sign-in-dto";
@@ -36,17 +37,15 @@ export default function Page() {
                 className="w-full h-full flex flex-col justify-center items-center gap-2"
             >
                 <h1 className="font-bold text-xl">Admin</h1>
-                <input
+                <Input
                     type="text"
                     name="userName"
                     placeholder="username..."
-                    className="py-1 px-2 rounded-full border"
                 />
-                <input
+                <Input
                     type="password"
                     name="password"
                     placeholder="password..."
-                    className="py-1 px-2 rounded-full border"
                 />
                 <Button
                     type="submit"
