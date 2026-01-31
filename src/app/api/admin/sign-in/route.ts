@@ -1,5 +1,5 @@
-import { userService } from "@/services/user-service";
-import { UserSignInDto } from "@/types/dto/user/user-sign-in-dto";
+import { userService } from "@/services/user.service";
+import { UserSignInDto } from "@/types/dto/user/user-sign-in.dto";
 import { ResponseBase } from "@/types/response/response-base";
 import { ResponseCookie } from "next/dist/compiled/@edge-runtime/cookies";
 import { cookies } from "next/headers";

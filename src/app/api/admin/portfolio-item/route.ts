@@ -1,5 +1,5 @@
-import { portfolioItemService } from "@/services/portfolio-item-service";
-import { CreatePortfolioItemDto } from "@/types/dto/portfolio-item/create-portfolio-item-dto";
+import { portfolioItemService } from "@/services/portfolio-item.service";
+import { CreatePortfolioItemDto } from "@/types/dto/portfolio-item/create-portfolio-item.dto";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {

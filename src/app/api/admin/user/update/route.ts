@@ -1,5 +1,5 @@
-import { userService } from "@/services/user-service";
-import { UpdateUserDto } from "@/types/dto/user/update-user-dto";
+import { userService } from "@/services/user.service";
+import { UpdateUserDto } from "@/types/dto/user/update-user.dto";
 import { NextResponse } from "next/server";
 
 export async function PATCH(req: Request) {

@@ -1,4 +1,4 @@
-import { portfolioItemService } from "@/services/portfolio-item-service";
+import { portfolioItemService } from "@/services/portfolio-item.service";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(

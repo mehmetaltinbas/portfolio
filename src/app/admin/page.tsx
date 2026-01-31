@@ -4,7 +4,7 @@ import { Button } from "@/components/Button";
 import { Input } from "@/components/Input";
 import { useAppDispatch } from "@/store/hooks";
 import { isAdminActions } from "@/store/slices/is-admin-slice";
-import { UserSignInDto } from "@/types/dto/user/user-sign-in-dto";
+import { UserSignInDto } from "@/types/dto/user/user-sign-in.dto";
 import { UserSignInResponse } from "@/types/response/user/user-sign-in-response";
 import { useRouter } from "next/navigation";
 
@@ -34,7 +34,7 @@ export default function Page() {
         <div className="w-full h-[50%] flex flex-col justify-center items-center gap-2">
             <form
                 action={async (formData) => await handleSubmit(formData)}
-                className="w-full h-full flex flex-col justify-center items-center gap-2"
+                className="w-[200px] h-full flex flex-col justify-center items-center gap-2"
             >
                 <h1 className="font-bold text-xl">Admin</h1>
                 <Input

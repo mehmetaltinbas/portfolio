@@ -14,7 +14,10 @@ const nextConfig: NextConfig = {
     },
     turbopack: {},
     images: {
-        remotePatterns: [new URL(`${process.env.NEXT_PUBLIC_APP_BASE_URL}/**`)]
+        remotePatterns: [
+            new URL(`${process.env.NEXT_PUBLIC_APP_BASE_URL}/**`),
+            new URL('https://*.supabase.co/storage/v1/object/public/**')
+        ]
     }
 };
 

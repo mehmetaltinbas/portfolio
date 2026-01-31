@@ -97,7 +97,7 @@ export default function Page() {
                             />
                         </div>
 
-                        <div className="w-full h-full  flex flex-col justify-start items-center gap-2">
+                        <div className="w-[200px] h-full  flex flex-col justify-start items-center gap-2">
                             <Input name='fullName' onChange={event => handleOnChange(event)} value={profileInfo.fullName} className="text-2xl font-bold text-center text-[#003366]" placeholder='fullname...' />
                             <textarea name='headline' onChange={event => handleOnChange(event)} value={profileInfo.headline} className="w-full text-l font-semibold text-center text-[#174978] resize-none whitespace-pre-wrap break-words" placeholder='headline...' />
                             <textarea name='bio' onChange={event => handleOnChange(event)} value={profileInfo.bio} className="w-full text-center resize-none whitespace-pre-wrap break-words" placeholder='bio...' />

@@ -1,4 +1,4 @@
-import { userService } from '@/services/user-service';
+import { userService } from '@/services/user.service';
 import { NextRequest, NextResponse } from 'next/server';
  
 export function proxy(request: NextRequest) {

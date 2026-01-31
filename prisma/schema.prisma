@@ -1,68 +1,79 @@
 generator client {
-    provider = "prisma-client-js"
+    provider      = "prisma-client-js"
     binaryTargets = ["native", "linux-musl", "rhel-openssl-3.0.x"]
-    output = "../src/generated/client"
+    output        = "../src/generated/client"
 }
 
 datasource db {
     provider = "postgresql"
-    url = env("DATABASE_URL")
+    url      = env("DATABASE_URL")
 }
 
 model User {
-    id String @id @default(uuid())
-    email String
-    userName String @unique
-    passwordHash String
-    fullName String
-    headline String
-    bio String
-    about String
-    location String
-    skills String[]
-    contacts Contact[]
-    experiences Experience[]
-    educations Education[]
+    id             String          @id @default(uuid())
+    email          String
+    userName       String          @unique
+    passwordHash   String
+    fullName       String
+    headline       String
+    bio            String
+    about          String
+    location       String
+    skills         String[]
+    userImages     UserImage[]
+    contacts       Contact[]
+    experiences    Experience[]
+    educations     Education[]
     portfolioItems PortfolioItem[]
 }
 
-model Contact {
-    id String @id @default(uuid())
-    user User @relation(fields: [userId], references: [id])
+model UserImage {
+    id     String @id @default(uuid())
+    user   User   @relation(fields: [userId], references: [id])
     userId String
-    label String
-    value String
+    url    String
+    place  String
+
+    @@unique([userId, place])
+}
+
+model Contact {
+    id     String @id @default(uuid())
+    user   User   @relation(fields: [userId], references: [id])
+    userId String
+    label  String
+    value  String
 }
 
 model Experience {
-    id String @id @default(uuid())
-    user User @relation(fields: [userId], references: [id])
-    userId String
-    title String
-    company String
+    id        String   @id @default(uuid())
+    user      User     @relation(fields: [userId], references: [id])
+    userId    String
+    title     String
+    company   String
     isCurrent Boolean
     startDate DateTime
-    endDate DateTime
+    endDate   DateTime
 }
 
 model Education {
-    id String @id @default(uuid())
-    user User @relation(fields: [userId], references: [id])
-    userId String
-    school String
-    degree String?
+    id           String   @id @default(uuid())
+    user         User     @relation(fields: [userId], references: [id])
+    userId       String
+    school       String
+    degree       String?
     fieldOfStudy String?
-    description String
-    isCurrent Boolean
-    startDate DateTime
-    endDate DateTime
+    description  String
+    isCurrent    Boolean
+    startDate    DateTime
+    endDate      DateTime
 }
 
 model PortfolioItem {
-    id String @id @default(uuid())
-    user User @relation(fields: [userId], references: [id])
-    userId String
-    title String @unique
+    id          String @id @default(uuid())
+    user        User   @relation(fields: [userId], references: [id])
+    userId      String
+    title       String @unique
     description String
-    content Json?
+    content     Json?
 }

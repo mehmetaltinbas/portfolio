@@ -1,7 +1,7 @@
 'use server';
 
 import PageClient from "@/app/(main)/portfolio/[id]/page-client";
-import { portfolioItemService } from "@/services/portfolio-item-service";
+import { portfolioItemService } from "@/services/portfolio-item.service";
 
 export default async function Page({ params, }: {
     params: Promise<{ id: string }>

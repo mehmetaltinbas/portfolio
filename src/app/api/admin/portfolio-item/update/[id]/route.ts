@@ -1,5 +1,5 @@
-import { portfolioItemService } from "@/services/portfolio-item-service";
-import { UpdatePortfolioItemDto } from "@/types/dto/portfolio-item/update-portfolio-item-dto";
+import { portfolioItemService } from "@/services/portfolio-item.service";
+import { UpdatePortfolioItemDto } from "@/types/dto/portfolio-item/update-portfolio-item.dto";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function PATCH(

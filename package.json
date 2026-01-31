@@ -17,6 +17,7 @@
         "@prisma/client": "^6.18.0",
         "@prisma/nextjs-monorepo-workaround-plugin": "^7.0.0",
         "@reduxjs/toolkit": "^2.9.2",
+        "@supabase/supabase-js": "^2.93.3",
         "@tiptap/extension-document": "^3.13.0",
         "@tiptap/extension-image": "^3.17.1",
         "@tiptap/extension-paragraph": "^3.13.0",

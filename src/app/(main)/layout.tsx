@@ -1,7 +1,7 @@
 'use server';
 
 import LayoutClient from "@/app/(main)/layout-client";
-import { userService } from "@/services/user-service";
+import { userService } from "@/services/user.service";
 import { cookies } from "next/headers";
 import React from "react";
 

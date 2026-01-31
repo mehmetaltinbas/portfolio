@@ -5,7 +5,7 @@ import { Input } from "@/components/Input";
 import { useAppDispatch } from "@/store/hooks";
 import { isAdminActions } from "@/store/slices/is-admin-slice";
 import { userActions } from "@/store/slices/user-slice";
-import { CreatePortfolioItemDto } from "@/types/dto/portfolio-item/create-portfolio-item-dto";
+import { CreatePortfolioItemDto } from "@/types/dto/portfolio-item/create-portfolio-item.dto";
 import { ResponseBase } from "@/types/response/response-base";
 import React from "react";
 
@@ -62,9 +62,9 @@ export default function CreatePortfolioItemForm(
                 flex flex-col justify-start items-center gap-2
             `}
         >
-            <Input onChange={event => handleOnChange(event)} name="title" placeholder="name..." />
+            <Input onChange={event => handleOnChange(event)} name="title" placeholder="title..." />
             <Input onChange={event => handleOnChange(event)} name="description" placeholder="description..." />
-            <Button onClick={async (event) => await createPortfolioItem()}>submit</Button>
+            <Button onClick={async (event) => await createPortfolioItem()}>Create</Button>
         </div>
     );
 }

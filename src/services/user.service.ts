@@ -1,8 +1,8 @@
 import { userId } from '@/constants/user-id.constant';
 import { DecodedJwtPayload } from '@/types/decoded-jwt-payload';
-import { UpdateUserDto } from '@/types/dto/user/update-user-dto';
-import { UserSignInDto } from '@/types/dto/user/user-sign-in-dto';
-import { UserSignUpDto } from '@/types/dto/user/user-sign-up-dto';
+import { UpdateUserDto } from '@/types/dto/user/update-user.dto';
+import { UserSignInDto } from '@/types/dto/user/user-sign-in.dto';
+import { UserSignUpDto } from '@/types/dto/user/user-sign-up.dto';
 import { ResponseBase } from '@/types/response/response-base';
 import { ReadExtendedUserByIdResponse } from '@/types/response/user/read-extended-user-by-id-response';
 import { ReadUserByIdResponse } from '@/types/response/user/read-user-by-id-response';
@@ -86,6 +86,7 @@ export const userService = {
                     id: userId,
                 },
                 include: {
+                    userImages: true,
                     contacts: true,
                     experiences: true,
                     educations: true,
