@@ -2,10 +2,11 @@
 
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
+import { TextArea } from '@/components/TextArea';
 import { UserImagePlace } from '@/enums/user-image-place.enum';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { isAdminActions } from '@/store/slices/is-admin-slice';
 import { userActions } from '@/store/slices/user-slice';
+import { DeleteUserImageDto } from '@/types/dto/user-image/delete-user-image.dto';
 import { ResponseBase } from '@/types/response/response-base';
 import Image from 'next/image';
 import { ChangeEvent, useState } from 'react';
@@ -20,13 +21,15 @@ export default function Page() {
         headline: user.headline,
         bio: user.bio
     });
+    const [file, setFile] = useState<File | null>(null);
 
-    function resetProfileInfo() {
+    function toggleEditMode() {
         setProfileInfo({
             fullName: user.fullName,
             headline: user.headline,
             bio: user.bio
         });
+        setIsEditMode(prev => !prev);
     }
 
     function handleOnChange(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
@@ -46,15 +49,48 @@ export default function Page() {
         })).json();
         if (response.isSuccess) {
             await dispatch(userActions.refresh());
-        } else if (!response.isSuccess) {
-            dispatch(isAdminActions.set(false));
-            resetProfileInfo();
             alert(response.message);
         }
     }
 
-    function toggleEditMode() {
-        setIsEditMode(prev => !prev);
+    async function upsertUserImage() {
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('place', UserImagePlace.LANDING_PAGE);
+
+        const response: ResponseBase = await (await fetch('/api/admin/user-image/upsert', {
+            method: 'POST',
+            body: formData,
+        })).json();
+
+        if (response.isSuccess) {
+            await dispatch(userActions.refresh());
+        }
+        alert(response.message);
+
+        setFile(null);
+    }
+
+    async function deleteUserImage() {
+        const response: ResponseBase = await (await fetch('/api/admin/user-image/delete', {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ place: UserImagePlace.LANDING_PAGE } as DeleteUserImageDto),
+        })).json();
+
+        if (response.isSuccess) {
+            await dispatch(userActions.refresh());
+            setFile(null);
+        }
+        alert(response.message);
+    }
+
+    async function onSave() {
+        await updateProfileInfo();
+        await upsertUserImage();
+        toggleEditMode();
     }
 
     return (
@@ -69,7 +105,7 @@ export default function Page() {
                                 src={
                                     user.userImages.find(userImage => userImage.place === UserImagePlace.LANDING_PAGE)?.url 
                                     ?? 
-                                    `${process.env.NEXT_PUBLIC_APP_BASE_URL}/default-avatar-profile-icon.jpg`
+                                    `/default-avatar-profile-icon.jpg`
                                 }
                                 width={200}
                                 height={200}
@@ -78,7 +114,7 @@ export default function Page() {
                             />
                         </div>
 
-                        <div className="h-full flex flex-col justify-start items-center gap-2">
+                        <div className="h-full flex flex-col justify-start items-center gap-2 py-2">
                             <p className="text-2xl font-bold text-center text-[#003366]">{user.fullName}</p>
                             <p className="text-l font-semibold text-center text-[#174978]">{user.headline}</p>
                             <p className="text-center">{user.bio}</p>
@@ -89,22 +125,77 @@ export default function Page() {
                     </>
                 ) : (
                     <>
-                        <Button onClick={event => { updateProfileInfo(); toggleEditMode(); }} className='absolute top-2 right-2'>Save</Button>
+                        <Button
+                            onClick={onSave} 
+                            className='absolute top-2 right-2'
+                        >
+                            Save
+                        </Button>
 
-                        <div className="w-full h-full flex justify-center items-start">
+                        <div className="relative w-full h-full flex justify-center items-start">
                             <Image
-                                src="/batfleck-symbol.jpg"
+                                src={
+                                    (file ? URL.createObjectURL(file) : null) ??
+                                    user.userImages.find(userImage => userImage.place === UserImagePlace.LANDING_PAGE)?.url ?? 
+                                    `/default-avatar-profile-icon.jpg`
+                                }
                                 width={200}
                                 height={200}
-                                className="rounded-[10px]"
+                                className="rounded-full"
                                 alt="profile photo"
                             />
+                            <div className='absolute top-2 left-2 flex flex-col justify-center items-center gap-2'>
+                                <label 
+                                    className='cursor-pointer right-0 px-2 py-0.5 
+                                    border-2 border-black rounded-[10px]
+                                    bg-black text-white text-s
+                                    hover:bg-white hover:text-black
+                                        duration-300'
+                                >
+                                    Edit
+                                    <input
+                                        name='file'
+                                        type='file'
+                                        className='hidden'
+                                        onChange={event => {
+                                            if (event.currentTarget.files?.[0].type.startsWith('image/'))
+                                                setFile(event.currentTarget.files?.[0] ?? null);
+                                            else alert('uploaded file should be in type of image');
+                                        }}
+                                    />
+                                </label>
+                                <Button
+                                    className='bg-red-700 border-[1px] border-transparent 
+                                        hover:text-red-700 hover:border-red-700'
+                                    onClick={deleteUserImage}
+                                >
+                                    Delete
+                                </Button>
+                            </div>
                         </div>
 
-                        <div className="w-[200px] h-full  flex flex-col justify-start items-center gap-2">
-                            <Input name='fullName' onChange={event => handleOnChange(event)} value={profileInfo.fullName} className="text-2xl font-bold text-center text-[#003366]" placeholder='fullname...' />
-                            <textarea name='headline' onChange={event => handleOnChange(event)} value={profileInfo.headline} className="w-full text-l font-semibold text-center text-[#174978] resize-none whitespace-pre-wrap break-words" placeholder='headline...' />
-                            <textarea name='bio' onChange={event => handleOnChange(event)} value={profileInfo.bio} className="w-full text-center resize-none whitespace-pre-wrap break-words" placeholder='bio...' />
+                        <div className="w-full h-full flex flex-col justify-start items-center gap-2 py-2">
+                            <Input
+                                name='fullName'
+                                onChange={event => handleOnChange(event)}
+                                value={profileInfo.fullName} 
+                                className="text-2xl font-bold text-center text-[#003366]"
+                                placeholder='fullname...'
+                            />
+                            <TextArea
+                                name='headline'
+                                onChange={event => handleOnChange(event)}
+                                value={profileInfo.headline}
+                                className="w-full text-l font-semibold text-center text-[#174978] resize-none whitespace-pre-wrap break-words"
+                                placeholder='headline...' 
+                            />
+                            <TextArea
+                                name='bio'
+                                onChange={event => handleOnChange(event)}
+                                value={profileInfo.bio}
+                                className="w-full text-center resize-none whitespace-pre-wrap break-words"
+                                placeholder='bio...'
+                            />
                             <Button>
                                 Download CV
                             </Button>
