@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
+import { UserImagePlace } from '@/enums/user-image-place.enum';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { isAdminActions } from '@/store/slices/is-admin-slice';
 import { userActions } from '@/store/slices/user-slice';
@@ -65,12 +66,15 @@ export default function Page() {
 
                         <div className="h-full flex justify-center items-start">
                             <Image
-                                src={user.profilePhotoUrl ?? `${process.env.NEXT_PUBLIC_APP_BASE_URL}/default-avatar-profile-icon.jpg`}
+                                src={
+                                    user.userImages.find(userImage => userImage.place === UserImagePlace.LANDING_PAGE)?.url 
+                                    ?? 
+                                    `${process.env.NEXT_PUBLIC_APP_BASE_URL}/default-avatar-profile-icon.jpg`
+                                }
                                 width={200}
                                 height={200}
-                                className="rounded-[10px]"
+                                className="rounded-full"
                                 alt="profile photo"
-                                unoptimized={true}
                             />
                         </div>
 

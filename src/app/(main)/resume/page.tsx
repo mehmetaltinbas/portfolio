@@ -1,7 +1,9 @@
 'use client';
 
 import Experiences from '@/components/Experiences';
+import { UserImagePlace } from '@/enums/user-image-place.enum';
 import { useAppSelector } from '@/store/hooks';
+import Image from 'next/image';
 
 export default function Page() {
     const user = useAppSelector(state => state.user);
@@ -24,8 +26,15 @@ export default function Page() {
                     </div>
                 </div>
                 <div className="w-full mx-auto flex justify-center">
-                    <img
-                    />
+                    {user.userImages.find(userImage => userImage.place === UserImagePlace.RESUME_PAGE)?.url &&
+                        <Image
+                            src={user.userImages.find(userImage => userImage.place === UserImagePlace.RESUME_PAGE)!.url}
+                            width={200}
+                            height={400}
+                            className="rounded-[10px]"
+                            alt="resume photo"
+                        />
+                    }
                 </div>
             </div>
 
