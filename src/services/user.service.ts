@@ -115,14 +115,20 @@ export const userService = {
     },
 
     async update(updateUserDto: UpdateUserDto): Promise<ResponseBase> {
+        let passwordHash = '';
+        if (updateUserDto.password && updateUserDto.password.length !== 0) {
+            passwordHash = bcrypt.hashSync(updateUserDto.password, 10);
+            delete updateUserDto.password;
+        }
+
         try {
-            // todo hash the password and store the hashed password only
             await prisma.user.update({
                 where: {
                     id: userId,
                 },
                 data: {
                     ...updateUserDto,
+                    ...(passwordHash.length !== 0 && { passwordHash }),
                 },
             });
             return { isSuccess: true, message: 'user updated' };
@@ -207,7 +213,7 @@ export const userService = {
 
             const updateUserResponse = await this.update({
                 cvUrl: null,
-            } as unknown as UpdateUserDto);
+            } as UpdateUserDto);
             if (!updateUserResponse.isSuccess) {
                 throw new Error(updateUserResponse.message);
             }

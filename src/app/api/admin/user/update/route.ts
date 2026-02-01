@@ -3,7 +3,33 @@ import { UpdateUserDto } from '@/types/dto/user/update-user.dto';
 import { NextResponse } from 'next/server';
 
 export async function PATCH(req: Request) {
-    const reqBody: UpdateUserDto = await req.json();
-    const response = await userService.update(reqBody);
+    const reqBody = await req.json();
+
+    const {
+        email,
+        userName,
+        password,
+        fullName,
+        headline,
+        bio,
+        about,
+        location,
+        skills,
+        cvUrl
+    } = reqBody;
+
+    const dto: UpdateUserDto = {
+        email,
+        userName,
+        password,
+        fullName,
+        headline,
+        bio, about,
+        location,
+        skills,
+        cvUrl
+    }; 
+    
+    const response = await userService.update(dto);
     return NextResponse.json(response);
 }
