@@ -27,24 +27,25 @@ const links: LinkInterface[] = [
 export default function NavBar() {
     const dispatch = useAppDispatch();
     const [isOpen, setIsOpen] = useState(false);
-    const isAdmin = useAppSelector(state => state.isAdmin);
+    const isAdmin = useAppSelector((state) => state.isAdmin);
 
     async function signOut() {
-        const response: ResponseBase = await (await fetch(`/api/admin/sign-out`, {
-            method: 'POST',
-        })).json();
+        const response: ResponseBase = await (
+            await fetch(`/api/admin/sign-out`, {
+                method: 'POST',
+            })
+        ).json();
         if (response.isSuccess) await dispatch(isAdminActions.set(false));
     }
 
     return (
         <nav className="fixed top-0 z-50 w-full h-auto flex flex-col justify-center items-center bg-black">
             {isAdmin && (
-                <div className='absolute left-4 top-0.5 flex flex-col justify-center items-center'>
-                    <p className='text-s text-red-500'>Admin</p>
-                    <Button 
-                        onClick={signOut}
-                        className='text-xs'
-                    >SignOut</Button>
+                <div className="absolute left-4 top-0.5 flex flex-col justify-center items-center">
+                    <p className="text-s text-red-500">Admin</p>
+                    <Button onClick={signOut} className="text-xs">
+                        SignOut
+                    </Button>
                 </div>
             )}
 

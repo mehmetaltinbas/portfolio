@@ -1,19 +1,17 @@
 'use client';
 
-import { Button } from "@/components/Button";
-import PortfolioItemEditor from "@/components/PortfolioItemEditor";
-import PortfolioViewer from "@/components/PortfolioItemViewer";
-import { useAppSelector } from "@/store/hooks";
-import { PortfolioItemRow } from "@/types/db/portfolio-item-row";
-import { ResponseBase } from "@/types/response/response-base";
-import Link from "next/link";
-import { useEffect, useState } from "react";
+import { Button } from '@/components/Button';
+import PortfolioItemEditor from '@/components/PortfolioItemEditor';
+import PortfolioViewer from '@/components/PortfolioItemViewer';
+import { useAppSelector } from '@/store/hooks';
+import { PortfolioItemRow } from '@/types/db/portfolio-item-row';
+import { ResponseBase } from '@/types/response/response-base';
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
-export default function PageClient({ portfolioItem }: {
-    portfolioItem: PortfolioItemRow;
-}) {
+export default function PageClient({ portfolioItem }: { portfolioItem: PortfolioItemRow }) {
     const [content, setContent] = useState<object>(portfolioItem.content as object);
-    const isAdmin = useAppSelector(state => state.isAdmin);
+    const isAdmin = useAppSelector((state) => state.isAdmin);
     const [isSaving, setIsSaving] = useState(false);
 
     useEffect(() => {
@@ -23,23 +21,27 @@ export default function PageClient({ portfolioItem }: {
     async function handleSave() {
         setIsSaving(true);
         try {
-            const response: ResponseBase = await (await fetch(`/api/admin/portfolio-item/update/${portfolioItem.id}`, {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ content }),
-            })).json();
+            const response: ResponseBase = await (
+                await fetch(`/api/admin/portfolio-item/update/${portfolioItem.id}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ content }),
+                })
+            ).json();
             alert(response.message);
         } catch (error) {
             alert('Error saving');
         } finally {
             setIsSaving(false);
         }
-    };
+    }
 
     return (
         <div className="w-full h-full">
             <div className="w-full h-auto flex justify-start items-center gap-8 p-6">
-                <Link href={'/portfolio'}><Button>←</Button></Link>
+                <Link href={'/portfolio'}>
+                    <Button>←</Button>
+                </Link>
                 <p className="font-semibold text-2xl">{portfolioItem.title}</p>
             </div>
             <div className="w-full h-auto p-6">
@@ -52,24 +54,16 @@ export default function PageClient({ portfolioItem }: {
             <div className="p-[25px]">
                 {isAdmin ? (
                     <>
-                        <PortfolioItemEditor 
-                            initialContent={content}
-                            onContentChange={setContent}
-                        />
+                        <PortfolioItemEditor initialContent={content} onContentChange={setContent} />
 
                         <div className="mt-6 flex justify-end">
-                            <Button
-                                onClick={handleSave}
-                                disabled={isSaving}
-                            >
+                            <Button onClick={handleSave} disabled={isSaving}>
                                 {isSaving ? 'Saving...' : 'Save'}
                             </Button>
                         </div>
                     </>
-                ): (
-                    <PortfolioViewer 
-                        content={content}
-                    />
+                ) : (
+                    <PortfolioViewer content={content} />
                 )}
             </div>
         </div>

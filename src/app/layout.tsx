@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
     title: 'Mehmet Altınbaş',
     description: "Mehmet Altınbaş's personal portfolio website.",
-    icons: `${process.env.APP_BASE_URL}/icon.jpg`
+    icons: `${process.env.APP_BASE_URL}/icon.jpg`,
 };
 
 export default function RootLayout({
@@ -25,12 +25,9 @@ export default function RootLayout({
 }: Readonly<{
     children: React.ReactNode;
 }>) {
-
     return (
         <html lang="en" className="w-full h-full">
-            <body
-                className={`w-full h-full ${geistSans.variable} ${geistMono.variable} antialiased`}
-            >
+            <body className={`w-full h-full ${geistSans.variable} ${geistMono.variable} antialiased`}>
                 <RootBody>{children}</RootBody>
             </body>
         </html>

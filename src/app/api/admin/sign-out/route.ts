@@ -14,8 +14,8 @@ export async function POST() {
     const cookieStore = await cookies();
     cookieStore.set('jwt', '', cookieOptions);
 
-    return NextResponse.json({ 
-        isSuccess: true, 
-        message: 'signed out' 
+    return NextResponse.json({
+        isSuccess: true,
+        message: 'signed out',
     });
 }

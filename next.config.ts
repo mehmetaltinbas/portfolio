@@ -1,5 +1,5 @@
-import { PrismaPlugin } from "@prisma/nextjs-monorepo-workaround-plugin";
-import { NextConfig } from "next";
+import { PrismaPlugin } from '@prisma/nextjs-monorepo-workaround-plugin';
+import { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
     devIndicators: false,
@@ -16,9 +16,9 @@ const nextConfig: NextConfig = {
     images: {
         remotePatterns: [
             new URL(`${process.env.NEXT_PUBLIC_APP_BASE_URL}/**`),
-            new URL('https://*.supabase.co/storage/v1/object/public/**')
-        ]
-    }
+            new URL('https://*.supabase.co/storage/v1/object/public/**'),
+        ],
+    },
 };
 
 export default nextConfig;

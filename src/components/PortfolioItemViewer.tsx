@@ -6,16 +6,10 @@ import Link from '@tiptap/extension-link';
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 
-export default function PortfolioViewer({ content }: {
-    content: object;
-}) {
+export default function PortfolioViewer({ content }: { content: object }) {
     const editor = useEditor({
         immediatelyRender: false,
-        extensions: [
-            StarterKit,
-            Image,
-            Link,
-        ],
+        extensions: [StarterKit, Image, Link],
         content: content,
         editable: false,
         editorProps: {
@@ -25,9 +19,5 @@ export default function PortfolioViewer({ content }: {
         },
     });
 
-    return editor ? (
-        <EditorContent editor={editor} />
-    ): (
-        <LoadingSpinner />
-    );
+    return editor ? <EditorContent editor={editor} /> : <LoadingSpinner />;
 }

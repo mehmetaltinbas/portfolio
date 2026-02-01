@@ -1,9 +1,6 @@
 import type React from 'react';
 
-export function Input({
-    className,
-    ...rest
-}: React.InputHTMLAttributes<HTMLInputElement>) {
+export function Input({ className, ...rest }: React.InputHTMLAttributes<HTMLInputElement>) {
     return (
         <input
             className={`w-full py-1 px-3 border border-black rounded-[10px]

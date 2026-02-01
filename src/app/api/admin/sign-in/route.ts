@@ -1,9 +1,9 @@
-import { userService } from "@/services/user.service";
-import { UserSignInDto } from "@/types/dto/user/user-sign-in.dto";
-import { ResponseBase } from "@/types/response/response-base";
-import { ResponseCookie } from "next/dist/compiled/@edge-runtime/cookies";
-import { cookies } from "next/headers";
-import { NextResponse } from "next/server";
+import { userService } from '@/services/user.service';
+import { UserSignInDto } from '@/types/dto/user/user-sign-in.dto';
+import { ResponseBase } from '@/types/response/response-base';
+import { ResponseCookie } from 'next/dist/compiled/@edge-runtime/cookies';
+import { cookies } from 'next/headers';
+import { NextResponse } from 'next/server';
 
 export async function POST(req: Request) {
     const reqBody: UserSignInDto = await req.json();
@@ -20,10 +20,10 @@ export async function POST(req: Request) {
     // add validation here to validate cookie options
     const cookieStore = await cookies();
     cookieStore.set('jwt', response.jwt, cookieOptions);
-    
+
     const responseBase: ResponseBase = {
         isSuccess: response.isSuccess,
-        message: response.message
+        message: response.message,
     };
 
     return NextResponse.json(responseBase);

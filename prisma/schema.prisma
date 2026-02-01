@@ -15,11 +15,12 @@ model User {
     userName       String          @unique
     passwordHash   String
     fullName       String
-    headline       String
-    bio            String
-    about          String
-    location       String
+    headline       String?
+    bio            String?
+    about          String?
+    location       String?
     skills         String[]
+    cvUrl          String?
     userImages     UserImage[]
     contacts       Contact[]
     experiences    Experience[]

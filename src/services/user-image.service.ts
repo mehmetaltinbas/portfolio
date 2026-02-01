@@ -14,16 +14,15 @@ export const userImageService = {
             return { isSuccess: false, message: "file or place does'nt exist" };
         }
         if (!upsertUserImageDto.file.type.startsWith('image/')) {
-            return { isSuccess: false, message: "file must be an image" };
+            return { isSuccess: false, message: 'file must be an image' };
         }
         if (!isValidEnumValue(UserImagePlace, upsertUserImageDto.place)) {
             return { isSuccess: false, message: `${upsertUserImageDto.place} is not a valid user image place value` };
         }
 
-        
         try {
             const fileBuffer = Buffer.from(await upsertUserImageDto.file.arrayBuffer());
-            
+
             const existingImage = await prisma.userImage.findUnique({
                 where: { userId_place: { userId: userId!, place: upsertUserImageDto.place } },
             });
@@ -38,9 +37,9 @@ export const userImageService = {
                 throw new Error(supabaseResponse.error.message);
             }
 
-            const { data: { publicUrl } } = supabase.storage
-                .from(SupabaseBucketName.USER_IMAGES)
-                .getPublicUrl(newStoragePath);
+            const {
+                data: { publicUrl },
+            } = supabase.storage.from(SupabaseBucketName.USER_IMAGES).getPublicUrl(newStoragePath);
 
             try {
                 await prisma.userImage.upsert({
@@ -49,30 +48,31 @@ export const userImageService = {
                     create: { userId: userId!, url: publicUrl, place: upsertUserImageDto.place },
                 });
             } catch (error) {
-                await supabase.storage
-                    .from(SupabaseBucketName.USER_IMAGES)
-                    .remove([newStoragePath]);
-                
+                const supabaseResponse = await supabase.storage.from(SupabaseBucketName.USER_IMAGES).remove([newStoragePath]);
+
+                if (supabaseResponse.error) 
+                    console.error('Failed to delete user image from storage:', supabaseResponse.error.message);
+
                 throw error;
             }
 
             if (existingImage) {
                 const oldFileName = existingImage.url.split('/').pop()?.split('?')[0];
                 if (oldFileName) {
-                    const { error } = await supabase.storage
-                        .from(SupabaseBucketName.USER_IMAGES)
-                        .remove([oldFileName]);
+                    const { error } = await supabase.storage.from(SupabaseBucketName.USER_IMAGES).remove([oldFileName]);
 
                     if (error) {
-                        console.error('Failed to delete from storage:', error.message);
+                        console.error('Failed to delete old from storage:', error.message);
                     }
                 }
             }
 
             return { isSuccess: true, message: 'image uploaded' };
         } catch (error) {
-            const message = error && typeof error === 'object' && 'message' in error ? 
-                `${error.message}` : "image couldn't be upserted";
+            const message =
+                error && typeof error === 'object' && 'message' in error
+                    ? `${error.message}`
+                    : "image couldn't be uploaded";
             return { isSuccess: false, message };
         }
     },
@@ -99,12 +99,10 @@ export const userImageService = {
             });
 
             const fileName = existingImage.url.split('/').pop()?.split('?')[0];
-            
+
             if (fileName) {
-                const { error } = await supabase.storage
-                    .from(SupabaseBucketName.USER_IMAGES)
-                    .remove([fileName]);
-                
+                const { error } = await supabase.storage.from(SupabaseBucketName.USER_IMAGES).remove([fileName]);
+
                 if (error) {
                     console.error('Failed to delete from storage:', error.message);
                 }
@@ -112,8 +110,10 @@ export const userImageService = {
 
             return { isSuccess: true, message: 'image deleted' };
         } catch (error) {
-            const message = error && typeof error === 'object' && 'message' in error ? 
-                `${error.message}` : "image couldn't be deleted";
+            const message =
+                error && typeof error === 'object' && 'message' in error
+                    ? `${error.message}`
+                    : "image couldn't be deleted";
             return { isSuccess: false, message };
         }
     },

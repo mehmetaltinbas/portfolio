@@ -7,13 +7,13 @@ import Link from '@tiptap/extension-link';
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 
-export default function PortfolioItemEditor({ 
-    initialContent, 
-    onContentChange 
+export default function PortfolioItemEditor({
+    initialContent,
+    onContentChange,
 }: {
     initialContent?: any;
     onContentChange?: (content: any) => void;
-} ) {
+}) {
     const editor = useEditor({
         immediatelyRender: false,
         extensions: [

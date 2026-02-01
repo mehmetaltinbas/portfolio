@@ -1,5 +1,5 @@
 export interface DecodedJwtPayload {
-    userId: string
-    iat: number
-    exp: number
+    userId: string;
+    iat: number;
+    exp: number;
 }

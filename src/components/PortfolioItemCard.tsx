@@ -1,5 +1,5 @@
-import { PortfolioItemRow } from "@/types/db/portfolio-item-row";
-import Link from "next/link";
+import { PortfolioItemRow } from '@/types/db/portfolio-item-row';
+import Link from 'next/link';
 import { FaFolder } from 'react-icons/fa';
 
 export default function PortfolioItemCard({ portfolioItem }: { portfolioItem: PortfolioItemRow }) {

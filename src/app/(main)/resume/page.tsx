@@ -6,7 +6,7 @@ import { useAppSelector } from '@/store/hooks';
 import Image from 'next/image';
 
 export default function Page() {
-    const user = useAppSelector(state => state.user);
+    const user = useAppSelector((state) => state.user);
 
     return (
         <div className="w-full h-full flex flex-col items-center gap-16 px-24">
@@ -26,15 +26,17 @@ export default function Page() {
                     </div>
                 </div>
                 <div className="w-full mx-auto flex justify-center">
-                    {user.userImages.find(userImage => userImage.place === UserImagePlace.RESUME_PAGE)?.url &&
+                    {user.userImages.find((userImage) => userImage.place === UserImagePlace.RESUME_PAGE)?.url && (
                         <Image
-                            src={user.userImages.find(userImage => userImage.place === UserImagePlace.RESUME_PAGE)!.url}
+                            src={
+                                user.userImages.find((userImage) => userImage.place === UserImagePlace.RESUME_PAGE)!.url
+                            }
                             width={200}
                             height={400}
                             className="rounded-[10px]"
                             alt="resume photo"
                         />
-                    }
+                    )}
                 </div>
             </div>
 

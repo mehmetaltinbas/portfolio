@@ -4,9 +4,10 @@ export interface UserRow {
     userName: string;
     passwordHash: string;
     fullName: string;
-    headline: string;
-    bio: string;
-    about: string;
-    location: string;
+    headline: string | null;
+    bio: string | null;
+    about: string | null;
+    location: string | null;
     skills: string[];
+    cvUrl: string | null;
 }

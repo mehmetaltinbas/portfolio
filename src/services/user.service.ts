@@ -1,4 +1,5 @@
 import { userId } from '@/constants/user-id.constant';
+import { SupabaseBucketName } from '@/enums/supabase-bucket-name.enum';
 import { DecodedJwtPayload } from '@/types/decoded-jwt-payload';
 import { UpdateUserDto } from '@/types/dto/user/update-user.dto';
 import { UserSignInDto } from '@/types/dto/user/user-sign-in.dto';
@@ -7,6 +8,7 @@ import { ResponseBase } from '@/types/response/response-base';
 import { ReadExtendedUserByIdResponse } from '@/types/response/user/read-extended-user-by-id-response';
 import { ReadUserByIdResponse } from '@/types/response/user/read-user-by-id-response';
 import { UserSignInResponse } from '@/types/response/user/user-sign-in-response';
+import { supabase } from '@/utils/supabase-client';
 import bcrypt from 'bcrypt';
 import jsonwebtoken from 'jsonwebtoken';
 import { prisma } from 'prisma/prisma-client';
@@ -16,10 +18,12 @@ export const userService = {
         try {
             const { password, ...restOfDto } = userSignInDto;
             const passwordHash = bcrypt.hashSync(password, 10);
-            await prisma.user.create({ data: {
-                ...restOfDto,
-                passwordHash
-            } });
+            await prisma.user.create({
+                data: {
+                    ...restOfDto,
+                    passwordHash,
+                },
+            });
             return { isSuccess: true, message: 'success' };
         } catch (error) {
             return { isSuccess: false, message: 'error' };
@@ -27,17 +31,19 @@ export const userService = {
     },
 
     async signIn(userSignInDto: UserSignInDto): Promise<UserSignInResponse> {
-        const user = await prisma.user.findUnique({ where: {
-            userName: userSignInDto.userName
-        }});
-        if (!user) return { isSuccess: false, message: 'no user found associated with given username'};
+        const user = await prisma.user.findUnique({
+            where: {
+                userName: userSignInDto.userName,
+            },
+        });
+        if (!user) return { isSuccess: false, message: 'no user found associated with given username' };
 
         const isMatch = bcrypt.compareSync(userSignInDto.password, user.passwordHash);
         if (!isMatch) return { isSuccess: false, message: 'invalid password' };
 
         const jwtSecret = process.env.JWT_SECRET;
         const jwtExpiresIn = Number(process.env.JWT_EXPIRES_IN);
-        if (!jwtSecret || !jwtExpiresIn) return { isSuccess: false, message: 'secret is undefined'};
+        if (!jwtSecret || !jwtExpiresIn) return { isSuccess: false, message: 'secret is undefined' };
         const token = jsonwebtoken.sign({ userId: user.id }, jwtSecret, {
             expiresIn: jwtExpiresIn,
         });
@@ -46,17 +52,19 @@ export const userService = {
     },
 
     authorize(jwt: string | undefined): ResponseBase {
-        if (!jwt) return {
-            isSuccess: false,
-            message: 'no jwt found in cookies'
-        };
+        if (!jwt)
+            return {
+                isSuccess: false,
+                message: 'no jwt found in cookies',
+            };
 
         try {
             const decoded = jsonwebtoken.verify(jwt, process.env.JWT_SECRET!) as DecodedJwtPayload;
-            if (!(decoded.userId === userId)) return {
-                isSuccess: false,
-                message: 'userId is not matching'
-            };
+            if (!(decoded.userId === userId))
+                return {
+                    isSuccess: false,
+                    message: 'userId is not matching',
+                };
             return { isSuccess: true, message: 'authorized' };
         } catch (error) {
             return { isSuccess: false, message: 'unauthorized' };
@@ -67,7 +75,7 @@ export const userService = {
         const user = await prisma.user.findUnique({
             where: {
                 id: userId,
-            }
+            },
         });
         if (!user) {
             return { isSuccess: false, message: 'no user found' };
@@ -90,8 +98,8 @@ export const userService = {
                     contacts: true,
                     experiences: true,
                     educations: true,
-                    portfolioItems: true
-                }
+                    portfolioItems: true,
+                },
             });
             if (!user) {
                 return { isSuccess: false, message: 'no user found' };
@@ -101,24 +109,124 @@ export const userService = {
                 message: 'user read',
                 user,
             };
-        } catch(error) {
+        } catch (error) {
             return { isSuccess: false, message: "couldn't read user" };
         }
     },
 
     async update(updateUserDto: UpdateUserDto): Promise<ResponseBase> {
         try {
+            // todo hash the password and store the hashed password only
             await prisma.user.update({
                 where: {
                     id: userId,
                 },
                 data: {
-                    ...updateUserDto
+                    ...updateUserDto,
                 },
             });
             return { isSuccess: true, message: 'user updated' };
-        } catch(error) {
-            return { isSuccess: false, message:  "user couldn't be updated" };
+        } catch (error) {
+            return { isSuccess: false, message: "user couldn't be updated" };
+        }
+    },
+
+    async upsertCv(file: File): Promise<ResponseBase> {
+        if (!file) {
+            return { isSuccess: false, message: "file does'nt exist" };
+        }
+        if (file.type !== 'application/pdf') {
+            return { isSuccess: false, message: 'file must be a pdf' };
+        }
+
+        try {
+            const fileBuffer = Buffer.from(await file.arrayBuffer());
+
+            const readUserByIdResponse = await this.readById();
+            if (!readUserByIdResponse.isSuccess || !readUserByIdResponse.user) 
+                throw new Error(readUserByIdResponse.message);
+
+            const existingCvUrl = readUserByIdResponse.user.cvUrl;
+
+            const newStoragePath = `cv_${Date.now()}`;
+
+            const supabaseResponse = await supabase.storage
+                .from(SupabaseBucketName.CV)
+                .upload(newStoragePath, fileBuffer, { contentType: file.type });
+
+            if (supabaseResponse.error) {
+                throw new Error(supabaseResponse.error.message);
+            }
+
+            const {
+                data: { publicUrl },
+            } = supabase.storage.from(SupabaseBucketName.CV).getPublicUrl(newStoragePath);
+
+            const updateUserResponse = await this.update({
+                cvUrl: publicUrl
+            } as UpdateUserDto);
+            if (!updateUserResponse.isSuccess) {
+                const supabaseResponse = await supabase.storage.from(SupabaseBucketName.CV).remove([newStoragePath]);
+
+                if (supabaseResponse.error) console.error('Failed to delete cv from storage:', supabaseResponse.error.message);
+
+                throw new Error(updateUserResponse.message);
+            }
+
+            if (existingCvUrl && existingCvUrl.length !== 0) {
+                const oldFileName = existingCvUrl.split('/').pop()?.split('?')[0];
+
+                if (oldFileName) {
+                    const { error } = await supabase.storage.from(SupabaseBucketName.CV).remove([oldFileName]);
+
+                    if (error) console.error('Failed to delete old cv from storage:', error.message);
+                }
+            } 
+
+            return { isSuccess: true, message: 'cv uploaded' };
+        } catch (error) {
+            const message =
+                error && typeof error === 'object' && 'message' in error
+                    ? `${error.message}`
+                    : "cv couldn't be upserted";
+            return { isSuccess: false, message };
+        }
+    },
+
+    async deleteCv(): Promise<ResponseBase> {
+        try {
+            const readUserByIdResponse = await this.readById();
+            if (!readUserByIdResponse.isSuccess || !readUserByIdResponse.user)
+                throw new Error(readUserByIdResponse.message);
+
+            const existingCvUrl = readUserByIdResponse.user.cvUrl;
+
+            if (!existingCvUrl) {
+                return { isSuccess: false, message: 'no cv found' };
+            }
+
+            const updateUserResponse = await this.update({
+                cvUrl: null,
+            } as unknown as UpdateUserDto);
+            if (!updateUserResponse.isSuccess) {
+                throw new Error(updateUserResponse.message);
+            }
+
+            const fileName = existingCvUrl.split('/').pop()?.split('?')[0];
+
+            if (fileName) {
+                const { error } = await supabase.storage.from(SupabaseBucketName.CV).remove([fileName]);
+
+                if (error) console.error('Failed to delete cv from storage:', error.message);
+            }
+
+            return { isSuccess: true, message: 'cv deleted' };
+        } catch (error) {
+            const message =
+                error && typeof error === 'object' && 'message' in error
+                    ? `${error.message}`
+                    : "cv couldn't be deleted";
+            return { isSuccess: false, message };
         }
     },
 };

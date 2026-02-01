@@ -1,20 +1,20 @@
 'use client';
 
-import { Button } from "@/components/Button";
-import CreatePortfolioItemForm from "@/components/CreatePortfolioItemForm";
-import PortfolioItemCard from "@/components/PortfolioItemCard";
-import { useAppSelector } from "@/store/hooks";
-import { useRef, useState } from "react";
+import { Button } from '@/components/Button';
+import CreatePortfolioItemForm from '@/components/CreatePortfolioItemForm';
+import PortfolioItemCard from '@/components/PortfolioItemCard';
+import { useAppSelector } from '@/store/hooks';
+import { useRef, useState } from 'react';
 
 export default function Page() {
-    const user = useAppSelector(state => state.user);
-    const isAdmin = useAppSelector(state => state.isAdmin);
+    const user = useAppSelector((state) => state.user);
+    const isAdmin = useAppSelector((state) => state.isAdmin);
     const [isCreatePortfolioItemFormHidden, setIsCreatePortfolioItemFormHidden] = useState<boolean>(true);
     const createPortfolioItemFormRef = useRef<HTMLDivElement>(null);
 
     function toggleCreatePortfolioItemForm(button: HTMLButtonElement) {
         if (!createPortfolioItemFormRef.current) return;
-        setIsCreatePortfolioItemFormHidden(prev => !prev);
+        setIsCreatePortfolioItemFormHidden((prev) => !prev);
 
         const buttonRect = button.getBoundingClientRect();
         const parentRect = createPortfolioItemFormRef.current.offsetParent?.getBoundingClientRect();
@@ -32,13 +32,12 @@ export default function Page() {
             <div className="relative w-[700px] h-auto grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="flex justify-center items-center gap-4 md:col-span-2 xl:col-span-3">
                     <p className="text-2xl font-bold text-center md:col-span-2 xl:col-span-3 p-4">Portfolio</p>
-                    {isAdmin && <Button onClick={event => toggleCreatePortfolioItemForm(event.currentTarget)}>+</Button>}
+                    {isAdmin && (
+                        <Button onClick={(event) => toggleCreatePortfolioItemForm(event.currentTarget)}>+</Button>
+                    )}
                 </div>
                 {user.portfolioItems.map((portfolioItem, index) => (
-                    <PortfolioItemCard 
-                        key={portfolioItem.id} 
-                        portfolioItem={portfolioItem} 
-                    />
+                    <PortfolioItemCard key={portfolioItem.id} portfolioItem={portfolioItem} />
                 ))}
 
                 <CreatePortfolioItemForm
