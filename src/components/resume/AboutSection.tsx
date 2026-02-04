@@ -213,8 +213,7 @@ export function AboutSection() {
                                 />
                             </label>
                             <Button
-                                className="bg-red-700 border-[1px] border-transparent
-                                    hover:text-red-700 hover:border-red-700"
+                                className="bg-red-800 border-transparent hover:bg-white hover:text-red-800 hover:border-red-800"
                                 onClick={deleteUserImage}
                             >
                                 Delete

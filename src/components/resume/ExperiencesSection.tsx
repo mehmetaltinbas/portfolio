@@ -127,54 +127,63 @@ export function ExperiencesSection() {
     }
 
     return (
-        <div className="relative w-[700px] grid grid-cols-1 md:grid-cols-3 gap-6 py-10">
+        <div className="relative w-full max-w-[700px] py-10 px-4 md:px-0">
             {isAdmin && !isEditMode && (
-                <Button onClick={toggleEditMode} className="absolute top-2 right-2">
+                <Button onClick={toggleEditMode} className="absolute top-2 right-2 md:right-0">
                     Edit
                 </Button>
             )}
             {isEditMode && (
-                <Button onClick={toggleEditMode} className="absolute top-2 right-2">
+                <Button onClick={toggleEditMode} className="absolute top-2 right-2 md:right-0">
                     Done
                 </Button>
             )}
-            <div className="md:col-span-2">
+
+            <div className="mb-8">
                 <SectionHeader title="Experience" />
             </div>
-            <div className="w-full md:col-span-3 flex flex-col justify-start items-start gap-4">
-                {user.experiences.map((experience) => (
-                    <div key={experience.id} className="w-full flex flex-col gap-2">
+
+            <div className="flex flex-col">
+                {user.experiences.map((experience, index) => (
+                    <div key={experience.id} className="w-full">
                         {editingExperienceId === experience.id ? (
-                            <ExperienceForm
-                                form={experienceForm}
-                                onChange={handleFormChange}
-                                onSave={updateExperience}
-                                onCancel={cancelEdit}
-                                saveLabel="Save"
-                            />
+                            <div className="ml-10 md:ml-10 mb-4">
+                                <ExperienceForm
+                                    form={experienceForm}
+                                    onChange={handleFormChange}
+                                    onSave={updateExperience}
+                                    onCancel={cancelEdit}
+                                    saveLabel="Save"
+                                />
+                            </div>
                         ) : (
                             <ExperienceItem
                                 experience={experience}
                                 isEditMode={isEditMode}
                                 onEdit={() => startEdit(experience)}
                                 onDelete={() => deleteExperience(experience.id)}
+                                isLast={index === user.experiences.length - 1 && !isAddingExperience}
                             />
                         )}
                     </div>
                 ))}
 
                 {isAddingExperience && (
-                    <ExperienceForm
-                        form={experienceForm}
-                        onChange={handleFormChange}
-                        onSave={createExperience}
-                        onCancel={cancelEdit}
-                        saveLabel="Add"
-                    />
+                    <div className="ml-10 md:ml-10">
+                        <ExperienceForm
+                            form={experienceForm}
+                            onChange={handleFormChange}
+                            onSave={createExperience}
+                            onCancel={cancelEdit}
+                            saveLabel="Add"
+                        />
+                    </div>
                 )}
 
                 {isEditMode && !isAddingExperience && !editingExperienceId && (
-                    <Button onClick={startAdd}>+ Add Experience</Button>
+                    <div className="ml-10 md:ml-10 mt-2">
+                        <Button onClick={startAdd}>+ Add Experience</Button>
+                    </div>
                 )}
             </div>
         </div>

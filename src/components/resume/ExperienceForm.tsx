@@ -20,56 +20,80 @@ export function ExperienceForm({
     saveLabel: string;
 }) {
     return (
-        <div className="w-full flex flex-col gap-2 p-4 border rounded-lg">
-            <Input
-                name="title"
-                value={form.title ?? ''}
-                onChange={onChange}
-                placeholder="Title"
-            />
-            <Input
-                name="company"
-                value={form.company ?? ''}
-                onChange={onChange}
-                placeholder="Company"
-            />
-            <div className="flex gap-4 items-center">
-                <label className="flex items-center gap-2">
-                    <input
-                        type="checkbox"
-                        name="isCurrent"
-                        checked={form.isCurrent ?? false}
-                        onChange={onChange}
-                    />
-                    Current
+        <div className="w-full flex flex-col gap-4 p-5 bg-white border border-gray-200 rounded-lg shadow-sm">
+            <div className="space-y-1">
+                <label className="text-sm font-medium text-gray-700">Job Title</label>
+                <Input
+                    name="title"
+                    value={form.title ?? ''}
+                    onChange={onChange}
+                    placeholder="e.g. Software Engineer"
+                />
+            </div>
+
+            <div className="space-y-1">
+                <label className="text-sm font-medium text-gray-700">Company</label>
+                <Input
+                    name="company"
+                    value={form.company ?? ''}
+                    onChange={onChange}
+                    placeholder="e.g. Acme Inc."
+                />
+            </div>
+
+            <div className="flex items-center gap-2">
+                <input
+                    type="checkbox"
+                    id="isCurrent"
+                    name="isCurrent"
+                    checked={form.isCurrent ?? false}
+                    onChange={onChange}
+                    className="w-4 h-4 text-gray-800 rounded border-gray-300 focus:ring-gray-500 accent-gray-800"
+                />
+                <label htmlFor="isCurrent" className="text-sm font-medium text-gray-700 cursor-pointer">
+                    I currently work here
                 </label>
             </div>
-            <div className="flex gap-2">
-                <Input
-                    name="startDate"
-                    type="month"
-                    value={form.startDate ?? ''}
-                    onChange={onChange}
-                />
-                {form.isCurrent ? 
-                    <p className='w-full text-center'>Present</p>
-                    :
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-1">
+                    <label className="text-sm font-medium text-gray-700">Start Date</label>
                     <Input
-                        name="endDate"
+                        name="startDate"
                         type="month"
-                        value={form.endDate ?? ''}
+                        value={form.startDate ?? ''}
                         onChange={onChange}
-                        disabled={form.isCurrent}
                     />
-                }
+                </div>
+                <div className="space-y-1">
+                    <label className="text-sm font-medium text-gray-700">End Date</label>
+                    {form.isCurrent ? (
+                        <div className="w-full py-2 px-3 border border-gray-200 rounded-lg bg-gray-50 text-gray-500 text-sm">
+                            Present
+                        </div>
+                    ) : (
+                        <Input
+                            name="endDate"
+                            type="month"
+                            value={form.endDate ?? ''}
+                            onChange={onChange}
+                        />
+                    )}
+                </div>
             </div>
-            <TextArea
-                name="description"
-                value={form.description ?? ''}
-                onChange={onChange}
-                placeholder="Description"
-            />
-            <div className="flex gap-2">
+
+            <div className="space-y-1">
+                <label className="text-sm font-medium text-gray-700">Description</label>
+                <TextArea
+                    name="description"
+                    value={form.description ?? ''}
+                    onChange={onChange}
+                    placeholder="Describe your responsibilities and achievements..."
+                    className="min-h-[100px]"
+                />
+            </div>
+
+            <div className="flex gap-2 pt-2">
                 <Button onClick={onSave}>{saveLabel}</Button>
                 <Button onClick={onCancel}>Cancel</Button>
             </div>
