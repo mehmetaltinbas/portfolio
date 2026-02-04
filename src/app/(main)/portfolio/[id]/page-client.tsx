@@ -1,8 +1,8 @@
 'use client';
 
 import { Button } from '@/components/Button';
-import PortfolioItemEditor from '@/components/PortfolioItemEditor';
-import PortfolioViewer from '@/components/PortfolioItemViewer';
+import PortfolioItemEditor from '@/components/portfolio/PortfolioItemEditor';
+import PortfolioViewer from '@/components/portfolio/PortfolioItemViewer';
 import { useAppSelector } from '@/store/hooks';
 import { PortfolioItemRow } from '@/types/db/portfolio-item-row';
 import { ResponseBase } from '@/types/response/response-base';

@@ -1,8 +1,8 @@
 'use client';
 
 import { Button } from '@/components/Button';
-import CreatePortfolioItemForm from '@/components/CreatePortfolioItemForm';
-import PortfolioItemCard from '@/components/PortfolioItemCard';
+import CreatePortfolioItemForm from '@/components/portfolio/CreatePortfolioItemForm';
+import PortfolioItemCard from '@/components/portfolio/PortfolioItemCard';
 import { useAppSelector } from '@/store/hooks';
 import { useRef, useState } from 'react';
 
