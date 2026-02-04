@@ -8,11 +8,21 @@ import { prisma } from 'prisma/prisma-client';
 
 export const experienceService = {
     async readAllByUserId(): Promise<ReadAllExperiencesResponse> {
-        const experiences = await prisma.experience.findMany({ where: { userId } });
+        const experiences = await prisma.experience.findMany({
+            where: { userId },
+            orderBy: [
+                { isCurrent: 'desc' },
+                { startDate: 'desc' },
+            ],
+        });
         return { isSuccess: true, message: 'all experiences read', experiences };
     },
 
     async create(dto: CreateExperienceDto): Promise<ResponseBase> {
+        if (!dto.isCurrent && dto.endDate && dto.endDate < dto.startDate) {
+            return { isSuccess: false, message: 'End date cannot be before start date' };
+        }
+
         await prisma.experience.create({
             data: {
                 userId,
@@ -30,6 +40,14 @@ export const experienceService = {
         const experience = await prisma.experience.findUnique({ where: { id: dto.id } });
         if (!experience) {
             return { isSuccess: false, message: 'experience not found' };
+        }
+
+        const startDate = dto.startDate ?? experience.startDate.toISOString().slice(0, 7);
+        const endDate = dto.endDate ?? (experience.endDate ? experience.endDate.toISOString().slice(0, 7) : undefined);
+        const isCurrent = dto.isCurrent ?? experience.isCurrent;
+
+        if (!isCurrent && endDate && endDate < startDate) {
+            return { isSuccess: false, message: 'End date cannot be before start date' };
         }
 
         await prisma.experience.update({

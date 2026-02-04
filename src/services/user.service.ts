@@ -101,7 +101,11 @@ export const userService = {
                             startDate: 'desc'
                         }
                     },
-                    educations: true,
+                    educations: {
+                        orderBy: {
+                            startDate: 'desc'
+                        }
+                    },
                     portfolioItems: true,
                 },
             });

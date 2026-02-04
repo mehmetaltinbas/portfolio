@@ -4,8 +4,8 @@ export interface EducationRow {
     school: string;
     degree: string | null;
     fieldOfStudy: string | null;
-    description: string;
+    description: string | null;
     isCurrent: boolean;
     startDate: Date;
-    endDate: Date;
+    endDate: Date | null;
 }

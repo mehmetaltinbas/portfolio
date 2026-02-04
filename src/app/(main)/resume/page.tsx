@@ -3,6 +3,7 @@
 import { AboutSection } from '@/components/resume/AboutSection';
 import { SkillsSection } from '@/components/resume/SkillsSection';
 import { ExperiencesSection } from '@/components/resume/ExperiencesSection';
+import { EducationsSection } from '@/components/resume/EducationsSection';
 
 export default function Page() {
     return (
@@ -10,6 +11,7 @@ export default function Page() {
             <AboutSection />
             <SkillsSection />
             <ExperiencesSection />
+            <EducationsSection />
         </div>
     );
 }
