@@ -1,0 +1,1 @@
+export const DESCRIPTION_CHAR_LIMIT = 150;

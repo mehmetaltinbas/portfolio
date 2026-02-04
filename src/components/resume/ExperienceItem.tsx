@@ -1,11 +1,10 @@
 'use client';
 
 import { Button } from '@/components/Button';
+import { DESCRIPTION_CHAR_LIMIT } from '@/constants/description-char-limit.constant';
 import { ExperienceRow } from '@/types/db/experience-row';
 import { calculateDuration } from '@/utils/calculate-duration.util';
 import { useState } from 'react';
-
-const DESCRIPTION_CHAR_LIMIT = 150;
 
 export function ExperienceItem({
     experience,
