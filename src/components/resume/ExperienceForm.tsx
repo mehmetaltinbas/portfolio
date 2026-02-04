@@ -50,13 +50,17 @@ export function ExperienceForm({
                     value={form.startDate ?? ''}
                     onChange={onChange}
                 />
-                <Input
-                    name="endDate"
-                    type="date"
-                    value={form.endDate ?? ''}
-                    onChange={onChange}
-                    disabled={form.isCurrent}
-                />
+                {form.isCurrent ? 
+                    <p className='w-full text-center'>Present</p>
+                    :
+                    <Input
+                        name="endDate"
+                        type="date"
+                        value={form.endDate ?? ''}
+                        onChange={onChange}
+                        disabled={form.isCurrent}
+                    />
+                }
             </div>
             <div className="flex gap-2">
                 <Button onClick={onSave}>{saveLabel}</Button>

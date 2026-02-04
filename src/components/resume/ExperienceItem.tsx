@@ -24,7 +24,7 @@ export function ExperienceItem({
                     {new Date(experience.startDate).toLocaleDateString()} -{' '}
                     {experience.isCurrent
                         ? 'Present'
-                        : new Date(experience.endDate).toLocaleDateString()}
+                        : new Date(experience.endDate!).toLocaleDateString()}
                 </p>
             </div>
             {isEditMode && (

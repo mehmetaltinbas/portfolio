@@ -6,8 +6,8 @@ import { ExperienceItem } from '@/components/resume/ExperienceItem';
 import { SectionHeader } from '@/components/resume/SectionHeader';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { userActions } from '@/store/slices/user-slice';
-import { CreateExperienceDto } from '@/types/dto/experience/create-experience.dto';
 import { ExperienceRow } from '@/types/db/experience-row';
+import { CreateExperienceDto } from '@/types/dto/experience/create-experience.dto';
 import { ResponseBase } from '@/types/response/response-base';
 import { ChangeEvent, useState } from 'react';
 
@@ -43,7 +43,7 @@ export function ExperiencesSection() {
             company: experience.company,
             isCurrent: experience.isCurrent,
             startDate: new Date(experience.startDate).toISOString().split('T')[0],
-            endDate: new Date(experience.endDate).toISOString().split('T')[0],
+            endDate: experience.endDate === null ? undefined : new Date(experience.endDate!).toISOString().split('T')[0],
         });
         setIsAddingExperience(false);
     }

@@ -9,6 +9,9 @@
         "start": "next start",
         "lint": "eslint",
         "format": "npx prettier . --write",
+        "check:types": "tsc --noEmit",
+        "check:lint": "npm run lint",
+        "check:all": "tsc --noEmit && npm run lint",
         "prisma:push": "npx prisma db push",
         "postinstall": "npx prisma generate"
     },

@@ -54,7 +54,7 @@ model Experience {
     company   String
     isCurrent Boolean
     startDate DateTime
-    endDate   DateTime
+    endDate   DateTime?
 }
 
 model Education {

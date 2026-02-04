@@ -20,7 +20,7 @@ export const experienceService = {
                 company: dto.company,
                 isCurrent: dto.isCurrent,
                 startDate: new Date(dto.startDate),
-                endDate: dto.isCurrent ? new Date() : new Date(dto.endDate!),
+                endDate: dto.isCurrent ? null : new Date(dto.endDate!),
             },
         });
         return { isSuccess: true, message: 'experience created' };
@@ -39,7 +39,7 @@ export const experienceService = {
                 company: dto.company ?? experience.company,
                 isCurrent: dto.isCurrent ?? experience.isCurrent,
                 startDate: dto.startDate ? new Date(dto.startDate) : experience.startDate,
-                endDate: dto.endDate ? new Date(dto.endDate) : experience.endDate,
+                endDate: dto.isCurrent ? null : (dto.endDate ? new Date(dto.endDate) : experience.endDate),
             },
         });
         return { isSuccess: true, message: 'experience updated' };

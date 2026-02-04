@@ -5,5 +5,5 @@ export interface ExperienceRow {
     company: string;
     isCurrent: boolean;
     startDate: Date;
-    endDate: Date;
+    endDate: Date | null;
 }
