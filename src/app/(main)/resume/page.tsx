@@ -8,6 +8,7 @@ import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { userActions } from '@/store/slices/user-slice';
 import { CreateExperienceDto } from '@/types/dto/experience/create-experience.dto';
 import { ExperienceRow } from '@/types/db/experience-row';
+import { DeleteUserImageDto } from '@/types/dto/user-image/delete-user-image.dto';
 import { UpdateUserDto } from '@/types/dto/user/update-user.dto';
 import { ResponseBase } from '@/types/response/response-base';
 import Image from 'next/image';
@@ -24,6 +25,7 @@ export default function Page() {
         skills: user.skills ?? [],
     });
     const [skillsInput, setSkillsInput] = useState<string>(user.skills?.join(', ') ?? '');
+    const [userImageFile, setUserImageFile] = useState<File | null>(null);
     const [editingExperienceId, setEditingExperienceId] = useState<string | null>(null);
     const [experienceForm, setExperienceForm] = useState<Partial<CreateExperienceDto & { id?: string }>>({});
     const [isAddingExperience, setIsAddingExperience] = useState<boolean>(false);
@@ -34,6 +36,7 @@ export default function Page() {
             skills: user.skills ?? [],
         });
         setSkillsInput(user.skills?.join(', ') ?? '');
+        setUserImageFile(null);
         setIsAboutEditMode((prev) => !prev);
     }
 
@@ -77,8 +80,48 @@ export default function Page() {
         }
     }
 
+    async function upsertUserImage() {
+        if (!userImageFile) return;
+
+        const formData = new FormData();
+        formData.append('file', userImageFile);
+        formData.append('place', UserImagePlace.RESUME_PAGE);
+
+        const response: ResponseBase = await (
+            await fetch('/api/admin/user-image/upsert', {
+                method: 'POST',
+                body: formData,
+            })
+        ).json();
+
+        if (response.isSuccess) {
+            await dispatch(userActions.refresh());
+        } else {
+            alert(response.message);
+        }
+
+        setUserImageFile(null);
+    }
+
+    async function deleteUserImage() {
+        const response: ResponseBase = await (
+            await fetch('/api/admin/user-image/delete', {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ place: UserImagePlace.RESUME_PAGE } as DeleteUserImageDto),
+            })
+        ).json();
+
+        if (response.isSuccess) {
+            await dispatch(userActions.refresh());
+            setUserImageFile(null);
+        }
+        alert(response.message);
+    }
+
     async function onAboutSave() {
         await updateProfileInfo();
+        await upsertUserImage();
         toggleAboutEditMode();
     }
 
@@ -240,16 +283,60 @@ export default function Page() {
                     )}
                 </div>
                 <div className="w-full mx-auto flex justify-center">
-                    {user.userImages.find((userImage) => userImage.place === UserImagePlace.RESUME_PAGE)?.url && (
-                        <Image
-                            src={
-                                user.userImages.find((userImage) => userImage.place === UserImagePlace.RESUME_PAGE)!.url
-                            }
-                            width={200}
-                            height={400}
-                            className="rounded-[10px]"
-                            alt="resume photo"
-                        />
+                    {!isAboutEditMode ? (
+                        user.userImages.find((userImage) => userImage.place === UserImagePlace.RESUME_PAGE)?.url && (
+                            <Image
+                                src={
+                                    user.userImages.find((userImage) => userImage.place === UserImagePlace.RESUME_PAGE)!.url
+                                }
+                                width={200}
+                                height={400}
+                                className="rounded-[10px]"
+                                alt="resume photo"
+                            />
+                        )
+                    ) : (
+                        <div className="relative flex flex-col items-center gap-2">
+                            <Image
+                                src={
+                                    (userImageFile ? URL.createObjectURL(userImageFile) : null) ??
+                                    user.userImages.find((userImage) => userImage.place === UserImagePlace.RESUME_PAGE)?.url ??
+                                    '/default-avatar-profile-icon.jpg'
+                                }
+                                width={200}
+                                height={400}
+                                className="rounded-[10px]"
+                                alt="resume photo"
+                            />
+                            <div className="flex gap-2">
+                                <label
+                                    className="cursor-pointer px-2 py-0.5
+                                    border-2 border-black rounded-[10px]
+                                    bg-black text-white text-s
+                                    hover:bg-white hover:text-black
+                                    duration-300"
+                                >
+                                    Edit
+                                    <input
+                                        name="file"
+                                        type="file"
+                                        className="hidden"
+                                        onChange={(event) => {
+                                            if (event.currentTarget.files?.[0].type.startsWith('image/'))
+                                                setUserImageFile(event.currentTarget.files?.[0] ?? null);
+                                            else alert('uploaded file must be type of image');
+                                        }}
+                                    />
+                                </label>
+                                <Button
+                                    className="bg-red-700 border-[1px] border-transparent
+                                        hover:text-red-700 hover:border-red-700"
+                                    onClick={deleteUserImage}
+                                >
+                                    Delete
+                                </Button>
+                            </div>
+                        </div>
                     )}
                 </div>
             </div>
