@@ -27,8 +27,11 @@ export function ExperiencesSection() {
         setIsEditMode((prev) => !prev);
     }
 
-    function handleFormChange(event: ChangeEvent<HTMLInputElement>) {
-        const { name, value, type, checked } = event.currentTarget;
+    function handleFormChange(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
+        const { name, value, type } = event.currentTarget;
+        const checked = event.currentTarget instanceof HTMLInputElement
+            ? event.currentTarget.checked
+            : undefined;
         setExperienceForm((prev) => ({
             ...prev,
             [name]: type === 'checkbox' ? checked : value,
@@ -42,8 +45,8 @@ export function ExperiencesSection() {
             title: experience.title,
             company: experience.company,
             isCurrent: experience.isCurrent,
-            startDate: new Date(experience.startDate).toISOString().split('T')[0],
-            endDate: experience.endDate === null ? undefined : new Date(experience.endDate!).toISOString().split('T')[0],
+            startDate: new Date(experience.startDate).toISOString().slice(0, 7),
+            endDate: experience.endDate === null ? undefined : new Date(experience.endDate!).toISOString().slice(0, 7),
         });
         setIsAddingExperience(false);
     }

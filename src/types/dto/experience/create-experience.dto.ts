@@ -4,4 +4,5 @@ export interface CreateExperienceDto {
     isCurrent: boolean;
     startDate: string;
     endDate?: string;
+    description?: string;
 }

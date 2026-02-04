@@ -5,7 +5,7 @@ import { NextResponse } from 'next/server';
 export async function POST(req: Request) {
     const reqBody = await req.json();
 
-    const { title, company, isCurrent, startDate, endDate } = reqBody;
+    const { title, company, isCurrent, startDate, endDate, description } = reqBody;
 
     const dto: CreateExperienceDto = {
         title,
@@ -13,6 +13,7 @@ export async function POST(req: Request) {
         isCurrent,
         startDate,
         endDate,
+        description,
     };
 
     const response = await experienceService.create(dto);

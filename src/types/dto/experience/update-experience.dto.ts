@@ -5,4 +5,5 @@ export interface UpdateExperienceDto {
     isCurrent?: boolean;
     startDate?: string;
     endDate?: string;
+    description?: string;
 }

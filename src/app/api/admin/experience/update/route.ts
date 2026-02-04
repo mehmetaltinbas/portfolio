@@ -5,7 +5,7 @@ import { NextResponse } from 'next/server';
 export async function PATCH(req: Request) {
     const reqBody = await req.json();
 
-    const { id, title, company, isCurrent, startDate, endDate } = reqBody;
+    const { id, title, company, isCurrent, startDate, endDate, description } = reqBody;
 
     const dto: UpdateExperienceDto = {
         id,
@@ -14,6 +14,7 @@ export async function PATCH(req: Request) {
         isCurrent,
         startDate,
         endDate,
+        description,
     };
 
     const response = await experienceService.update(dto);

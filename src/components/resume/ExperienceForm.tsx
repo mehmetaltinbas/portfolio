@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
+import { TextArea } from '@/components/TextArea';
 import { CreateExperienceDto } from '@/types/dto/experience/create-experience.dto';
 import { ChangeEvent } from 'react';
 
@@ -13,7 +14,7 @@ export function ExperienceForm({
     saveLabel,
 }: {
     form: Partial<CreateExperienceDto & { id?: string }>;
-    onChange: (event: ChangeEvent<HTMLInputElement>) => void;
+    onChange: (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
     onSave: () => void;
     onCancel: () => void;
     saveLabel: string;
@@ -46,7 +47,7 @@ export function ExperienceForm({
             <div className="flex gap-2">
                 <Input
                     name="startDate"
-                    type="date"
+                    type="month"
                     value={form.startDate ?? ''}
                     onChange={onChange}
                 />
@@ -55,13 +56,19 @@ export function ExperienceForm({
                     :
                     <Input
                         name="endDate"
-                        type="date"
+                        type="month"
                         value={form.endDate ?? ''}
                         onChange={onChange}
                         disabled={form.isCurrent}
                     />
                 }
             </div>
+            <TextArea
+                name="description"
+                value={form.description ?? ''}
+                onChange={onChange}
+                placeholder="Description"
+            />
             <div className="flex gap-2">
                 <Button onClick={onSave}>{saveLabel}</Button>
                 <Button onClick={onCancel}>Cancel</Button>
