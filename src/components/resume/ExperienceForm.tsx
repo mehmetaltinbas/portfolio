@@ -4,7 +4,7 @@ import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
 import { TextArea } from '@/components/TextArea';
 import { CreateExperienceDto } from '@/types/dto/experience/create-experience.dto';
-import { ChangeEvent } from 'react';
+import { ChangeEvent, useEffect } from 'react';
 
 export function ExperienceForm({
     form,
@@ -19,6 +19,7 @@ export function ExperienceForm({
     onCancel: () => void;
     saveLabel: string;
 }) {
+
     return (
         <div className="w-full flex flex-col gap-4 p-5 bg-white border border-gray-200 rounded-lg shadow-sm">
             <div className="space-y-1">

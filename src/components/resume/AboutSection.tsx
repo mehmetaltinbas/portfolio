@@ -122,22 +122,14 @@ export function AboutSection() {
                     {!isEditMode ? (
                         <p className="leading-relaxed">{user.about}</p>
                     ) : (
-                        <div>
-                            <div className="flex items-center gap-2 mb-3">
-                                <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                </svg>
-                                <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">About Me</h3>
-                            </div>
-                            <TextArea
-                                name="about"
-                                onChange={handleAboutChange}
-                                value={about}
-                                rows={6}
-                                className="w-full resize-y min-h-[120px] whitespace-pre-wrap break-words"
-                                placeholder="About..."
-                            />
-                        </div>
+                        <TextArea
+                            name="about"
+                            onChange={handleAboutChange}
+                            value={about}
+                            rows={6}
+                            className="w-full resize-y min-h-[120px] whitespace-pre-wrap break-words"
+                            placeholder="About..."
+                        />
                     )}
                 </div>
 

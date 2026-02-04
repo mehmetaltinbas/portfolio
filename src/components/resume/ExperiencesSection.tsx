@@ -47,6 +47,7 @@ export function ExperiencesSection() {
             isCurrent: experience.isCurrent,
             startDate: new Date(experience.startDate).toISOString().slice(0, 7),
             endDate: experience.endDate === null ? undefined : new Date(experience.endDate!).toISOString().slice(0, 7),
+            description: experience.description === null ? undefined : experience.description,
         });
         setIsAddingExperience(false);
     }

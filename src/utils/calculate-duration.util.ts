@@ -3,7 +3,7 @@ export function calculateDuration(startDate: Date, endDate: Date): string {
     const end = new Date(endDate);
 
     let years = end.getFullYear() - start.getFullYear();
-    let months = end.getMonth() - start.getMonth();
+    let months = end.getMonth() - start.getMonth() + 1;
 
     if (months < 0) {
         years--;
