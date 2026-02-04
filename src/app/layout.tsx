@@ -15,9 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-    title: 'Mehmet Altınbaş',
-    description: "Mehmet Altınbaş's personal portfolio website.",
-    icons: `${process.env.APP_BASE_URL}/icon.jpg`,
+    title: 'Portfolio',
+    description: "Personal portfolio website.",
 };
 
 export default function RootLayout({

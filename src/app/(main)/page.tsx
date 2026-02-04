@@ -7,6 +7,7 @@ import { UserImagePlace } from '@/enums/user-image-place.enum';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { userActions } from '@/store/slices/user-slice';
 import { DeleteUserImageDto } from '@/types/dto/user-image/delete-user-image.dto';
+import { UpdateUserDto } from '@/types/dto/user/update-user.dto';
 import { ResponseBase } from '@/types/response/response-base';
 import Image from 'next/image';
 import { ChangeEvent, useState } from 'react';
@@ -16,10 +17,10 @@ export default function Page() {
     const user = useAppSelector((state) => state.user);
     const isAdmin = useAppSelector((state) => state.isAdmin);
     const [isEditMode, setIsEditMode] = useState<boolean>(false);
-    const [profileInfo, setProfileInfo] = useState({
+    const [profileInfo, setProfileInfo] = useState<UpdateUserDto>({
         fullName: user.fullName,
-        headline: user.headline,
-        bio: user.bio,
+        headline: user.headline ?? undefined,
+        bio: user.bio ?? undefined,
     });
     const [userImageFile, setUserImageFile] = useState<File | null>(null);
     const [cvFile, setCvFile] = useState<File | null>(null);
@@ -33,8 +34,8 @@ export default function Page() {
     function toggleEditMode() {
         setProfileInfo({
             fullName: user.fullName,
-            headline: user.headline,
-            bio: user.bio,
+            headline: user.headline ?? undefined,
+            bio: user.bio ?? undefined,
         });
         setIsEditMode((prev) => !prev);
     }

@@ -1,0 +1,21 @@
+import { experienceService } from '@/services/experience.service';
+import { UpdateExperienceDto } from '@/types/dto/experience/update-experience.dto';
+import { NextResponse } from 'next/server';
+
+export async function PATCH(req: Request) {
+    const reqBody = await req.json();
+
+    const { id, title, company, isCurrent, startDate, endDate } = reqBody;
+
+    const dto: UpdateExperienceDto = {
+        id,
+        title,
+        company,
+        isCurrent,
+        startDate,
+        endDate,
+    };
+
+    const response = await experienceService.update(dto);
+    return NextResponse.json(response);
+}
