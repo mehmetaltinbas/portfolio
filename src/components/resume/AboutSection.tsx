@@ -118,7 +118,7 @@ export function AboutSection() {
     )?.url;
 
     return (
-        <div className="relative w-[700px] grid grid-cols-1 md:grid-cols-2 gap-6 py-10">
+        <div className="relative w-full max-w-[700px] py-10 px-4 md:px-0">
             {isAdmin && !isEditMode && (
                 <Button onClick={toggleEditMode} className="absolute top-2 right-2">
                     Edit
@@ -130,97 +130,151 @@ export function AboutSection() {
                 </Button>
             )}
             <SectionHeader title="About" />
-            <div></div>
-            <div className="w-full mx-auto flex flex-col justify-start items-center gap-8">
-                {!isEditMode ? (
-                    <>
-                        <p>{user.about}</p>
-                        <div className="flex flex-col justify-start items-center gap-2">
-                            <p className="font-semibold underline">Skills</p>
-                            <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
-                                {user.skills.map((skill, index) => (
-                                    <p key={`skill-${index}-${skill}`}>
-                                        <span className="flex-semibold">-</span> {skill}
-                                    </p>
-                                ))}
+
+            <div className="flex flex-col md:flex-row gap-6 md:gap-8 mt-6">
+                {/* Text Content - Left on desktop, top on mobile */}
+                <div className="flex-1 flex flex-col gap-6">
+                    {!isEditMode ? (
+                        <>
+                            {/* About Me Section */}
+                            <div>
+                                <div className="flex items-center gap-2 mb-3">
+                                    <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                    </svg>
+                                    <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">About Me</h3>
+                                </div>
+                                <p className="text-gray-600 leading-relaxed">{user.about}</p>
+                            </div>
+
+                            {/* Skills Section */}
+                            <div>
+                                <div className="flex items-center gap-2 mb-3">
+                                    <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                                    </svg>
+                                    <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Skills</h3>
+                                </div>
+                                <div className="flex flex-wrap gap-2">
+                                    {user.skills.map((skill, index) => (
+                                        <span
+                                            key={`skill-${index}-${skill}`}
+                                            className="px-3 py-1.5 bg-gray-100 text-gray-700 text-sm font-medium rounded-full border border-gray-200 hover:bg-gray-200 transition-colors"
+                                        >
+                                            {skill}
+                                        </span>
+                                    ))}
+                                </div>
+                            </div>
+                        </>
+                    ) : (
+                        <>
+                            {/* About Me Edit */}
+                            <div>
+                                <div className="flex items-center gap-2 mb-3">
+                                    <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                    </svg>
+                                    <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">About Me</h3>
+                                </div>
+                                <TextArea
+                                    name="about"
+                                    onChange={handleAboutChange}
+                                    value={profileInfo.about ?? ''}
+                                    rows={6}
+                                    className="w-full resize-y min-h-[120px] whitespace-pre-wrap break-words"
+                                    placeholder="About..."
+                                />
+                            </div>
+
+                            {/* Skills Edit */}
+                            <div>
+                                <div className="flex items-center gap-2 mb-3">
+                                    <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                                    </svg>
+                                    <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Skills</h3>
+                                </div>
+                                <Input
+                                    name="skills"
+                                    onChange={handleSkillsChange}
+                                    value={skillsInput}
+                                    className="w-full"
+                                    placeholder="Skills (comma-separated)..."
+                                />
+                                {/* Skill Preview */}
+                                {profileInfo.skills && profileInfo.skills.length > 0 && (
+                                    <div className="flex flex-wrap gap-2 mt-3">
+                                        {profileInfo.skills.map((skill, index) => (
+                                            <span
+                                                key={`skill-preview-${index}-${skill}`}
+                                                className="px-3 py-1.5 bg-gray-100 text-gray-700 text-sm font-medium rounded-full border border-gray-200"
+                                            >
+                                                {skill}
+                                            </span>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        </>
+                    )}
+                </div>
+
+                {/* Image - Right on desktop, bottom on mobile */}
+                <div className="flex justify-center md:order-2">
+                    {!isEditMode ? (
+                        resumeImageUrl && (
+                            <Image
+                                src={resumeImageUrl}
+                                width={180}
+                                height={240}
+                                className="rounded-lg border border-gray-200 shadow-sm object-cover"
+                                alt="resume photo"
+                            />
+                        )
+                    ) : (
+                        <div className="flex flex-col items-center gap-3">
+                            <Image
+                                src={
+                                    (userImageFile ? URL.createObjectURL(userImageFile) : null) ??
+                                    resumeImageUrl ??
+                                    '/default-avatar-profile-icon.jpg'
+                                }
+                                width={180}
+                                height={240}
+                                className="rounded-lg border border-gray-200 shadow-sm object-cover"
+                                alt="resume photo"
+                            />
+                            <div className="flex gap-2">
+                                <label
+                                    className="cursor-pointer px-3 py-1.5
+                                    border-2 border-gray-800 rounded-lg
+                                    bg-gray-800 text-white text-sm font-medium
+                                    hover:bg-white hover:text-gray-800
+                                    transition-colors duration-300"
+                                >
+                                    Change
+                                    <input
+                                        name="file"
+                                        type="file"
+                                        className="hidden"
+                                        onChange={(event) => {
+                                            if (event.currentTarget.files?.[0].type.startsWith('image/'))
+                                                setUserImageFile(event.currentTarget.files?.[0] ?? null);
+                                            else alert('uploaded file must be type of image');
+                                        }}
+                                    />
+                                </label>
+                                <Button
+                                    className="bg-red-800 border-transparent hover:bg-white hover:text-red-800 hover:border-red-800"
+                                    onClick={deleteUserImage}
+                                >
+                                    Delete
+                                </Button>
                             </div>
                         </div>
-                    </>
-                ) : (
-                    <>
-                        <TextArea
-                            name="about"
-                            onChange={handleAboutChange}
-                            value={profileInfo.about ?? ''}
-                            className="w-full text-center resize-none whitespace-pre-wrap break-words"
-                            placeholder="About..."
-                        />
-                        <div className="flex flex-col justify-start items-center gap-2">
-                            <p className="font-semibold underline">Skills</p>
-                            <Input
-                                name="skills"
-                                onChange={handleSkillsChange}
-                                value={skillsInput}
-                                className="w-full text-center"
-                                placeholder="Skills (comma-separated)..."
-                            />
-                        </div>
-                    </>
-                )}
-            </div>
-            <div className="w-full mx-auto flex justify-center">
-                {!isEditMode ? (
-                    resumeImageUrl && (
-                        <Image
-                            src={resumeImageUrl}
-                            width={200}
-                            height={400}
-                            className="rounded-[10px]"
-                            alt="resume photo"
-                        />
-                    )
-                ) : (
-                    <div className="relative flex flex-col items-center gap-2">
-                        <Image
-                            src={
-                                (userImageFile ? URL.createObjectURL(userImageFile) : null) ??
-                                resumeImageUrl ??
-                                '/default-avatar-profile-icon.jpg'
-                            }
-                            width={200}
-                            height={400}
-                            className="rounded-[10px]"
-                            alt="resume photo"
-                        />
-                        <div className="flex gap-2">
-                            <label
-                                className="cursor-pointer px-2 py-0.5
-                                border-2 border-black rounded-[10px]
-                                bg-black text-white text-s
-                                hover:bg-white hover:text-black
-                                duration-300"
-                            >
-                                Edit
-                                <input
-                                    name="file"
-                                    type="file"
-                                    className="hidden"
-                                    onChange={(event) => {
-                                        if (event.currentTarget.files?.[0].type.startsWith('image/'))
-                                            setUserImageFile(event.currentTarget.files?.[0] ?? null);
-                                        else alert('uploaded file must be type of image');
-                                    }}
-                                />
-                            </label>
-                            <Button
-                                className="bg-red-800 border-transparent hover:bg-white hover:text-red-800 hover:border-red-800"
-                                onClick={deleteUserImage}
-                            >
-                                Delete
-                            </Button>
-                        </div>
-                    </div>
-                )}
+                    )}
+                </div>
             </div>
         </div>
     );
