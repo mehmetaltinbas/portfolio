@@ -96,14 +96,20 @@ export const userService = {
                 include: {
                     userImages: true,
                     contacts: true,
-                    experiences: true,
+                    experiences: {
+                        orderBy: {
+                            startDate: 'desc'
+                        }
+                    },
                     educations: true,
                     portfolioItems: true,
                 },
             });
+
             if (!user) {
                 return { isSuccess: false, message: 'no user found' };
             }
+
             return {
                 isSuccess: true,
                 message: 'user read',
