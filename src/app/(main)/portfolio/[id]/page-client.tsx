@@ -53,22 +53,13 @@ export default function PageClient({ portfolioItem }: { portfolioItem: Portfolio
             </div> */}
             <div className="p-[25px]">
                 {isAdmin ? (
-                    <>
-                        <PortfolioItemEditor
-                            initialContent={content}
-                            onContentChange={setContent}
-                            portfolioItemId={portfolioItem.id}
-                        />
-
-                        <div className="mt-6 flex justify-end">
-                            <Button
-                                onClick={handleSave}
-                                disabled={isSaving}
-                            >
-                                {isSaving ? 'Saving...' : 'Save'}
-                            </Button>
-                        </div>
-                    </>
+                    <PortfolioItemEditor
+                        initialContent={content}
+                        onContentChange={setContent}
+                        portfolioItemId={portfolioItem.id}
+                        onSave={handleSave}
+                        isSaving={isSaving}
+                    />
                 ) : (
                     <PortfolioViewer content={content} />
                 )}
