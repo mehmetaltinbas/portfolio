@@ -10,9 +10,11 @@ import StarterKit from '@tiptap/starter-kit';
 export default function PortfolioItemEditor({
     initialContent,
     onContentChange,
+    portfolioItemId,
 }: {
     initialContent?: any;
     onContentChange?: (content: any) => void;
+    portfolioItemId: string;
 }) {
     const editor = useEditor({
         immediatelyRender: false,
@@ -26,7 +28,7 @@ export default function PortfolioItemEditor({
         content: initialContent || '',
         editorProps: {
             attributes: {
-                class: 'prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto focus:outline-none min-h-[500px] p-4',
+                class: 'prose prose-sm sm:prose mx-auto focus:outline-none min-h-[500px] p-4',
             },
         },
         onUpdate: ({ editor }) => {
@@ -38,7 +40,7 @@ export default function PortfolioItemEditor({
 
     return editor ? (
         <div>
-            <EditorToolbar editor={editor} />
+            <EditorToolbar editor={editor} portfolioItemId={portfolioItemId} />
             <EditorContent editor={editor} />
         </div>
     ) : (

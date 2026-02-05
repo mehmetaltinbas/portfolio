@@ -47,17 +47,24 @@ export default function PageClient({ portfolioItem }: { portfolioItem: Portfolio
             <div className="w-full h-auto p-6">
                 <p>{portfolioItem.description}</p>
             </div>
-            <span className="block w-[full] h-1 bg-black"></span>
+            <span className="block w-[full] h-[2px] rounded-full bg-black"></span>
             {/* <div className="w-full h-auto flex flex-col justify-start items-center gap-4">
                 <p className="font-semibold text-lg">Gallery</p>
             </div> */}
             <div className="p-[25px]">
                 {isAdmin ? (
                     <>
-                        <PortfolioItemEditor initialContent={content} onContentChange={setContent} />
+                        <PortfolioItemEditor
+                            initialContent={content}
+                            onContentChange={setContent}
+                            portfolioItemId={portfolioItem.id}
+                        />
 
                         <div className="mt-6 flex justify-end">
-                            <Button onClick={handleSave} disabled={isSaving}>
+                            <Button
+                                onClick={handleSave}
+                                disabled={isSaving}
+                            >
                                 {isSaving ? 'Saving...' : 'Save'}
                             </Button>
                         </div>

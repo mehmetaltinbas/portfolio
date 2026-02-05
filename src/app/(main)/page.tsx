@@ -210,7 +210,7 @@ export default function Page() {
                                         type="file"
                                         className="hidden"
                                         onChange={(event) => {
-                                            if (event.currentTarget.files?.[0].type.startsWith('image/'))
+                                            if (event.currentTarget.files && event.currentTarget.files?.[0].type.startsWith('image/'))
                                                 setUserImageFile(event.currentTarget.files?.[0] ?? null);
                                             else alert('uploaded file must be type of image');
                                         }}
