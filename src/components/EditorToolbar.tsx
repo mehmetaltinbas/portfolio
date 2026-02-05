@@ -10,11 +10,13 @@ export default function EditorToolbar({
     portfolioItemId,
     onSave,
     isSaving,
+    onCancel,
 }: {
     editor: Editor;
     portfolioItemId: string;
     onSave?: () => void;
     isSaving?: boolean;
+    onCancel?: () => void;
 }) {
     const [isUploading, setIsUploading] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -57,7 +59,7 @@ export default function EditorToolbar({
     }
 
     return (
-        <div className="flex flex-wrap items-center gap-2 p-2 border-b sticky z-40 bg-white" style={{ top: NAVBAR_HEIGHT }}>
+        <div className="sticky flex flex-wrap items-center gap-2 p-2 border-b z-40 bg-white" style={{ top: NAVBAR_HEIGHT }}>
             <button
                 onClick={() => editor.chain().focus().toggleBold().run()}
                 className={`px-3 py-1 rounded border text-sm hover:bg-gray-100 ${editor.isActive('bold') ? 'bg-gray-200 border-gray-400' : 'border-gray-300'}`}
@@ -114,14 +116,26 @@ export default function EditorToolbar({
                     onChange={(event) => addImage(event)}
                 />
             </label>
-            {onSave && (
-                <button
-                    onClick={onSave}
-                    disabled={isSaving}
-                    className="cursor-pointer ml-auto px-3 py-1 rounded border-2 border-black bg-black text-white text-sm hover:bg-white hover:text-black duration-300 disabled:opacity-50"
-                >
-                    {isSaving ? 'Saving...' : 'Save'}
-                </button>
+            {(onSave || onCancel) && (
+                <div className="flex gap-2 ml-auto">
+                    {onSave && (
+                        <button
+                            onClick={onSave}
+                            disabled={isSaving}
+                            className="cursor-pointer px-3 py-1 rounded border-2 border-black bg-black text-white text-sm hover:bg-white hover:text-black duration-300 disabled:opacity-50"
+                        >
+                            {isSaving ? 'Saving...' : 'Save'}
+                        </button>
+                    )}
+                    {onCancel && (
+                        <button
+                            onClick={onCancel}
+                            className="cursor-pointer px-3 py-1 rounded border-2 border-black bg-black text-white text-sm hover:bg-white hover:text-black duration-300 disabled:opacity-50"
+                        >
+                            Cancel
+                        </button>
+                    )}
+                </div>
             )}
         </div>
     );

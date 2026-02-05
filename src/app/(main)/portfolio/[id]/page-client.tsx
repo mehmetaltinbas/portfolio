@@ -1,24 +1,68 @@
 'use client';
 
 import { Button } from '@/components/Button';
+import { Input } from '@/components/Input';
+import { TextArea } from '@/components/TextArea';
 import PortfolioItemEditor from '@/components/portfolio/PortfolioItemEditor';
 import PortfolioViewer from '@/components/portfolio/PortfolioItemViewer';
 import { useAppSelector } from '@/store/hooks';
 import { PortfolioItemRow } from '@/types/db/portfolio-item-row';
 import { ResponseBase } from '@/types/response/response-base';
+import { NAVBAR_HEIGHT } from '@/constants/navbar-height.constant';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 export default function PageClient({ portfolioItem }: { portfolioItem: PortfolioItemRow }) {
-    const [content, setContent] = useState<object>(portfolioItem.content as object);
     const isAdmin = useAppSelector((state) => state.isAdmin);
+
+    const [isEditingMeta, setIsEditingMeta] = useState(false);
+    const [isEditingContent, setIsEditingContent] = useState(false);
+
+    const [title, setTitle] = useState(portfolioItem.title);
+    const [description, setDescription] = useState(portfolioItem.description);
+    const [content, setContent] = useState<object>(portfolioItem.content as object);
+
     const [isSaving, setIsSaving] = useState(false);
 
-    useEffect(() => {
-        console.log(content);
-    }, [content]);
+    function toggleMetaEditMode() {
+        if (!isEditingMeta) {
+            setTitle(portfolioItem.title);
+            setDescription(portfolioItem.description);
+        }
+        setIsEditingMeta(!isEditingMeta);
+    }
 
-    async function handleSave() {
+    function toggleContentEditMode() {
+        if (!isEditingContent) {
+            setContent(portfolioItem.content as object);
+        }
+        setIsEditingContent(!isEditingContent);
+    }
+
+    async function handleSaveMeta() {
+        setIsSaving(true);
+        try {
+            const response: ResponseBase = await (
+                await fetch(`/api/admin/portfolio-item/update/${portfolioItem.id}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ title, description }),
+                })
+            ).json();
+            if (response.isSuccess) {
+                portfolioItem.title = title;
+                portfolioItem.description = description;
+                setIsEditingMeta(false);
+            }
+            alert(response.message);
+        } catch (error) {
+            alert('Error saving');
+        } finally {
+            setIsSaving(false);
+        }
+    }
+
+    async function handleSaveContent() {
         setIsSaving(true);
         try {
             const response: ResponseBase = await (
@@ -28,6 +72,10 @@ export default function PageClient({ portfolioItem }: { portfolioItem: Portfolio
                     body: JSON.stringify({ content }),
                 })
             ).json();
+            if (response.isSuccess) {
+                portfolioItem.content = content;
+                setIsEditingContent(false);
+            }
             alert(response.message);
         } catch (error) {
             alert('Error saving');
@@ -38,27 +86,66 @@ export default function PageClient({ portfolioItem }: { portfolioItem: Portfolio
 
     return (
         <div className="w-full h-full">
-            <div className="w-full h-auto flex justify-start items-center gap-8 p-6">
-                <Link href={'/portfolio'}>
-                    <Button>←</Button>
-                </Link>
-                <p className="font-semibold text-2xl">{portfolioItem.title}</p>
+
+            <div className="relative">
+                {isAdmin && !isEditingMeta && (
+                    <div className="absolute top-4 right-4">
+                        <Button onClick={toggleMetaEditMode}>Edit</Button>
+                    </div>
+                )}
+                {isEditingMeta && (
+                    <div className="absolute top-4 right-4 flex gap-2">
+                        <Button onClick={handleSaveMeta} disabled={isSaving}>
+                            {isSaving ? 'Saving...' : 'Save'}
+                        </Button>
+                        <Button onClick={toggleMetaEditMode}>Cancel</Button>
+                    </div>
+                )}
+                <div className="w-full h-auto flex justify-start items-center gap-8 p-6 pr-32">
+                    <Link href={'/portfolio'}>
+                        <Button>←</Button>
+                    </Link>
+                    {isEditingMeta ? (
+                        <Input
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value)}
+                            placeholder="Title"
+                            className="text-2xl font-semibold"
+                        />
+                    ) : (
+                        <p className="font-semibold text-2xl">{portfolioItem.title}</p>
+                    )}
+                </div>
+                <div className="w-full h-auto p-6">
+                    {isEditingMeta ? (
+                        <TextArea
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                            placeholder="Description"
+                            rows={3}
+                        />
+                    ) : (
+                        <p>{portfolioItem.description}</p>
+                    )}
+                </div>
             </div>
-            <div className="w-full h-auto p-6">
-                <p>{portfolioItem.description}</p>
-            </div>
+
             <span className="block w-[full] h-[2px] rounded-full bg-black"></span>
-            {/* <div className="w-full h-auto flex flex-col justify-start items-center gap-4">
-                <p className="font-semibold text-lg">Gallery</p>
-            </div> */}
+
             <div className="p-[25px]">
-                {isAdmin ? (
+                {isAdmin && !isEditingContent && (
+                    <div className="sticky flex justify-end p-2 z-40 bg-white" style={{ top: NAVBAR_HEIGHT }}>
+                        <Button onClick={toggleContentEditMode}>Edit</Button>
+                    </div>
+                )}
+                {isEditingContent ? (
                     <PortfolioItemEditor
                         initialContent={content}
                         onContentChange={setContent}
                         portfolioItemId={portfolioItem.id}
-                        onSave={handleSave}
+                        onSave={handleSaveContent}
                         isSaving={isSaving}
+                        onCancel={toggleContentEditMode}
                     />
                 ) : (
                     <PortfolioViewer content={content} />

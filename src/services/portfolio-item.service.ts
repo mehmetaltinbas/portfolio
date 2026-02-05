@@ -126,7 +126,6 @@ export const portfolioItemService = {
         }
     },
 
-    // private
     async cleanupOrphanedImages(portfolioItemId: string, content: any): Promise<void> {
         try {
             const { data: files } = await supabase.storage

@@ -13,12 +13,14 @@ export default function PortfolioItemEditor({
     portfolioItemId,
     onSave,
     isSaving,
+    onCancel,
 }: {
     initialContent?: any;
     onContentChange?: (content: any) => void;
     portfolioItemId: string;
     onSave?: () => void;
     isSaving?: boolean;
+    onCancel?: () => void;
 }) {
     const editor = useEditor({
         immediatelyRender: false,
@@ -44,7 +46,7 @@ export default function PortfolioItemEditor({
 
     return editor ? (
         <div>
-            <EditorToolbar editor={editor} portfolioItemId={portfolioItemId} onSave={onSave} isSaving={isSaving} />
+            <EditorToolbar editor={editor} portfolioItemId={portfolioItemId} onSave={onSave} isSaving={isSaving} onCancel={onCancel} />
             <EditorContent editor={editor} />
         </div>
     ) : (
