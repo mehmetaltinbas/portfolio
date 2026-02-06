@@ -19,6 +19,7 @@ export function ExperiencesSection() {
     const [editingExperienceId, setEditingExperienceId] = useState<string | null>(null);
     const [experienceForm, setExperienceForm] = useState<Partial<CreateExperienceDto & { id?: string }>>({});
     const [isAddingExperience, setIsAddingExperience] = useState<boolean>(false);
+    const [isSaving, setIsSaving] = useState(false);
 
     function toggleEditMode() {
         setEditingExperienceId(null);
@@ -81,19 +82,24 @@ export function ExperiencesSection() {
             return;
         }
 
-        const response: ResponseBase = await (
-            await fetch('/api/admin/experience/create', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(experienceForm),
-            })
-        ).json();
+        setIsSaving(true);
+        try {
+            const response: ResponseBase = await (
+                await fetch('/api/admin/experience/create', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(experienceForm),
+                })
+            ).json();
 
-        if (response.isSuccess) {
-            await dispatch(userActions.refresh());
-            cancelEdit();
-        } else {
-            alert(response.message);
+            if (response.isSuccess) {
+                await dispatch(userActions.refresh());
+                cancelEdit();
+            } else {
+                alert(response.message);
+            }
+        } finally {
+            setIsSaving(false);
         }
     }
 
@@ -103,37 +109,47 @@ export function ExperiencesSection() {
             return;
         }
 
-        const response: ResponseBase = await (
-            await fetch('/api/admin/experience/update', {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(experienceForm),
-            })
-        ).json();
+        setIsSaving(true);
+        try {
+            const response: ResponseBase = await (
+                await fetch('/api/admin/experience/update', {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(experienceForm),
+                })
+            ).json();
 
-        if (response.isSuccess) {
-            await dispatch(userActions.refresh());
-            cancelEdit();
-        } else {
-            alert(response.message);
+            if (response.isSuccess) {
+                await dispatch(userActions.refresh());
+                cancelEdit();
+            } else {
+                alert(response.message);
+            }
+        } finally {
+            setIsSaving(false);
         }
     }
 
     async function deleteExperience(id: string) {
         if (!confirm('Are you sure you want to delete this experience?')) return;
 
-        const response: ResponseBase = await (
-            await fetch('/api/admin/experience/delete', {
-                method: 'DELETE',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id }),
-            })
-        ).json();
+        setIsSaving(true);
+        try {
+            const response: ResponseBase = await (
+                await fetch('/api/admin/experience/delete', {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id }),
+                })
+            ).json();
 
-        if (response.isSuccess) {
-            await dispatch(userActions.refresh());
-        } else {
-            alert(response.message);
+            if (response.isSuccess) {
+                await dispatch(userActions.refresh());
+            } else {
+                alert(response.message);
+            }
+        } finally {
+            setIsSaving(false);
         }
     }
 
@@ -172,6 +188,7 @@ export function ExperiencesSection() {
                                     onSave={updateExperience}
                                     onCancel={cancelEdit}
                                     saveLabel="Save"
+                                    isSaving={isSaving}
                                 />
                             </div>
                         ) : (
@@ -181,6 +198,7 @@ export function ExperiencesSection() {
                                 onEdit={() => startEdit(experience)}
                                 onDelete={() => deleteExperience(experience.id)}
                                 isLast={index === user.experiences.length - 1 && !isAddingExperience}
+                                isSaving={isSaving}
                             />
                         )}
                     </div>
@@ -194,6 +212,7 @@ export function ExperiencesSection() {
                             onSave={createExperience}
                             onCancel={cancelEdit}
                             saveLabel="Add"
+                            isSaving={isSaving}
                         />
                     </div>
                 )}

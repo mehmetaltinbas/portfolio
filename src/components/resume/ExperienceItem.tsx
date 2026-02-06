@@ -12,12 +12,14 @@ export function ExperienceItem({
     onEdit,
     onDelete,
     isLast = false,
+    isSaving,
 }: {
     experience: ExperienceRow;
     isEditMode: boolean;
     onEdit: () => void;
     onDelete: () => void;
     isLast?: boolean;
+    isSaving?: boolean;
 }) {
     const [isExpanded, setIsExpanded] = useState(false);
     const endDate = experience.isCurrent ? new Date() : new Date(experience.endDate!);
@@ -121,6 +123,7 @@ export function ExperienceItem({
                             <Button
                                 className="bg-red-800 border-transparent hover:bg-white hover:text-red-800 hover:border-red-800"
                                 onClick={onDelete}
+                                disabled={isSaving}
                             >
                                 Delete
                             </Button>

@@ -7,7 +7,7 @@ import { isAdminActions } from '@/store/slices/is-admin-slice';
 import { userActions } from '@/store/slices/user-slice';
 import { CreatePortfolioItemDto } from '@/types/dto/portfolio-item/create-portfolio-item.dto';
 import { ResponseBase } from '@/types/response/response-base';
-import React from 'react';
+import React, { useState } from 'react';
 
 export default function CreatePortfolioItemForm({
     createPortfolioItemFormRef,
@@ -19,6 +19,7 @@ export default function CreatePortfolioItemForm({
     setIsCreatePortfolioItemFormHidden: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
     const dispatch = useAppDispatch();
+    const [isSaving, setIsSaving] = useState(false);
     const [createPortfolioItemDto, setCreatePortfolioItemDto] = React.useState<CreatePortfolioItemDto>({
         title: '',
         description: '',
@@ -35,20 +36,25 @@ export default function CreatePortfolioItemForm({
     }
 
     async function createPortfolioItem() {
-        const response = (await (
-            await fetch('/api/admin/portfolio-item/create', {
-                method: 'POST',
-                body: JSON.stringify(createPortfolioItemDto),
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            })
-        ).json()) as ResponseBase;
-        setIsCreatePortfolioItemFormHidden((prev) => !prev);
-        alert(response.message);
-        if (!response.isSuccess) dispatch(isAdminActions.set(false));
-        else if (response.isSuccess) {
-            dispatch(userActions.refresh());
+        setIsSaving(true);
+        try {
+            const response = (await (
+                await fetch('/api/admin/portfolio-item/create', {
+                    method: 'POST',
+                    body: JSON.stringify(createPortfolioItemDto),
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                })
+            ).json()) as ResponseBase;
+            setIsCreatePortfolioItemFormHidden((prev) => !prev);
+            alert(response.message);
+            if (!response.isSuccess) dispatch(isAdminActions.set(false));
+            else if (response.isSuccess) {
+                dispatch(userActions.refresh());
+            }
+        } finally {
+            setIsSaving(false);
         }
     }
 
@@ -64,7 +70,7 @@ export default function CreatePortfolioItemForm({
         >
             <Input onChange={(event) => handleOnChange(event)} name="title" placeholder="title..." />
             <Input onChange={(event) => handleOnChange(event)} name="description" placeholder="description..." />
-            <Button onClick={async (event) => await createPortfolioItem()}>Create</Button>
+            <Button onClick={async (event) => await createPortfolioItem()} disabled={isSaving}>{isSaving ? 'Creating...' : 'Create'}</Button>
         </div>
     );
 }

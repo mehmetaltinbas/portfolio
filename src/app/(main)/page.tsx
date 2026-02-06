@@ -24,6 +24,7 @@ export default function Page() {
     });
     const [userImageFile, setUserImageFile] = useState<File | null>(null);
     const [cvFile, setCvFile] = useState<File | null>(null);
+    const [isSaving, setIsSaving] = useState(false);
 
     function viewCv() {
         if (user.cvUrl && user.cvUrl.length !== 0) {
@@ -88,19 +89,24 @@ export default function Page() {
     }
 
     async function deleteUserImage() {
-        const response: ResponseBase = await (
-            await fetch('/api/admin/user-image/delete', {
-                method: 'DELETE',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ place: UserImagePlace.LANDING_PAGE } as DeleteUserImageDto),
-            })
-        ).json();
+        setIsSaving(true);
+        try {
+            const response: ResponseBase = await (
+                await fetch('/api/admin/user-image/delete', {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ place: UserImagePlace.LANDING_PAGE } as DeleteUserImageDto),
+                })
+            ).json();
 
-        if (response.isSuccess) {
-            await dispatch(userActions.refresh());
-            setUserImageFile(null);
+            if (response.isSuccess) {
+                await dispatch(userActions.refresh());
+                setUserImageFile(null);
+            }
+            alert(response.message);
+        } finally {
+            setIsSaving(false);
         }
-        alert(response.message);
     }
 
     async function upsertCv() {
@@ -126,24 +132,34 @@ export default function Page() {
     }
     
     async function deleteCv() {
-        const response: ResponseBase = await (
-            await fetch('/api/admin/cv/delete', {
-                method: 'DELETE',
-            })
-        ).json();
+        setIsSaving(true);
+        try {
+            const response: ResponseBase = await (
+                await fetch('/api/admin/cv/delete', {
+                    method: 'DELETE',
+                })
+            ).json();
 
-        if (response.isSuccess) {
-            await dispatch(userActions.refresh());
-            setCvFile(null);
+            if (response.isSuccess) {
+                await dispatch(userActions.refresh());
+                setCvFile(null);
+            }
+            alert(response.message);
+        } finally {
+            setIsSaving(false);
         }
-        alert(response.message);
     }
 
     async function onSave() {
-        await updateProfileInfo();
-        await upsertUserImage();
-        await upsertCv();
-        toggleEditMode();
+        setIsSaving(true);
+        try {
+            await updateProfileInfo();
+            await upsertUserImage();
+            await upsertCv();
+            toggleEditMode();
+        } finally {
+            setIsSaving(false);
+        }
     }
 
     return (
@@ -179,8 +195,8 @@ export default function Page() {
                     </>
                 ) : (
                     <>
-                        <Button onClick={onSave} className="absolute top-2 right-2">
-                            Save
+                        <Button onClick={onSave} className="absolute top-2 right-2" disabled={isSaving}>
+                            {isSaving ? 'Saving...' : 'Save'}
                         </Button>
 
                         <div className="relative w-full h-full flex justify-center items-start">
@@ -198,17 +214,18 @@ export default function Page() {
                             />
                             <div className="absolute top-2 left-2 flex flex-col justify-center items-center gap-2">
                                 <label
-                                    className="cursor-pointer right-0 px-2 py-0.5 
+                                    className={`cursor-pointer right-0 px-2 py-0.5
                                     border-2 border-black rounded-[10px]
                                     bg-black text-white text-s
                                     hover:bg-white hover:text-black
-                                        duration-300"
+                                        duration-300 ${isSaving ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''}`}
                                 >
                                     Edit
                                     <input
                                         name="file"
                                         type="file"
                                         className="hidden"
+                                        disabled={isSaving}
                                         onChange={(event) => {
                                             if (event.currentTarget.files && event.currentTarget.files?.[0].type.startsWith('image/'))
                                                 setUserImageFile(event.currentTarget.files?.[0] ?? null);
@@ -217,9 +234,10 @@ export default function Page() {
                                     />
                                 </label>
                                 <Button
-                                    className="bg-red-700 border-[1px] border-transparent 
+                                    className="bg-red-700 border-[1px] border-transparent
                                         hover:text-red-700 hover:border-red-700"
                                     onClick={deleteUserImage}
+                                    disabled={isSaving}
                                 >
                                     Delete
                                 </Button>
@@ -250,17 +268,18 @@ export default function Page() {
                             />
                             <div className='flex gap-1'>
                                 <label
-                                    className="cursor-pointer right-0 px-2 py-0.5 
+                                    className={`cursor-pointer right-0 px-2 py-0.5
                                     border-2 border-black rounded-[10px]
                                     bg-black text-white text-s
                                     hover:bg-white hover:text-black
-                                        duration-300"
+                                        duration-300 ${isSaving ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''}`}
                                 >
                                     Change CV
                                     <input
                                         name="file"
                                         type="file"
                                         className="hidden"
+                                        disabled={isSaving}
                                         onChange={(event) => {
                                             if (event.currentTarget.files?.[0].type === 'application/pdf')
                                                 setCvFile(event.currentTarget.files?.[0] ?? null);
@@ -269,9 +288,10 @@ export default function Page() {
                                     />
                                 </label>
                                 <Button
-                                    className="bg-red-700 border-[1px] border-transparent 
+                                    className="bg-red-700 border-[1px] border-transparent
                                         hover:text-red-700 hover:border-red-700"
                                     onClick={deleteCv}
+                                    disabled={isSaving}
                                 >
                                     Delete CV
                                 </Button>

@@ -19,6 +19,7 @@ export function EducationsSection() {
     const [editingEducationId, setEditingEducationId] = useState<string | null>(null);
     const [educationForm, setEducationForm] = useState<Partial<CreateEducationDto & { id?: string }>>({});
     const [isAddingEducation, setIsAddingEducation] = useState<boolean>(false);
+    const [isSaving, setIsSaving] = useState(false);
 
     function toggleEditMode() {
         setEditingEducationId(null);
@@ -84,19 +85,24 @@ export function EducationsSection() {
             return;
         }
 
-        const response: ResponseBase = await (
-            await fetch('/api/admin/education/create', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(educationForm),
-            })
-        ).json();
+        setIsSaving(true);
+        try {
+            const response: ResponseBase = await (
+                await fetch('/api/admin/education/create', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(educationForm),
+                })
+            ).json();
 
-        if (response.isSuccess) {
-            await dispatch(userActions.refresh());
-            cancelEdit();
-        } else {
-            alert(response.message);
+            if (response.isSuccess) {
+                await dispatch(userActions.refresh());
+                cancelEdit();
+            } else {
+                alert(response.message);
+            }
+        } finally {
+            setIsSaving(false);
         }
     }
 
@@ -106,37 +112,47 @@ export function EducationsSection() {
             return;
         }
 
-        const response: ResponseBase = await (
-            await fetch('/api/admin/education/update', {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(educationForm),
-            })
-        ).json();
+        setIsSaving(true);
+        try {
+            const response: ResponseBase = await (
+                await fetch('/api/admin/education/update', {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(educationForm),
+                })
+            ).json();
 
-        if (response.isSuccess) {
-            await dispatch(userActions.refresh());
-            cancelEdit();
-        } else {
-            alert(response.message);
+            if (response.isSuccess) {
+                await dispatch(userActions.refresh());
+                cancelEdit();
+            } else {
+                alert(response.message);
+            }
+        } finally {
+            setIsSaving(false);
         }
     }
 
     async function deleteEducation(id: string) {
         if (!confirm('Are you sure you want to delete this education?')) return;
 
-        const response: ResponseBase = await (
-            await fetch('/api/admin/education/delete', {
-                method: 'DELETE',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id }),
-            })
-        ).json();
+        setIsSaving(true);
+        try {
+            const response: ResponseBase = await (
+                await fetch('/api/admin/education/delete', {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id }),
+                })
+            ).json();
 
-        if (response.isSuccess) {
-            await dispatch(userActions.refresh());
-        } else {
-            alert(response.message);
+            if (response.isSuccess) {
+                await dispatch(userActions.refresh());
+            } else {
+                alert(response.message);
+            }
+        } finally {
+            setIsSaving(false);
         }
     }
 
@@ -179,6 +195,7 @@ export function EducationsSection() {
                                     onSave={updateEducation}
                                     onCancel={cancelEdit}
                                     saveLabel="Save"
+                                    isSaving={isSaving}
                                 />
                             </div>
                         ) : (
@@ -188,6 +205,7 @@ export function EducationsSection() {
                                 onEdit={() => startEdit(education)}
                                 onDelete={() => deleteEducation(education.id)}
                                 isLast={index === user.educations.length - 1 && !isAddingEducation}
+                                isSaving={isSaving}
                             />
                         )}
                     </div>
@@ -201,6 +219,7 @@ export function EducationsSection() {
                             onSave={createEducation}
                             onCancel={cancelEdit}
                             saveLabel="Add"
+                            isSaving={isSaving}
                         />
                     </div>
                 )}

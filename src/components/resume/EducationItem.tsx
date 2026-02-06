@@ -12,12 +12,14 @@ export function EducationItem({
     onEdit,
     onDelete,
     isLast = false,
+    isSaving,
 }: {
     education: EducationRow;
     isEditMode: boolean;
     onEdit: () => void;
     onDelete: () => void;
     isLast?: boolean;
+    isSaving?: boolean;
 }) {
     const [isExpanded, setIsExpanded] = useState(false);
     const endDate = education.isCurrent ? new Date() : new Date(education.endDate!);
@@ -122,6 +124,7 @@ export function EducationItem({
                             <Button
                                 className="bg-red-800 border-transparent hover:bg-white hover:text-red-800 hover:border-red-800"
                                 onClick={onDelete}
+                                disabled={isSaving}
                             >
                                 Delete
                             </Button>

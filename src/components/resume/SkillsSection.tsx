@@ -16,6 +16,7 @@ export function SkillsSection() {
     const [isEditMode, setIsEditMode] = useState<boolean>(false);
     const [skills, setSkills] = useState<string[]>(user.skills ?? []);
     const [skillsInput, setSkillsInput] = useState<string>(user.skills?.join(', ') ?? '');
+    const [isSaving, setIsSaving] = useState(false);
 
     function toggleEditMode() {
         setSkills(user.skills ?? []);
@@ -46,8 +47,13 @@ export function SkillsSection() {
     }
 
     async function onSave() {
-        await updateSkills();
-        toggleEditMode();
+        setIsSaving(true);
+        try {
+            await updateSkills();
+            toggleEditMode();
+        } finally {
+            setIsSaving(false);
+        }
     }
 
     return (
@@ -58,8 +64,8 @@ export function SkillsSection() {
                 </Button>
             )}
             {isEditMode && (
-                <Button onClick={onSave} className="absolute top-2 right-2">
-                    Save
+                <Button onClick={onSave} className="absolute top-2 right-2" disabled={isSaving}>
+                    {isSaving ? 'Saving...' : 'Save'}
                 </Button>
             )}
             <SectionHeader 

@@ -5,14 +5,16 @@ import { Input } from '@/components/Input';
 import { TextArea } from '@/components/TextArea';
 import PortfolioItemEditor from '@/components/portfolio/PortfolioItemEditor';
 import PortfolioViewer from '@/components/portfolio/PortfolioItemViewer';
-import { useAppSelector } from '@/store/hooks';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { PortfolioItemRow } from '@/types/db/portfolio-item-row';
 import { ResponseBase } from '@/types/response/response-base';
 import { NAVBAR_HEIGHT } from '@/constants/navbar-height.constant';
 import Link from 'next/link';
 import { useState } from 'react';
+import { userActions } from '@/store/slices/user-slice';
 
 export default function PageClient({ portfolioItem }: { portfolioItem: PortfolioItemRow }) {
+    const dispatch = useAppDispatch();
     const isAdmin = useAppSelector((state) => state.isAdmin);
 
     const [isEditingMeta, setIsEditingMeta] = useState(false);
@@ -53,6 +55,7 @@ export default function PageClient({ portfolioItem }: { portfolioItem: Portfolio
                 portfolioItem.title = title;
                 portfolioItem.description = description;
                 setIsEditingMeta(false);
+                dispatch(userActions.refresh());
             }
             alert(response.message);
         } catch (error) {

@@ -12,12 +12,14 @@ export function EducationForm({
     onSave,
     onCancel,
     saveLabel,
+    isSaving,
 }: {
     form: Partial<CreateEducationDto & { id?: string }>;
     onChange: (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
     onSave: () => void;
     onCancel: () => void;
     saveLabel: string;
+    isSaving?: boolean;
 }) {
     return (
         <div className="w-full flex flex-col gap-4 p-5 bg-white border border-gray-200 rounded-lg shadow-sm">
@@ -104,7 +106,7 @@ export function EducationForm({
             </div>
 
             <div className="flex gap-2 pt-2">
-                <Button onClick={onSave}>{saveLabel}</Button>
+                <Button onClick={onSave} disabled={isSaving}>{isSaving ? "Saving..." : saveLabel}</Button>
                 <Button onClick={onCancel}>Cancel</Button>
             </div>
         </div>

@@ -12,12 +12,14 @@ export function ExperienceForm({
     onSave,
     onCancel,
     saveLabel,
+    isSaving,
 }: {
     form: Partial<CreateExperienceDto & { id?: string }>;
     onChange: (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
     onSave: () => void;
     onCancel: () => void;
     saveLabel: string;
+    isSaving?: boolean;
 }) {
 
     return (
@@ -95,7 +97,7 @@ export function ExperienceForm({
             </div>
 
             <div className="flex gap-2 pt-2">
-                <Button onClick={onSave}>{saveLabel}</Button>
+                <Button onClick={onSave} disabled={isSaving}>{isSaving ? "Saving..." : saveLabel}</Button>
                 <Button onClick={onCancel}>Cancel</Button>
             </div>
         </div>

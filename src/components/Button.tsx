@@ -18,6 +18,7 @@ export function Button({
                 bg-black text-white text-s
                 hover:bg-white hover:text-black
                 duration-300
+                disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none
                 ${className ?? ''}
             `}
             {...rest}

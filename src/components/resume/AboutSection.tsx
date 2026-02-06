@@ -19,6 +19,7 @@ export function AboutSection() {
     const [isEditMode, setIsEditMode] = useState<boolean>(false);
     const [about, setAbout] = useState<string>(user.about ?? '');
     const [userImageFile, setUserImageFile] = useState<File | null>(null);
+    const [isSaving, setIsSaving] = useState(false);
 
     function toggleEditMode() {
         setAbout(user.about ?? '');
@@ -71,25 +72,35 @@ export function AboutSection() {
     }
 
     async function deleteUserImage() {
-        const response: ResponseBase = await (
-            await fetch('/api/admin/user-image/delete', {
-                method: 'DELETE',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ place: UserImagePlace.RESUME_PAGE } as DeleteUserImageDto),
-            })
-        ).json();
+        setIsSaving(true);
+        try {
+            const response: ResponseBase = await (
+                await fetch('/api/admin/user-image/delete', {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ place: UserImagePlace.RESUME_PAGE } as DeleteUserImageDto),
+                })
+            ).json();
 
-        if (response.isSuccess) {
-            await dispatch(userActions.refresh());
-            setUserImageFile(null);
+            if (response.isSuccess) {
+                await dispatch(userActions.refresh());
+                setUserImageFile(null);
+            }
+            alert(response.message);
+        } finally {
+            setIsSaving(false);
         }
-        alert(response.message);
     }
 
     async function onSave() {
-        await updateProfileInfo();
-        await upsertUserImage();
-        toggleEditMode();
+        setIsSaving(true);
+        try {
+            await updateProfileInfo();
+            await upsertUserImage();
+            toggleEditMode();
+        } finally {
+            setIsSaving(false);
+        }
     }
 
     const resumeImageUrl = user.userImages.find(
@@ -104,8 +115,8 @@ export function AboutSection() {
                 </Button>
             )}
             {isEditMode && (
-                <Button onClick={onSave} className="absolute top-2 right-2">
-                    Save
+                <Button onClick={onSave} className="absolute top-2 right-2" disabled={isSaving}>
+                    {isSaving ? 'Saving...' : 'Save'}
                 </Button>
             )}
             <SectionHeader title={(
@@ -180,6 +191,7 @@ export function AboutSection() {
                                 <Button
                                     className="bg-red-800 border-transparent hover:bg-white hover:text-red-800 hover:border-red-800"
                                     onClick={deleteUserImage}
+                                    disabled={isSaving}
                                 >
                                     Delete
                                 </Button>
