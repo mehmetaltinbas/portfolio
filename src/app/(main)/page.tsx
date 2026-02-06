@@ -3,6 +3,7 @@
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
 import { TextArea } from '@/components/TextArea';
+import { ButtonVariant } from '@/enums/button-variants.enum';
 import { UserImagePlace } from '@/enums/user-image-place.enum';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { userActions } from '@/store/slices/user-slice';
@@ -130,7 +131,7 @@ export default function Page() {
 
         setCvFile(null);
     }
-    
+
     async function deleteCv() {
         setIsSaving(true);
         try {
@@ -168,9 +169,11 @@ export default function Page() {
                 {!isEditMode ? (
                     <>
                         {isAdmin && (
-                            <Button onClick={toggleEditMode} className="absolute top-2 right-2">
-                                Edit
-                            </Button>
+                            <div className="absolute top-2 right-2">
+                                <Button onClick={toggleEditMode} variant={ButtonVariant.PRIMARY}>
+                                    Edit
+                                </Button>
+                            </div>
                         )}
 
                         <div className="h-full flex justify-center items-start">
@@ -190,14 +193,16 @@ export default function Page() {
                             <p className="text-2xl font-bold text-center text-[#003366]">{user.fullName}</p>
                             <p className="text-l font-semibold text-center text-[#174978]">{user.headline}</p>
                             <p className="text-center">{user.bio}</p>
-                            <Button onClick={viewCv}>View CV</Button>
+                            <Button onClick={viewCv} variant={ButtonVariant.PRIMARY}>View CV</Button>
                         </div>
                     </>
                 ) : (
                     <>
-                        <Button onClick={onSave} className="absolute top-2 right-2" disabled={isSaving}>
-                            {isSaving ? 'Saving...' : 'Save'}
-                        </Button>
+                        <div className="absolute top-2 right-2">
+                            <Button onClick={onSave} variant={ButtonVariant.PRIMARY} disabled={isSaving}>
+                                {isSaving ? 'Saving...' : 'Save'}
+                            </Button>
+                        </div>
 
                         <div className="relative w-full h-full flex justify-center items-start">
                             <Image
@@ -234,8 +239,7 @@ export default function Page() {
                                     />
                                 </label>
                                 <Button
-                                    className="bg-red-700 border-[1px] border-transparent
-                                        hover:text-red-700 hover:border-red-700"
+                                    variant={ButtonVariant.DANGER}
                                     onClick={deleteUserImage}
                                     disabled={isSaving}
                                 >
@@ -288,15 +292,14 @@ export default function Page() {
                                     />
                                 </label>
                                 <Button
-                                    className="bg-red-700 border-[1px] border-transparent
-                                        hover:text-red-700 hover:border-red-700"
+                                    variant={ButtonVariant.DANGER}
                                     onClick={deleteCv}
                                     disabled={isSaving}
                                 >
                                     Delete CV
                                 </Button>
                             </div>
-                            <Button onClick={viewCv}>View Current CV</Button>
+                            <Button onClick={viewCv} variant={ButtonVariant.PRIMARY}>View Current CV</Button>
                         </div>
                     </>
                 )}

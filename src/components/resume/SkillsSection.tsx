@@ -3,6 +3,7 @@
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
 import { SectionHeader } from '@/components/resume/SectionHeader';
+import { ButtonVariant } from '@/enums/button-variants.enum';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { userActions } from '@/store/slices/user-slice';
 import { UpdateUserDto } from '@/types/dto/user/update-user.dto';
@@ -59,16 +60,20 @@ export function SkillsSection() {
     return (
         <div className="relative w-full max-w-[700px] py-10 px-4 md:px-0">
             {isAdmin && !isEditMode && (
-                <Button onClick={toggleEditMode} className="absolute top-2 right-2">
-                    Edit
-                </Button>
+                <div className="absolute top-2 right-2">
+                    <Button onClick={toggleEditMode} variant={ButtonVariant.PRIMARY}>
+                        Edit
+                    </Button>
+                </div>
             )}
             {isEditMode && (
-                <Button onClick={onSave} className="absolute top-2 right-2" disabled={isSaving}>
-                    {isSaving ? 'Saving...' : 'Save'}
-                </Button>
+                <div className="absolute top-2 right-2">
+                    <Button onClick={onSave} variant={ButtonVariant.PRIMARY} disabled={isSaving}>
+                        {isSaving ? 'Saving...' : 'Save'}
+                    </Button>
+                </div>
             )}
-            <SectionHeader 
+            <SectionHeader
                 title={(
                     <>
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -76,7 +81,7 @@ export function SkillsSection() {
                         </svg>
                         <p>Skills</p>
                     </>
-                )} 
+                )}
             />
 
             <div className="mt-6">

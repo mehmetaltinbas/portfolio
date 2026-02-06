@@ -3,6 +3,7 @@
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
 import { TextArea } from '@/components/TextArea';
+import { ButtonVariant } from '@/enums/button-variants.enum';
 import { CreateEducationDto } from '@/types/dto/education/create-education.dto';
 import { ChangeEvent } from 'react';
 
@@ -106,8 +107,8 @@ export function EducationForm({
             </div>
 
             <div className="flex gap-2 pt-2">
-                <Button onClick={onSave} disabled={isSaving}>{isSaving ? "Saving..." : saveLabel}</Button>
-                <Button onClick={onCancel}>Cancel</Button>
+                <Button onClick={onSave} variant={ButtonVariant.PRIMARY} disabled={isSaving}>{isSaving ? "Saving..." : saveLabel}</Button>
+                <Button onClick={onCancel} variant={ButtonVariant.SECONDARY}>Cancel</Button>
             </div>
         </div>
     );

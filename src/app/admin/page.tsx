@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
+import { ButtonVariant } from '@/enums/button-variants.enum';
 import { useAppDispatch } from '@/store/hooks';
 import { isAdminActions } from '@/store/slices/is-admin-slice';
 import { UserSignInDto } from '@/types/dto/user/user-sign-in.dto';
@@ -41,7 +42,7 @@ export default function Page() {
                 <h1 className="font-bold text-xl">Admin</h1>
                 <Input type="text" name="userName" placeholder="username..." />
                 <Input type="password" name="password" placeholder="password..." />
-                <Button type="submit">Sign In</Button>
+                <Button type="submit" variant={ButtonVariant.PRIMARY}>Sign In</Button>
             </form>
         </div>
     );

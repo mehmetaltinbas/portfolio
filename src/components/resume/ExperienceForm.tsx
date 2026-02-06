@@ -3,8 +3,9 @@
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
 import { TextArea } from '@/components/TextArea';
+import { ButtonVariant } from '@/enums/button-variants.enum';
 import { CreateExperienceDto } from '@/types/dto/experience/create-experience.dto';
-import { ChangeEvent, useEffect } from 'react';
+import { ChangeEvent } from 'react';
 
 export function ExperienceForm({
     form,
@@ -15,7 +16,7 @@ export function ExperienceForm({
     isSaving,
 }: {
     form: Partial<CreateExperienceDto & { id?: string }>;
-    onChange: (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+    onChange: (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
     onSave: () => void;
     onCancel: () => void;
     saveLabel: string;
@@ -97,8 +98,8 @@ export function ExperienceForm({
             </div>
 
             <div className="flex gap-2 pt-2">
-                <Button onClick={onSave} disabled={isSaving}>{isSaving ? "Saving..." : saveLabel}</Button>
-                <Button onClick={onCancel}>Cancel</Button>
+                <Button onClick={onSave} variant={ButtonVariant.PRIMARY} disabled={isSaving}>{isSaving ? "Saving..." : saveLabel}</Button>
+                <Button onClick={onCancel} variant={ButtonVariant.SECONDARY}>Cancel</Button>
             </div>
         </div>
     );

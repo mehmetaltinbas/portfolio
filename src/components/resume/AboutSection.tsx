@@ -3,6 +3,7 @@
 import { Button } from '@/components/Button';
 import { TextArea } from '@/components/TextArea';
 import { SectionHeader } from '@/components/resume/SectionHeader';
+import { ButtonVariant } from '@/enums/button-variants.enum';
 import { UserImagePlace } from '@/enums/user-image-place.enum';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { userActions } from '@/store/slices/user-slice';
@@ -110,14 +111,18 @@ export function AboutSection() {
     return (
         <div className="relative w-full max-w-[700px] py-10 px-4 md:px-0">
             {isAdmin && !isEditMode && (
-                <Button onClick={toggleEditMode} className="absolute top-2 right-2">
-                    Edit
-                </Button>
+                <div className="absolute top-2 right-2">
+                    <Button onClick={toggleEditMode} variant={ButtonVariant.PRIMARY}>
+                        Edit
+                    </Button>
+                </div>
             )}
             {isEditMode && (
-                <Button onClick={onSave} className="absolute top-2 right-2" disabled={isSaving}>
-                    {isSaving ? 'Saving...' : 'Save'}
-                </Button>
+                <div className="absolute top-2 right-2">
+                    <Button onClick={onSave} variant={ButtonVariant.PRIMARY} disabled={isSaving}>
+                        {isSaving ? 'Saving...' : 'Save'}
+                    </Button>
+                </div>
             )}
             <SectionHeader title={(
                 <>
@@ -189,7 +194,7 @@ export function AboutSection() {
                                     />
                                 </label>
                                 <Button
-                                    className="bg-red-800 border-transparent hover:bg-white hover:text-red-800 hover:border-red-800"
+                                    variant={ButtonVariant.DANGER}
                                     onClick={deleteUserImage}
                                     disabled={isSaving}
                                 >

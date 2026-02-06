@@ -9,6 +9,7 @@ import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { PortfolioItemRow } from '@/types/db/portfolio-item-row';
 import { ResponseBase } from '@/types/response/response-base';
 import { NAVBAR_HEIGHT } from '@/constants/navbar-height.constant';
+import { ButtonVariant } from '@/enums/button-variants.enum';
 import Link from 'next/link';
 import { useState } from 'react';
 import { userActions } from '@/store/slices/user-slice';
@@ -93,20 +94,20 @@ export default function PageClient({ portfolioItem }: { portfolioItem: Portfolio
             <div className="relative">
                 {isAdmin && !isEditingMeta && (
                     <div className="absolute top-4 right-4">
-                        <Button onClick={toggleMetaEditMode}>Edit</Button>
+                        <Button onClick={toggleMetaEditMode} variant={ButtonVariant.PRIMARY}>Edit</Button>
                     </div>
                 )}
                 {isEditingMeta && (
                     <div className="absolute top-4 right-4 flex gap-2">
-                        <Button onClick={handleSaveMeta} disabled={isSaving}>
+                        <Button onClick={handleSaveMeta} variant={ButtonVariant.PRIMARY} disabled={isSaving}>
                             {isSaving ? 'Saving...' : 'Save'}
                         </Button>
-                        <Button onClick={toggleMetaEditMode}>Cancel</Button>
+                        <Button onClick={toggleMetaEditMode} variant={ButtonVariant.SECONDARY}>Cancel</Button>
                     </div>
                 )}
                 <div className="w-full h-auto flex justify-start items-center gap-8 p-6 pr-32">
                     <Link href={'/portfolio'}>
-                        <Button>←</Button>
+                        <Button variant={ButtonVariant.PRIMARY}>←</Button>
                     </Link>
                     {isEditingMeta ? (
                         <Input
@@ -138,7 +139,7 @@ export default function PageClient({ portfolioItem }: { portfolioItem: Portfolio
             <div className="p-[25px]">
                 {isAdmin && !isEditingContent && (
                     <div className="sticky flex justify-end p-2 z-40 bg-white" style={{ top: NAVBAR_HEIGHT }}>
-                        <Button onClick={toggleContentEditMode}>Edit</Button>
+                        <Button onClick={toggleContentEditMode} variant={ButtonVariant.PRIMARY}>Edit</Button>
                     </div>
                 )}
                 {isEditingContent ? (

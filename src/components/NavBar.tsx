@@ -1,6 +1,7 @@
 'use client';
 
 import { Button } from '@/components/Button';
+import { ButtonVariant } from '@/enums/button-variants.enum';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { isAdminActions } from '@/store/slices/is-admin-slice';
 import { Link as LinkInterface } from '@/types/link';
@@ -43,16 +44,16 @@ export default function NavBar() {
             {isAdmin && (
                 <div className="absolute left-4 top-0.5 flex flex-col justify-center items-center">
                     <p className="text-s text-red-500">Admin</p>
-                    <Button onClick={signOut} className="text-xs">
+                    <Button onClick={signOut} variant={ButtonVariant.PRIMARY}>
                         SignOut
                     </Button>
                 </div>
             )}
 
             <div className="w-full h-auto bg-black flex justify-end md:hidden py-2 pr-2">
-                <button onClick={() => setIsOpen((prev) => !prev)}>
+                <Button onClick={() => setIsOpen((prev) => !prev)} variant={ButtonVariant.GHOST}>
                     {isOpen ? <X className="text-white" /> : <Menu className="text-white" />}
-                </button>
+                </Button>
             </div>
 
             <div

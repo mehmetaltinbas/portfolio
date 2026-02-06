@@ -1,6 +1,8 @@
 'use client';
 
+import { Button } from '@/components/Button';
 import { NAVBAR_HEIGHT } from '@/constants/navbar-height.constant';
+import { ButtonVariant } from '@/enums/button-variants.enum';
 import { UploadPortfolioItemImageResponse } from '@/types/response/portfolio-item/upload-portfolio-item-image.response';
 import { Editor } from '@tiptap/react';
 import { ChangeEvent, useRef, useState } from 'react';
@@ -60,48 +62,55 @@ export default function EditorToolbar({
 
     return (
         <div className="sticky flex flex-wrap items-center gap-2 p-2 border-b z-40 bg-white" style={{ top: NAVBAR_HEIGHT }}>
-            <button
+            <Button
                 onClick={() => editor.chain().focus().toggleBold().run()}
-                className={`px-3 py-1 rounded border text-sm hover:bg-gray-100 ${editor.isActive('bold') ? 'bg-gray-200 border-gray-400' : 'border-gray-300'}`}
+                variant={ButtonVariant.TOOLBAR}
+                isActive={editor.isActive('bold')}
             >
                 Bold
-            </button>
-            <button
+            </Button>
+            <Button
                 onClick={() => editor.chain().focus().toggleItalic().run()}
-                className={`px-3 py-1 rounded border text-sm hover:bg-gray-100 ${editor.isActive('italic') ? 'bg-gray-200 border-gray-400' : 'border-gray-300'}`}
+                variant={ButtonVariant.TOOLBAR}
+                isActive={editor.isActive('italic')}
             >
                 Italic
-            </button>
-            <button
+            </Button>
+            <Button
                 onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-                className={`px-3 py-1 rounded border text-sm hover:bg-gray-100 ${editor.isActive('heading', { level: 1 }) ? 'bg-gray-200 border-gray-400' : 'border-gray-300'}`}
+                variant={ButtonVariant.TOOLBAR}
+                isActive={editor.isActive('heading', { level: 1 })}
             >
                 Title
-            </button>
-            <button
+            </Button>
+            <Button
                 onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-                className={`px-3 py-1 rounded border text-sm hover:bg-gray-100 ${editor.isActive('heading', { level: 2 }) ? 'bg-gray-200 border-gray-400' : 'border-gray-300'}`}
+                variant={ButtonVariant.TOOLBAR}
+                isActive={editor.isActive('heading', { level: 2 })}
             >
                 Subtitle
-            </button>
-            <button
+            </Button>
+            <Button
                 onClick={() => editor.chain().focus().toggleBulletList().run()}
-                className={`px-3 py-1 rounded border text-sm hover:bg-gray-100 ${editor.isActive('bulletList') ? 'bg-gray-200 border-gray-400' : 'border-gray-300'}`}
+                variant={ButtonVariant.TOOLBAR}
+                isActive={editor.isActive('bulletList')}
             >
                 Bullets
-            </button>
-            <button
+            </Button>
+            <Button
                 onClick={() => editor.chain().focus().toggleOrderedList().run()}
-                className={`px-3 py-1 rounded border text-sm hover:bg-gray-100 ${editor.isActive('orderedList') ? 'bg-gray-200 border-gray-400' : 'border-gray-300'}`}
+                variant={ButtonVariant.TOOLBAR}
+                isActive={editor.isActive('orderedList')}
             >
                 Numbers
-            </button>
-            <button
+            </Button>
+            <Button
                 onClick={() => editor.chain().focus().toggleCodeBlock().run()}
-                className={`px-3 py-1 rounded border text-sm hover:bg-gray-100 ${editor.isActive('codeBlock') ? 'bg-gray-200 border-gray-400' : 'border-gray-300'}`}
+                variant={ButtonVariant.TOOLBAR}
+                isActive={editor.isActive('codeBlock')}
             >
                 Code
-            </button>
+            </Button>
             <label
                 className={`cursor-pointer px-3 py-1 rounded border text-sm hover:bg-gray-100 border-gray-300 ${isUploading ? 'opacity-50 pointer-events-none' : ''}`}
             >
@@ -119,21 +128,21 @@ export default function EditorToolbar({
             {(onSave || onCancel) && (
                 <div className="flex gap-2 ml-auto">
                     {onSave && (
-                        <button
+                        <Button
                             onClick={onSave}
                             disabled={isSaving}
-                            className="cursor-pointer px-3 py-1 rounded border-2 border-black bg-black text-white text-sm hover:bg-white hover:text-black duration-300 disabled:opacity-50"
+                            variant={ButtonVariant.PRIMARY}
                         >
                             {isSaving ? 'Saving...' : 'Save'}
-                        </button>
+                        </Button>
                     )}
                     {onCancel && (
-                        <button
+                        <Button
                             onClick={onCancel}
-                            className="cursor-pointer px-3 py-1 rounded border-2 border-black bg-black text-white text-sm hover:bg-white hover:text-black duration-300 disabled:opacity-50"
+                            variant={ButtonVariant.SECONDARY}
                         >
                             Cancel
-                        </button>
+                        </Button>
                     )}
                 </div>
             )}

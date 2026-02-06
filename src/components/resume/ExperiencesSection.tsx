@@ -4,6 +4,7 @@ import { Button } from '@/components/Button';
 import { ExperienceForm } from '@/components/resume/ExperienceForm';
 import { ExperienceItem } from '@/components/resume/ExperienceItem';
 import { SectionHeader } from '@/components/resume/SectionHeader';
+import { ButtonVariant } from '@/enums/button-variants.enum';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { userActions } from '@/store/slices/user-slice';
 import { ExperienceRow } from '@/types/db/experience-row';
@@ -156,24 +157,28 @@ export function ExperiencesSection() {
     return (
         <div className="relative w-full max-w-[700px] py-10 px-4 md:px-0">
             {isAdmin && !isEditMode && (
-                <Button onClick={toggleEditMode} className="absolute top-2 right-2 md:right-0">
-                    Edit
-                </Button>
+                <div className="absolute top-2 right-2 md:right-0">
+                    <Button onClick={toggleEditMode} variant={ButtonVariant.PRIMARY}>
+                        Edit
+                    </Button>
+                </div>
             )}
             {isEditMode && (
-                <Button onClick={toggleEditMode} className="absolute top-2 right-2 md:right-0">
-                    Done
-                </Button>
+                <div className="absolute top-2 right-2 md:right-0">
+                    <Button onClick={toggleEditMode} variant={ButtonVariant.SECONDARY}>
+                        Done
+                    </Button>
+                </div>
             )}
 
             <div className="mb-8">
-                <SectionHeader 
+                <SectionHeader
                     title={(
                         <>
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
                             <p>Experiences</p>
                         </>
-                    )} 
+                    )}
                 />
             </div>
 
@@ -219,7 +224,7 @@ export function ExperiencesSection() {
 
                 {isEditMode && !isAddingExperience && !editingExperienceId && (
                     <div className="ml-10 md:ml-10 mt-2">
-                        <Button onClick={startAdd}>+ Add Experience</Button>
+                        <Button onClick={startAdd} variant={ButtonVariant.PRIMARY}>+ Add Experience</Button>
                     </div>
                 )}
             </div>

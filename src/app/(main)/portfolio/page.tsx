@@ -3,6 +3,7 @@
 import { Button } from '@/components/Button';
 import CreatePortfolioItemForm from '@/components/portfolio/CreatePortfolioItemForm';
 import PortfolioItemCard from '@/components/portfolio/PortfolioItemCard';
+import { ButtonVariant } from '@/enums/button-variants.enum';
 import { useAppSelector } from '@/store/hooks';
 import { useRef, useState } from 'react';
 
@@ -33,7 +34,7 @@ export default function Page() {
                 <div className="flex justify-center items-center gap-4 md:col-span-2 xl:col-span-3">
                     <p className="text-2xl font-bold text-center md:col-span-2 xl:col-span-3 p-4">Portfolio</p>
                     {isAdmin && (
-                        <Button onClick={(event) => toggleCreatePortfolioItemForm(event.currentTarget)}>+</Button>
+                        <Button onClick={(event) => toggleCreatePortfolioItemForm(event.currentTarget)} variant={ButtonVariant.PRIMARY}>+</Button>
                     )}
                 </div>
                 {user.portfolioItems.map((portfolioItem, index) => (

@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/Button';
 import { DESCRIPTION_CHAR_LIMIT } from '@/constants/description-char-limit.constant';
+import { ButtonVariant } from '@/enums/button-variants.enum';
 import { EducationRow } from '@/types/db/education-row';
 import { calculateDuration } from '@/utils/calculate-duration.util';
 import { useState } from 'react';
@@ -93,36 +94,38 @@ export function EducationItem({
                             <p className="text-gray-600 text-sm leading-relaxed inline">
                                 {displayDescription}
                                 {shouldTruncate && !isExpanded && (
-                                    <button
+                                    <Button
                                         onClick={() => setIsExpanded(true)}
-                                        className="inline-flex items-center ml-1 text-gray-800 hover:text-gray-600 font-medium cursor-pointer"
+                                        variant={ButtonVariant.LINK}
+                                        className="inline-flex items-center ml-1 font-medium"
                                     >
                                         <span className="tracking-wider">...</span>
                                         <svg className="w-4 h-4 ml-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                                         </svg>
-                                    </button>
+                                    </Button>
                                 )}
                             </p>
                             {shouldTruncate && isExpanded && (
-                                <button
+                                <Button
                                     onClick={() => setIsExpanded(false)}
-                                    className="flex items-center mt-2 text-gray-800 hover:text-gray-600 text-sm font-medium cursor-pointer"
+                                    variant={ButtonVariant.LINK}
+                                    className="flex items-center mt-2 text-sm font-medium"
                                 >
                                     <span>Show less</span>
                                     <svg className="w-4 h-4 ml-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
                                     </svg>
-                                </button>
+                                </Button>
                             )}
                         </div>
                     )}
 
                     {isEditMode && (
                         <div className="flex gap-2 mt-4 pt-3 border-t border-gray-200">
-                            <Button onClick={onEdit}>Edit</Button>
+                            <Button onClick={onEdit} variant={ButtonVariant.PRIMARY}>Edit</Button>
                             <Button
-                                className="bg-red-800 border-transparent hover:bg-white hover:text-red-800 hover:border-red-800"
+                                variant={ButtonVariant.DANGER}
                                 onClick={onDelete}
                                 disabled={isSaving}
                             >

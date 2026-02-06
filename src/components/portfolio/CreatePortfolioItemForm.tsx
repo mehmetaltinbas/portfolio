@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
+import { ButtonVariant } from '@/enums/button-variants.enum';
 import { useAppDispatch } from '@/store/hooks';
 import { isAdminActions } from '@/store/slices/is-admin-slice';
 import { userActions } from '@/store/slices/user-slice';
@@ -62,15 +63,15 @@ export default function CreatePortfolioItemForm({
         <div
             ref={createPortfolioItemFormRef}
             className={`
-                ${isCreatePortfolioItemFormHidden ? 'invisible opacity-0 pointer-events-none' : 'visible opacity-100'} 
+                ${isCreatePortfolioItemFormHidden ? 'invisible opacity-0 pointer-events-none' : 'visible opacity-100'}
                 z-50 absolute w-auto h-auto p-4 bg-white
-                border rounded-xl 
+                border rounded-xl
                 flex flex-col justify-start items-center gap-2
             `}
         >
             <Input onChange={(event) => handleOnChange(event)} name="title" placeholder="title..." />
             <Input onChange={(event) => handleOnChange(event)} name="description" placeholder="description..." />
-            <Button onClick={async (event) => await createPortfolioItem()} disabled={isSaving}>{isSaving ? 'Creating...' : 'Create'}</Button>
+            <Button onClick={async (event) => await createPortfolioItem()} variant={ButtonVariant.PRIMARY} disabled={isSaving}>{isSaving ? 'Creating...' : 'Create'}</Button>
         </div>
     );
 }

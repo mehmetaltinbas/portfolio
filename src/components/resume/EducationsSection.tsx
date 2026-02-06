@@ -4,6 +4,7 @@ import { Button } from '@/components/Button';
 import { EducationForm } from '@/components/resume/EducationForm';
 import { EducationItem } from '@/components/resume/EducationItem';
 import { SectionHeader } from '@/components/resume/SectionHeader';
+import { ButtonVariant } from '@/enums/button-variants.enum';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { userActions } from '@/store/slices/user-slice';
 import { EducationRow } from '@/types/db/education-row';
@@ -159,14 +160,18 @@ export function EducationsSection() {
     return (
         <div className="relative w-full max-w-[700px] py-10 px-4 md:px-0">
             {isAdmin && !isEditMode && (
-                <Button onClick={toggleEditMode} className="absolute top-2 right-2 md:right-0">
-                    Edit
-                </Button>
+                <div className="absolute top-2 right-2 md:right-0">
+                    <Button onClick={toggleEditMode} variant={ButtonVariant.PRIMARY}>
+                        Edit
+                    </Button>
+                </div>
             )}
             {isEditMode && (
-                <Button onClick={toggleEditMode} className="absolute top-2 right-2 md:right-0">
-                    Done
-                </Button>
+                <div className="absolute top-2 right-2 md:right-0">
+                    <Button onClick={toggleEditMode} variant={ButtonVariant.SECONDARY}>
+                        Done
+                    </Button>
+                </div>
             )}
 
             <div className="mb-8">
@@ -226,7 +231,7 @@ export function EducationsSection() {
 
                 {isEditMode && !isAddingEducation && !editingEducationId && (
                     <div className="ml-10 md:ml-10 mt-2">
-                        <Button onClick={startAdd}>+ Add Education</Button>
+                        <Button onClick={startAdd} variant={ButtonVariant.PRIMARY}>+ Add Education</Button>
                     </div>
                 )}
             </div>
