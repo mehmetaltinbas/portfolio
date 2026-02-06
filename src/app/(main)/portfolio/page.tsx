@@ -34,14 +34,16 @@ export default function Page() {
                 <div className="flex justify-center items-center gap-4 md:col-span-2 xl:col-span-3">
                     <p className="text-2xl font-bold text-center md:col-span-2 xl:col-span-3 p-4">Portfolio</p>
                     {isAdmin && (
-                        <Button onClick={(event) => toggleCreatePortfolioItemForm(event.currentTarget)} variant={ButtonVariant.PRIMARY}>+</Button>
+                        <Button
+                            onClick={(event) => toggleCreatePortfolioItemForm(event.currentTarget)}
+                            variant={ButtonVariant.PRIMARY}
+                        >
+                            +
+                        </Button>
                     )}
                 </div>
                 {user.portfolioItems.map((portfolioItem, index) => (
-                    <PortfolioItemCard 
-                        key={portfolioItem.id}
-                        portfolioItem={portfolioItem} 
-                    />
+                    <PortfolioItemCard key={portfolioItem.id} portfolioItem={portfolioItem} />
                 ))}
 
                 <CreatePortfolioItemForm

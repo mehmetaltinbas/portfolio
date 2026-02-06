@@ -5,7 +5,9 @@ import { NextResponse } from 'next/server';
 export async function PATCH(req: Request) {
     const reqBody = await req.json();
 
-    const {
+    const { email, userName, password, fullName, headline, bio, about, location, cvUrl } = reqBody;
+
+    const dto: UpdateUserDto = {
         email,
         userName,
         password,
@@ -14,22 +16,9 @@ export async function PATCH(req: Request) {
         bio,
         about,
         location,
-        skills,
-        cvUrl
-    } = reqBody;
+        cvUrl,
+    };
 
-    const dto: UpdateUserDto = {
-        email,
-        userName,
-        password,
-        fullName,
-        headline,
-        bio, about,
-        location,
-        skills,
-        cvUrl
-    }; 
-    
     const response = await userService.update(dto);
     return NextResponse.json(response);
 }

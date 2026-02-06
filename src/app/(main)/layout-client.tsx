@@ -24,7 +24,9 @@ export default function LayoutClient({ children, isAuthorized }: { children: Rea
         <div className="w-ful h-full flex flex-col justify-start items-center">
             <NavBar />
             {isReady ? (
-                <div className="w-full h-full p-4" style={{ paddingTop: NAVBAR_HEIGHT }}>{children}</div>
+                <div className="w-full h-full p-4" style={{ paddingTop: NAVBAR_HEIGHT }}>
+                    {children}
+                </div>
             ) : (
                 <LoadingSpinner isHidden={false} />
             )}

@@ -46,7 +46,13 @@ export default function PortfolioItemEditor({
 
     return editor ? (
         <div>
-            <EditorToolbar editor={editor} portfolioItemId={portfolioItemId} onSave={onSave} isSaving={isSaving} onCancel={onCancel} />
+            <EditorToolbar
+                editor={editor}
+                portfolioItemId={portfolioItemId}
+                onSave={onSave}
+                isSaving={isSaving}
+                onCancel={onCancel}
+            />
             <EditorContent editor={editor} />
         </div>
     ) : (

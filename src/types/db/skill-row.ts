@@ -1,10 +1,9 @@
 import { JsonValue } from '@/generated/client/runtime/library';
 
-export interface PortfolioItemRow {
+export interface SkillRow {
     id: string;
     userId: string;
-    title: string;
-    description: string;
-    order: number;
+    name: string;
     content: JsonValue;
+    order: number;
 }

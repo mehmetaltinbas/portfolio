@@ -43,7 +43,7 @@ export const portfolioItemService = {
     },
 
     async updateById(id: string, updatePortfolioItemDto: UpdatePortfolioItemDto): Promise<ResponseBase> {
-        try {            
+        try {
             await prisma.portfolioItem.update({
                 where: {
                     id,
@@ -53,14 +53,16 @@ export const portfolioItemService = {
                     content: updatePortfolioItemDto.content as InputJsonValue,
                 },
             });
-    
+
             if (updatePortfolioItemDto.content) {
-                portfolioItemService.cleanUpOrphanedImages({
-                    portfolioItemId: id,
-                    content: updatePortfolioItemDto.content
-                }).catch(console.error);
+                portfolioItemService
+                    .cleanUpOrphanedImages({
+                        portfolioItemId: id,
+                        content: updatePortfolioItemDto.content,
+                    })
+                    .catch(console.error);
             }
-    
+
             return { isSuccess: true, message: 'updated' };
         } catch (error) {
             return { isSuccess: false, message: 'internal server error' };
@@ -69,9 +71,7 @@ export const portfolioItemService = {
 
     async deleteById(id: string): Promise<ResponseBase> {
         try {
-            const { data: files } = await supabase.storage
-                .from(SupabaseBucketName.PORTFOLIO_ITEM_IMAGES)
-                .list(id);
+            const { data: files } = await supabase.storage.from(SupabaseBucketName.PORTFOLIO_ITEM_IMAGES).list(id);
 
             if (files && files.length > 0) {
                 const filePaths = files.map((f) => `${id}/${f.name}`);
@@ -87,7 +87,9 @@ export const portfolioItemService = {
         }
     },
 
-    async uploadImage(uploadPortfolioItemImageDto: UploadPortfolioItemImageDto): Promise<UploadPortfolioItemImageResponse> {
+    async uploadImage(
+        uploadPortfolioItemImageDto: UploadPortfolioItemImageDto
+    ): Promise<UploadPortfolioItemImageResponse> {
         if (!uploadPortfolioItemImageDto.file) {
             return { isSuccess: false, message: "file doesn't exist" };
         }
@@ -125,7 +127,7 @@ export const portfolioItemService = {
             return {
                 isSuccess: true,
                 message: 'image uploaded',
-                url: publicUrlData.publicUrl
+                url: publicUrlData.publicUrl,
             };
         } catch (error) {
             console.error('Error uploading image:', error);
@@ -144,8 +146,7 @@ export const portfolioItemService = {
             const { data: files } = await supabase.storage
                 .from(SupabaseBucketName.PORTFOLIO_ITEM_IMAGES)
                 .list(dto.portfolioItemId);
-            if (!files || files.length === 0) 
-                return { isSuccess: true, message: 'no orphaned images to remove' };
+            if (!files || files.length === 0) return { isSuccess: true, message: 'no orphaned images to remove' };
 
             const referencedUrls = extractImageUrlsFromTipTapJson(dto.content);
 
@@ -162,9 +163,7 @@ export const portfolioItemService = {
             }
 
             if (orphanedPaths.length > 0) {
-                await supabase.storage
-                    .from(SupabaseBucketName.PORTFOLIO_ITEM_IMAGES)
-                    .remove(orphanedPaths);
+                await supabase.storage.from(SupabaseBucketName.PORTFOLIO_ITEM_IMAGES).remove(orphanedPaths);
             }
 
             return { isSuccess: true, message: 'orphaned images removed' };

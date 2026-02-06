@@ -1,4 +1,4 @@
-import { JsonValue } from "@/generated/client/runtime/library";
+import { JsonValue } from '@/generated/client/runtime/library';
 
 export interface CleanUpOrphanedPortfolioImagesDto {
     portfolioItemId: string;

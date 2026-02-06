@@ -77,8 +77,16 @@ export default function CreatePortfolioItemForm({
             <Input onChange={(event) => handleOnChange(event)} name="title" placeholder="title..." />
             <Input onChange={(event) => handleOnChange(event)} name="description" placeholder="description..." />
             <div className="flex gap-2">
-                <Button onClick={async (event) => await createPortfolioItem()} variant={ButtonVariant.PRIMARY} disabled={isSaving}>{isSaving ? 'Creating...' : 'Create'}</Button>
-                <Button onClick={cancelCreate} variant={ButtonVariant.SECONDARY}>Cancel</Button>
+                <Button
+                    onClick={async (event) => await createPortfolioItem()}
+                    variant={ButtonVariant.PRIMARY}
+                    disabled={isSaving}
+                >
+                    {isSaving ? 'Creating...' : 'Create'}
+                </Button>
+                <Button onClick={cancelCreate} variant={ButtonVariant.SECONDARY}>
+                    Cancel
+                </Button>
             </div>
         </div>
     );

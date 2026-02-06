@@ -42,7 +42,9 @@ export default function Page() {
                 <h1 className="font-bold text-xl">Admin</h1>
                 <Input type="text" name="userName" placeholder="username..." />
                 <Input type="password" name="password" placeholder="password..." />
-                <Button type="submit" variant={ButtonVariant.PRIMARY}>Sign In</Button>
+                <Button type="submit" variant={ButtonVariant.PRIMARY}>
+                    Sign In
+                </Button>
             </form>
         </div>
     );

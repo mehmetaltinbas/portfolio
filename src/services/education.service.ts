@@ -10,10 +10,7 @@ export const educationService = {
     async readAllByUserId(): Promise<ReadAllEducationsResponse> {
         const educations = await prisma.education.findMany({
             where: { userId },
-            orderBy: [
-                { isCurrent: 'desc' },
-                { startDate: 'desc' },
-            ],
+            orderBy: [{ isCurrent: 'desc' }, { startDate: 'desc' }],
         });
         return { isSuccess: true, message: 'all educations read', educations };
     },
@@ -61,7 +58,7 @@ export const educationService = {
                 description: dto.description ?? education.description,
                 isCurrent: dto.isCurrent ?? education.isCurrent,
                 startDate: dto.startDate ? new Date(dto.startDate + '-01') : education.startDate,
-                endDate: dto.isCurrent ? null : (dto.endDate ? new Date(dto.endDate + '-01') : education.endDate),
+                endDate: dto.isCurrent ? null : dto.endDate ? new Date(dto.endDate + '-01') : education.endDate,
             },
         });
         return { isSuccess: true, message: 'education updated' };

@@ -42,7 +42,7 @@ export default function PageClient({ portfolioItem }: { portfolioItem: Portfolio
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     portfolioItemId: portfolioItem.id,
-                    content: portfolioItem.content
+                    content: portfolioItem.content,
                 }),
             });
         }
@@ -100,11 +100,12 @@ export default function PageClient({ portfolioItem }: { portfolioItem: Portfolio
 
     return (
         <div className="w-full h-full">
-
             <div className="relative">
                 {isAdmin && !isEditingMeta && (
                     <div className="absolute top-4 right-4">
-                        <Button onClick={toggleMetaEditMode} variant={ButtonVariant.PRIMARY}>Edit</Button>
+                        <Button onClick={toggleMetaEditMode} variant={ButtonVariant.PRIMARY}>
+                            Edit
+                        </Button>
                     </div>
                 )}
                 {isEditingMeta && (
@@ -112,7 +113,9 @@ export default function PageClient({ portfolioItem }: { portfolioItem: Portfolio
                         <Button onClick={handleSaveMeta} variant={ButtonVariant.PRIMARY} disabled={isSaving}>
                             {isSaving ? 'Saving...' : 'Save'}
                         </Button>
-                        <Button onClick={toggleMetaEditMode} variant={ButtonVariant.SECONDARY}>Cancel</Button>
+                        <Button onClick={toggleMetaEditMode} variant={ButtonVariant.SECONDARY}>
+                            Cancel
+                        </Button>
                     </div>
                 )}
                 <div className="w-full h-auto flex justify-start items-center gap-8 p-6 pr-32">
@@ -149,7 +152,9 @@ export default function PageClient({ portfolioItem }: { portfolioItem: Portfolio
             <div className="p-[25px]">
                 {isAdmin && !isEditingContent && (
                     <div className="sticky flex justify-end p-2 z-40 bg-white" style={{ top: NAVBAR_HEIGHT }}>
-                        <Button onClick={toggleContentEditMode} variant={ButtonVariant.PRIMARY}>Edit</Button>
+                        <Button onClick={toggleContentEditMode} variant={ButtonVariant.PRIMARY}>
+                            Edit
+                        </Button>
                     </div>
                 )}
                 {isEditingContent ? (

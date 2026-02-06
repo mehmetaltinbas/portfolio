@@ -26,12 +26,7 @@ export function EducationForm({
         <div className="w-full flex flex-col gap-4 p-5 bg-white border border-gray-200 rounded-lg shadow-sm">
             <div className="space-y-1">
                 <label className="text-sm font-medium text-gray-700">School</label>
-                <Input
-                    name="school"
-                    value={form.school ?? ''}
-                    onChange={onChange}
-                    placeholder="e.g. MIT"
-                />
+                <Input name="school" value={form.school ?? ''} onChange={onChange} placeholder="e.g. MIT" />
             </div>
 
             <div className="space-y-1">
@@ -71,12 +66,7 @@ export function EducationForm({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1">
                     <label className="text-sm font-medium text-gray-700">Start Date</label>
-                    <Input
-                        name="startDate"
-                        type="month"
-                        value={form.startDate ?? ''}
-                        onChange={onChange}
-                    />
+                    <Input name="startDate" type="month" value={form.startDate ?? ''} onChange={onChange} />
                 </div>
                 <div className="space-y-1">
                     <label className="text-sm font-medium text-gray-700">End Date</label>
@@ -85,12 +75,7 @@ export function EducationForm({
                             Present
                         </div>
                     ) : (
-                        <Input
-                            name="endDate"
-                            type="month"
-                            value={form.endDate ?? ''}
-                            onChange={onChange}
-                        />
+                        <Input name="endDate" type="month" value={form.endDate ?? ''} onChange={onChange} />
                     )}
                 </div>
             </div>
@@ -107,8 +92,12 @@ export function EducationForm({
             </div>
 
             <div className="flex gap-2 pt-2">
-                <Button onClick={onSave} variant={ButtonVariant.PRIMARY} disabled={isSaving}>{isSaving ? "Saving..." : saveLabel}</Button>
-                <Button onClick={onCancel} variant={ButtonVariant.SECONDARY}>Cancel</Button>
+                <Button onClick={onSave} variant={ButtonVariant.PRIMARY} disabled={isSaving}>
+                    {isSaving ? 'Saving...' : saveLabel}
+                </Button>
+                <Button onClick={onCancel} variant={ButtonVariant.SECONDARY}>
+                    Cancel
+                </Button>
             </div>
         </div>
     );

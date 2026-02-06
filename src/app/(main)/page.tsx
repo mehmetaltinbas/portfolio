@@ -195,7 +195,9 @@ export default function Page() {
                             <p className="text-2xl font-bold text-center text-[#003366]">{user.fullName}</p>
                             <p className="text-l font-semibold text-center text-[#174978]">{user.headline}</p>
                             <p className="text-center">{user.bio}</p>
-                            <Button onClick={viewCv} variant={ButtonVariant.PRIMARY}>View CV</Button>
+                            <Button onClick={viewCv} variant={ButtonVariant.PRIMARY}>
+                                View CV
+                            </Button>
                         </div>
                     </>
                 ) : (
@@ -204,7 +206,9 @@ export default function Page() {
                             <Button onClick={onSave} variant={ButtonVariant.PRIMARY} disabled={isSaving}>
                                 {isSaving ? 'Saving...' : 'Save'}
                             </Button>
-                            <Button onClick={toggleEditMode} variant={ButtonVariant.SECONDARY}>Cancel</Button>
+                            <Button onClick={toggleEditMode} variant={ButtonVariant.SECONDARY}>
+                                Cancel
+                            </Button>
                         </div>
 
                         <div className="relative w-full h-full flex justify-center items-start">
@@ -235,17 +239,16 @@ export default function Page() {
                                         className="hidden"
                                         disabled={isSaving}
                                         onChange={(event) => {
-                                            if (event.currentTarget.files && event.currentTarget.files?.[0].type.startsWith('image/'))
+                                            if (
+                                                event.currentTarget.files &&
+                                                event.currentTarget.files?.[0].type.startsWith('image/')
+                                            )
                                                 setUserImageFile(event.currentTarget.files?.[0] ?? null);
                                             else alert('uploaded file must be type of image');
                                         }}
                                     />
                                 </label>
-                                <Button
-                                    variant={ButtonVariant.DANGER}
-                                    onClick={deleteUserImage}
-                                    disabled={isSaving}
-                                >
+                                <Button variant={ButtonVariant.DANGER} onClick={deleteUserImage} disabled={isSaving}>
                                     Delete
                                 </Button>
                             </div>
@@ -273,7 +276,7 @@ export default function Page() {
                                 className="w-full text-center resize-none whitespace-pre-wrap break-words"
                                 placeholder="bio..."
                             />
-                            <div className='flex gap-1'>
+                            <div className="flex gap-1">
                                 <label
                                     className={`cursor-pointer right-0 px-2 py-0.5
                                     border-2 border-black rounded-[10px]
@@ -294,15 +297,13 @@ export default function Page() {
                                         }}
                                     />
                                 </label>
-                                <Button
-                                    variant={ButtonVariant.DANGER}
-                                    onClick={deleteCv}
-                                    disabled={isSaving}
-                                >
+                                <Button variant={ButtonVariant.DANGER} onClick={deleteCv} disabled={isSaving}>
                                     Delete CV
                                 </Button>
                             </div>
-                            <Button onClick={viewCv} variant={ButtonVariant.PRIMARY}>View Current CV</Button>
+                            <Button onClick={viewCv} variant={ButtonVariant.PRIMARY}>
+                                View Current CV
+                            </Button>
                         </div>
                     </>
                 )}

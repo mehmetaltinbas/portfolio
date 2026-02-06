@@ -61,7 +61,10 @@ export default function EditorToolbar({
     }
 
     return (
-        <div className="sticky flex flex-wrap items-center gap-2 p-2 border-b z-40 bg-white" style={{ top: NAVBAR_HEIGHT }}>
+        <div
+            className="sticky flex flex-wrap items-center gap-2 p-2 border-b z-40 bg-white"
+            style={{ top: NAVBAR_HEIGHT }}
+        >
             <Button
                 onClick={() => editor.chain().focus().toggleBold().run()}
                 variant={ButtonVariant.TOOLBAR}
@@ -128,19 +131,12 @@ export default function EditorToolbar({
             {(onSave || onCancel) && (
                 <div className="flex gap-2 ml-auto">
                     {onSave && (
-                        <Button
-                            onClick={onSave}
-                            disabled={isSaving}
-                            variant={ButtonVariant.PRIMARY}
-                        >
+                        <Button onClick={onSave} disabled={isSaving} variant={ButtonVariant.PRIMARY}>
                             {isSaving ? 'Saving...' : 'Save'}
                         </Button>
                     )}
                     {onCancel && (
-                        <Button
-                            onClick={onCancel}
-                            variant={ButtonVariant.SECONDARY}
-                        >
+                        <Button onClick={onCancel} variant={ButtonVariant.SECONDARY}>
                             Cancel
                         </Button>
                     )}

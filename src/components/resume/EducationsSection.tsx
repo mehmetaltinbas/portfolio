@@ -31,9 +31,7 @@ export function EducationsSection() {
 
     function handleFormChange(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
         const { name, value, type } = event.currentTarget;
-        const checked = event.currentTarget instanceof HTMLInputElement
-            ? event.currentTarget.checked
-            : undefined;
+        const checked = event.currentTarget instanceof HTMLInputElement ? event.currentTarget.checked : undefined;
         setEducationForm((prev) => ({
             ...prev,
             [name]: type === 'checkbox' ? checked : value,
@@ -108,7 +106,12 @@ export function EducationsSection() {
     }
 
     async function updateEducation() {
-        if (!educationForm.isCurrent && educationForm.endDate && educationForm.startDate && educationForm.endDate < educationForm.startDate) {
+        if (
+            !educationForm.isCurrent &&
+            educationForm.endDate &&
+            educationForm.startDate &&
+            educationForm.endDate < educationForm.startDate
+        ) {
             alert('End date cannot be before start date');
             return;
         }
@@ -176,16 +179,31 @@ export function EducationsSection() {
 
             <div className="mb-8">
                 <SectionHeader
-                    title={(
+                    title={
                         <>
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l9-5-9-5-9 5 9 5z" />
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222" />
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M12 14l9-5-9-5-9 5 9 5z"
+                                />
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"
+                                />
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222"
+                                />
                             </svg>
                             <p>Education</p>
                         </>
-                    )}
+                    }
                 />
             </div>
 
@@ -231,7 +249,9 @@ export function EducationsSection() {
 
                 {isEditMode && !isAddingEducation && !editingEducationId && (
                     <div className="ml-10 md:ml-10 mt-2">
-                        <Button onClick={startAdd} variant={ButtonVariant.PRIMARY}>+ Add Education</Button>
+                        <Button onClick={startAdd} variant={ButtonVariant.PRIMARY}>
+                            + Add Education
+                        </Button>
                     </div>
                 )}
             </div>

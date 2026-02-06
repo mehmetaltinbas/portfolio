@@ -8,6 +8,5 @@ export interface UserRow {
     bio: string | null;
     about: string | null;
     location: string | null;
-    skills: string[];
     cvUrl: string | null;
 }

@@ -7,6 +7,5 @@ export interface UpdateUserDto {
     bio?: string;
     about?: string;
     location?: string;
-    skills?: string[];
     cvUrl?: string | null;
 }

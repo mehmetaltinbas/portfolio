@@ -10,10 +10,7 @@ export const experienceService = {
     async readAllByUserId(): Promise<ReadAllExperiencesResponse> {
         const experiences = await prisma.experience.findMany({
             where: { userId },
-            orderBy: [
-                { isCurrent: 'desc' },
-                { startDate: 'desc' },
-            ],
+            orderBy: [{ isCurrent: 'desc' }, { startDate: 'desc' }],
         });
         return { isSuccess: true, message: 'all experiences read', experiences };
     },
@@ -57,7 +54,7 @@ export const experienceService = {
                 company: dto.company ?? experience.company,
                 isCurrent: dto.isCurrent ?? experience.isCurrent,
                 startDate: dto.startDate ? new Date(dto.startDate + '-01') : experience.startDate,
-                endDate: dto.isCurrent ? null : (dto.endDate ? new Date(dto.endDate + '-01') : experience.endDate),
+                endDate: dto.isCurrent ? null : dto.endDate ? new Date(dto.endDate + '-01') : experience.endDate,
                 description: dto.description ?? experience.description,
             },
         });

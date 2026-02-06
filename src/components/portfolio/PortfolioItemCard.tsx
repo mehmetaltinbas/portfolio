@@ -12,7 +12,7 @@ import { FaFolder } from 'react-icons/fa';
 
 export default function PortfolioItemCard({ portfolioItem }: { portfolioItem: PortfolioItemRow }) {
     const dispatch = useAppDispatch();
-    const isAdmin = useAppSelector(state => state.isAdmin);
+    const isAdmin = useAppSelector((state) => state.isAdmin);
     const [isDeleting, setIsDeleting] = React.useState<boolean>(false);
 
     async function deletePortfolioItem(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
@@ -35,7 +35,7 @@ export default function PortfolioItemCard({ portfolioItem }: { portfolioItem: Po
                 alert(response.message);
             }
         } catch (error) {
-            alert("error");
+            alert('error');
         } finally {
             setIsDeleting(false);
         }
@@ -56,13 +56,13 @@ export default function PortfolioItemCard({ portfolioItem }: { portfolioItem: Po
                 project skills...
             </div> */}
             {isAdmin && (
-                <div className='w-full mt-4'>
+                <div className="w-full mt-4">
                     <Button
-                        onClick={event => deletePortfolioItem(event)}
+                        onClick={(event) => deletePortfolioItem(event)}
                         variant={ButtonVariant.DANGER}
                         disabled={isDeleting}
                     >
-                        Delete
+                        {isDeleting ? 'Deleting...' : 'Delete'}
                     </Button>
                 </div>
             )}

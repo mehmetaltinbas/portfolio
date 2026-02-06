@@ -104,9 +104,7 @@ export function AboutSection() {
         }
     }
 
-    const resumeImageUrl = user.userImages.find(
-        (userImage) => userImage.place === UserImagePlace.RESUME_PAGE
-    )?.url;
+    const resumeImageUrl = user.userImages.find((userImage) => userImage.place === UserImagePlace.RESUME_PAGE)?.url;
 
     return (
         <div className="relative w-full max-w-[700px] py-10 px-4 md:px-0">
@@ -122,17 +120,26 @@ export function AboutSection() {
                     <Button onClick={onSave} variant={ButtonVariant.PRIMARY} disabled={isSaving}>
                         {isSaving ? 'Saving...' : 'Save'}
                     </Button>
-                    <Button onClick={toggleEditMode} variant={ButtonVariant.SECONDARY}>Cancel</Button>
+                    <Button onClick={toggleEditMode} variant={ButtonVariant.SECONDARY}>
+                        Cancel
+                    </Button>
                 </div>
             )}
-            <SectionHeader title={(
-                <>
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
-                    <p>About</p>
-                </>
-            )} />
+            <SectionHeader
+                title={
+                    <>
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                            />
+                        </svg>
+                        <p>About</p>
+                    </>
+                }
+            />
 
             <div className="flex flex-col md:flex-row gap-6 md:gap-8 mt-6">
                 <div className="flex-1 flex flex-col gap-6">
@@ -194,11 +201,7 @@ export function AboutSection() {
                                         }}
                                     />
                                 </label>
-                                <Button
-                                    variant={ButtonVariant.DANGER}
-                                    onClick={deleteUserImage}
-                                    disabled={isSaving}
-                                >
+                                <Button variant={ButtonVariant.DANGER} onClick={deleteUserImage} disabled={isSaving}>
                                     Delete
                                 </Button>
                             </div>

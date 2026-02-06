@@ -94,17 +94,18 @@ export const userService = {
                     id: userId,
                 },
                 include: {
+                    skills: { orderBy: { order: 'asc' } },
                     userImages: true,
                     contacts: true,
                     experiences: {
                         orderBy: {
-                            startDate: 'desc'
-                        }
+                            startDate: 'desc',
+                        },
                     },
                     educations: {
                         orderBy: {
-                            startDate: 'desc'
-                        }
+                            startDate: 'desc',
+                        },
                     },
                     portfolioItems: true,
                 },
@@ -159,7 +160,7 @@ export const userService = {
             const fileBuffer = Buffer.from(await file.arrayBuffer());
 
             const readUserByIdResponse = await this.readById();
-            if (!readUserByIdResponse.isSuccess || !readUserByIdResponse.user) 
+            if (!readUserByIdResponse.isSuccess || !readUserByIdResponse.user)
                 throw new Error(readUserByIdResponse.message);
 
             const existingCvUrl = readUserByIdResponse.user.cvUrl;
@@ -179,12 +180,13 @@ export const userService = {
             } = supabase.storage.from(SupabaseBucketName.CV).getPublicUrl(newStoragePath);
 
             const updateUserResponse = await this.update({
-                cvUrl: publicUrl
+                cvUrl: publicUrl,
             } as UpdateUserDto);
             if (!updateUserResponse.isSuccess) {
                 const supabaseResponse = await supabase.storage.from(SupabaseBucketName.CV).remove([newStoragePath]);
 
-                if (supabaseResponse.error) console.error('Failed to delete cv from storage:', supabaseResponse.error.message);
+                if (supabaseResponse.error)
+                    console.error('Failed to delete cv from storage:', supabaseResponse.error.message);
 
                 throw new Error(updateUserResponse.message);
             }
@@ -197,7 +199,7 @@ export const userService = {
 
                     if (error) console.error('Failed to delete old cv from storage:', error.message);
                 }
-            } 
+            }
 
             return { isSuccess: true, message: 'cv uploaded' };
         } catch (error) {

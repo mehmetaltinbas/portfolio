@@ -48,9 +48,11 @@ export const userImageService = {
                     create: { userId: userId!, url: publicUrl, place: upsertUserImageDto.place },
                 });
             } catch (error) {
-                const supabaseResponse = await supabase.storage.from(SupabaseBucketName.USER_IMAGES).remove([newStoragePath]);
+                const supabaseResponse = await supabase.storage
+                    .from(SupabaseBucketName.USER_IMAGES)
+                    .remove([newStoragePath]);
 
-                if (supabaseResponse.error) 
+                if (supabaseResponse.error)
                     console.error('Failed to delete user image from storage:', supabaseResponse.error.message);
 
                 throw error;

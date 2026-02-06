@@ -6,52 +6,65 @@ import { SectionHeader } from '@/components/resume/SectionHeader';
 import { ButtonVariant } from '@/enums/button-variants.enum';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { userActions } from '@/store/slices/user-slice';
-import { UpdateUserDto } from '@/types/dto/user/update-user.dto';
 import { ResponseBase } from '@/types/response/response-base';
-import { ChangeEvent, useState } from 'react';
+import { useState } from 'react';
 
 export function SkillsSection() {
     const dispatch = useAppDispatch();
     const user = useAppSelector((state) => state.user);
     const isAdmin = useAppSelector((state) => state.isAdmin);
     const [isEditMode, setIsEditMode] = useState<boolean>(false);
-    const [skills, setSkills] = useState<string[]>(user.skills ?? []);
-    const [skillsInput, setSkillsInput] = useState<string>(user.skills?.join(', ') ?? '');
+    const [newSkillName, setNewSkillName] = useState<string>('');
     const [isSaving, setIsSaving] = useState(false);
 
     function toggleEditMode() {
-        setSkills(user.skills ?? []);
-        setSkillsInput(user.skills?.join(', ') ?? '');
+        setNewSkillName('');
         setIsEditMode((prev) => !prev);
     }
 
-    function handleSkillsChange(event: ChangeEvent<HTMLInputElement>) {
-        const value = event.currentTarget.value;
-        setSkillsInput(value);
-        setSkills(value.split(',').map((s) => s.trim()).filter((s) => s.length > 0));
-    }
+    async function addSkill() {
+        const trimmed = newSkillName.trim();
+        if (!trimmed || isSaving) return;
 
-    async function updateSkills() {
-        const dto: UpdateUserDto = { skills };
-        const response: ResponseBase = await (
-            await fetch('/api/admin/user/update', {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(dto),
-            })
-        ).json();
-        if (response.isSuccess) {
-            await dispatch(userActions.refresh());
-        } else {
-            alert(response.message);
+        setIsSaving(true);
+        try {
+            const response: ResponseBase = await (
+                await fetch('/api/admin/skill/create', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name: trimmed }),
+                })
+            ).json();
+
+            if (response.isSuccess) {
+                await dispatch(userActions.refresh());
+                setNewSkillName('');
+            } else {
+                alert(response.message);
+            }
+        } finally {
+            setIsSaving(false);
         }
     }
 
-    async function onSave() {
+    async function deleteSkill(id: string) {
+        if (isSaving) return;
+
         setIsSaving(true);
         try {
-            await updateSkills();
-            toggleEditMode();
+            const response: ResponseBase = await (
+                await fetch('/api/admin/skill/delete', {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id }),
+                })
+            ).json();
+
+            if (response.isSuccess) {
+                await dispatch(userActions.refresh());
+            } else {
+                alert(response.message);
+            }
         } finally {
             setIsSaving(false);
         }
@@ -60,64 +73,74 @@ export function SkillsSection() {
     return (
         <div className="relative w-full max-w-[700px] py-10 px-4 md:px-0">
             {isAdmin && !isEditMode && (
-                <div className="absolute top-2 right-2">
+                <div className="absolute top-2 right-2 md:right-0">
                     <Button onClick={toggleEditMode} variant={ButtonVariant.PRIMARY}>
                         Edit
                     </Button>
                 </div>
             )}
             {isEditMode && (
-                <div className="absolute top-2 right-2 flex gap-2">
-                    <Button onClick={onSave} variant={ButtonVariant.PRIMARY} disabled={isSaving}>
-                        {isSaving ? 'Saving...' : 'Save'}
+                <div className="absolute top-2 right-2 md:right-0">
+                    <Button onClick={toggleEditMode} variant={ButtonVariant.SECONDARY}>
+                        Done
                     </Button>
-                    <Button onClick={toggleEditMode} variant={ButtonVariant.SECONDARY}>Cancel</Button>
                 </div>
             )}
             <SectionHeader
-                title={(
+                title={
                     <>
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"
+                            />
                         </svg>
                         <p>Skills</p>
                     </>
-                )}
+                }
             />
 
             <div className="mt-6">
-                {!isEditMode ? (
-                    <div className="flex flex-wrap gap-2">
-                        {user.skills.map((skill, index) => (
-                            <span
-                                key={`skill-${index}-${skill}`}
-                                className="px-3 py-1.5 bg-gray-100 text-gray-700 text-sm font-medium rounded-full border border-gray-200 hover:bg-gray-200 transition-colors"
-                            >
-                                {skill}
-                            </span>
-                        ))}
-                    </div>
-                ) : (
-                    <div>
+                <div className="flex flex-wrap gap-2">
+                    {user.skills.map((skill) => (
+                        <span
+                            key={skill.id}
+                            className="px-3 py-1.5 bg-gray-100 text-gray-700 text-sm font-medium rounded-full border border-gray-200 hover:bg-gray-200 transition-colors flex items-center gap-1.5"
+                        >
+                            {skill.name}
+                            {isEditMode && (
+                                <button
+                                    onClick={() => deleteSkill(skill.id)}
+                                    disabled={isSaving}
+                                    className="text-gray-400 hover:text-red-500 transition-colors ml-0.5"
+                                >
+                                    &times;
+                                </button>
+                            )}
+                        </span>
+                    ))}
+                </div>
+
+                {isEditMode && (
+                    <div className="flex gap-2 mt-4">
                         <Input
-                            name="skills"
-                            onChange={handleSkillsChange}
-                            value={skillsInput}
-                            className="w-full"
-                            placeholder="Skills (comma-separated)..."
+                            name="newSkill"
+                            value={newSkillName}
+                            onChange={(e) => setNewSkillName(e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    e.preventDefault();
+                                    addSkill();
+                                }
+                            }}
+                            placeholder="New skill..."
+                            className="flex-1"
                         />
-                        {skills.length > 0 && (
-                            <div className="flex flex-wrap gap-2 mt-3">
-                                {skills.map((skill, index) => (
-                                    <span
-                                        key={`skill-preview-${index}-${skill}`}
-                                        className="px-3 py-1.5 bg-gray-100 text-gray-700 text-sm font-medium rounded-full border border-gray-200"
-                                    >
-                                        {skill}
-                                    </span>
-                                ))}
-                            </div>
-                        )}
+                        <Button onClick={addSkill} variant={ButtonVariant.PRIMARY} disabled={isSaving || !newSkillName.trim()}>
+                            Add
+                        </Button>
                     </div>
                 )}
             </div>
