@@ -1,6 +1,7 @@
 import { userId } from '@/constants/user-id.constant';
 import { SupabaseBucketName } from '@/enums/supabase-bucket-name.enum';
 import { InputJsonValue } from '@/generated/client/runtime/library';
+import { CleanUpOrphanedPortfolioImagesDto } from '@/types/dto/portfolio-item/clean-up-orphaned-portfolio-images.dto';
 import { CreatePortfolioItemDto } from '@/types/dto/portfolio-item/create-portfolio-item.dto';
 import { UpdatePortfolioItemDto } from '@/types/dto/portfolio-item/update-portfolio-item.dto';
 import { UploadPortfolioItemImageDto } from '@/types/dto/portfolio-item/upload-portfolio-item-image.dto';
@@ -54,7 +55,10 @@ export const portfolioItemService = {
             });
     
             if (updatePortfolioItemDto.content) {
-                portfolioItemService.cleanupOrphanedImages(id, updatePortfolioItemDto.content).catch(console.error);
+                portfolioItemService.cleanUpOrphanedImages({
+                    portfolioItemId: id,
+                    content: updatePortfolioItemDto.content
+                }).catch(console.error);
             }
     
             return { isSuccess: true, message: 'updated' };
@@ -126,18 +130,25 @@ export const portfolioItemService = {
         }
     },
 
-    async cleanupOrphanedImages(portfolioItemId: string, content: any): Promise<void> {
+    async cleanUpOrphanedImages(dto: CleanUpOrphanedPortfolioImagesDto): Promise<ResponseBase> {
+        if (!dto.portfolioItemId || !dto.content) {
+            return { isSuccess: false, message: "portfolioItemId or content isn't provided" };
+        }
+        if (typeof dto.content !== 'object' || (dto.content as { type: string }).type !== 'doc') {
+            return { isSuccess: false, message: 'content is not in intended form' };
+        }
         try {
             const { data: files } = await supabase.storage
                 .from(SupabaseBucketName.PORTFOLIO_ITEM_IMAGES)
-                .list(portfolioItemId);
-            if (!files || files.length === 0) return;
+                .list(dto.portfolioItemId);
+            if (!files || files.length === 0) 
+                return { isSuccess: true, message: 'no orphaned images to remove' };
 
-            const referencedUrls = extractImageUrlsFromTipTapJson(content);
+            const referencedUrls = extractImageUrlsFromTipTapJson(dto.content);
 
             const orphanedPaths: string[] = [];
             for (const file of files) {
-                const filePath = `${portfolioItemId}/${file.name}`;
+                const filePath = `${dto.portfolioItemId}/${file.name}`;
                 const { data: publicUrlData } = supabase.storage
                     .from(SupabaseBucketName.PORTFOLIO_ITEM_IMAGES)
                     .getPublicUrl(filePath);
@@ -148,10 +159,15 @@ export const portfolioItemService = {
             }
 
             if (orphanedPaths.length > 0) {
-                await supabase.storage.from(SupabaseBucketName.PORTFOLIO_ITEM_IMAGES).remove(orphanedPaths);
+                await supabase.storage
+                    .from(SupabaseBucketName.PORTFOLIO_ITEM_IMAGES)
+                    .remove(orphanedPaths);
             }
+
+            return { isSuccess: true, message: 'orphaned images removed' };
         } catch (error) {
             console.error('Error cleaning up orphaned images:', error);
+            return { isSuccess: false, message: 'error cleaning up orphaned images' };
         }
     },
 };

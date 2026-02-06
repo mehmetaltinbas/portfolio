@@ -5,14 +5,14 @@ import { Input } from '@/components/Input';
 import { TextArea } from '@/components/TextArea';
 import PortfolioItemEditor from '@/components/portfolio/PortfolioItemEditor';
 import PortfolioViewer from '@/components/portfolio/PortfolioItemViewer';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { PortfolioItemRow } from '@/types/db/portfolio-item-row';
-import { ResponseBase } from '@/types/response/response-base';
 import { NAVBAR_HEIGHT } from '@/constants/navbar-height.constant';
 import { ButtonVariant } from '@/enums/button-variants.enum';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { userActions } from '@/store/slices/user-slice';
+import { PortfolioItemRow } from '@/types/db/portfolio-item-row';
+import { ResponseBase } from '@/types/response/response-base';
 import Link from 'next/link';
 import { useState } from 'react';
-import { userActions } from '@/store/slices/user-slice';
 
 export default function PageClient({ portfolioItem }: { portfolioItem: PortfolioItemRow }) {
     const dispatch = useAppDispatch();
@@ -36,9 +36,17 @@ export default function PageClient({ portfolioItem }: { portfolioItem: Portfolio
     }
 
     function toggleContentEditMode() {
-        if (!isEditingContent) {
-            setContent(portfolioItem.content as object);
+        if (isEditingContent) {
+            fetch('/api/admin/portfolio-item/image/cleanup', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    portfolioItemId: portfolioItem.id,
+                    content: portfolioItem.content
+                }),
+            });
         }
+        setContent(portfolioItem.content as object);
         setIsEditingContent(!isEditingContent);
     }
 
