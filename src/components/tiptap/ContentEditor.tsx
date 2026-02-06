@@ -1,23 +1,27 @@
 'use client';
 
-import EditorToolbar from '@/components/portfolio/EditorToolbar';
 import LoadingSpinner from '@/components/LoadingSpinner';
+import EditorToolbar from '@/components/tiptap/EditorToolbar';
 import Image from '@tiptap/extension-image';
 import Link from '@tiptap/extension-link';
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 
-export default function PortfolioItemEditor({
+export default function ContentEditor({
     initialContent,
     onContentChange,
-    portfolioItemId,
+    entityId,
+    imageUploadUrl,
+    entityIdField,
     onSave,
     isSaving,
     onCancel,
 }: {
     initialContent?: any;
     onContentChange?: (content: any) => void;
-    portfolioItemId: string;
+    entityId: string;
+    imageUploadUrl: string;
+    entityIdField: string;
     onSave?: () => void;
     isSaving?: boolean;
     onCancel?: () => void;
@@ -48,7 +52,9 @@ export default function PortfolioItemEditor({
         <div>
             <EditorToolbar
                 editor={editor}
-                portfolioItemId={portfolioItemId}
+                entityId={entityId}
+                imageUploadUrl={imageUploadUrl}
+                entityIdField={entityIdField}
                 onSave={onSave}
                 isSaving={isSaving}
                 onCancel={onCancel}

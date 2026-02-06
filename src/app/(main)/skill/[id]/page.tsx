@@ -1,0 +1,21 @@
+'use server';
+
+import PageClient from '@/app/(main)/skill/[id]/page-client';
+import { skillService } from '@/services/skill.service';
+
+export default async function Page({ params }: { params: Promise<{ id: string }> }) {
+    const { id } = await params;
+    const readSingleSkillResponse = await skillService.readById(id);
+
+    return (
+        <div className="w-full h-full flex justify-center items-start">
+            <div className="w-[750px] h-full">
+                {readSingleSkillResponse.isSuccess && readSingleSkillResponse.skill ? (
+                    <PageClient skill={readSingleSkillResponse.skill} />
+                ) : (
+                    <div>Skill not found</div>
+                )}
+            </div>
+        </div>
+    );
+}

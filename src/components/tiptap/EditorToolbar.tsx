@@ -3,19 +3,23 @@
 import { Button } from '@/components/Button';
 import { NAVBAR_HEIGHT } from '@/constants/navbar-height.constant';
 import { ButtonVariant } from '@/enums/button-variants.enum';
-import { UploadPortfolioItemImageResponse } from '@/types/response/portfolio-item/upload-portfolio-item-image.response';
+import { ResponseBase } from '@/types/response/response-base';
 import { Editor } from '@tiptap/react';
 import { ChangeEvent, useRef, useState } from 'react';
 
 export default function EditorToolbar({
     editor,
-    portfolioItemId,
+    entityId,
+    imageUploadUrl,
+    entityIdField,
     onSave,
     isSaving,
     onCancel,
 }: {
     editor: Editor;
-    portfolioItemId: string;
+    entityId: string;
+    imageUploadUrl: string;
+    entityIdField: string;
     onSave?: () => void;
     isSaving?: boolean;
     onCancel?: () => void;
@@ -36,10 +40,10 @@ export default function EditorToolbar({
         try {
             const formData = new FormData();
             formData.append('file', file);
-            formData.append('portfolioItemId', portfolioItemId);
+            formData.append(entityIdField, entityId);
 
-            const response: UploadPortfolioItemImageResponse = await (
-                await fetch('/api/admin/portfolio-item/image/upload', {
+            const response: ResponseBase & { url?: string } = await (
+                await fetch(imageUploadUrl, {
                     method: 'POST',
                     body: formData,
                 })

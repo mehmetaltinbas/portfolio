@@ -3,50 +3,47 @@
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
 import PortfolioViewer from '@/components/portfolio/PortfolioItemViewer';
-import { TextArea } from '@/components/TextArea';
 import ContentEditor from '@/components/tiptap/ContentEditor';
 import { NAVBAR_HEIGHT } from '@/constants/navbar-height.constant';
 import { ButtonVariant } from '@/enums/button-variants.enum';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { userActions } from '@/store/slices/user-slice';
-import { PortfolioItemRow } from '@/types/db/portfolio-item-row';
+import { SkillRow } from '@/types/db/skill-row';
 import { ResponseBase } from '@/types/response/response-base';
 import Link from 'next/link';
 import { useState } from 'react';
 
-export default function PageClient({ portfolioItem }: { portfolioItem: PortfolioItemRow }) {
+export default function PageClient({ skill }: { skill: SkillRow }) {
     const dispatch = useAppDispatch();
     const isAdmin = useAppSelector((state) => state.isAdmin);
 
     const [isEditingMeta, setIsEditingMeta] = useState(false);
     const [isEditingContent, setIsEditingContent] = useState(false);
 
-    const [title, setTitle] = useState(portfolioItem.title);
-    const [description, setDescription] = useState(portfolioItem.description);
-    const [content, setContent] = useState<object>(portfolioItem.content as object);
+    const [name, setName] = useState(skill.name);
+    const [content, setContent] = useState<object>(skill.content as object);
 
     const [isSaving, setIsSaving] = useState(false);
 
     function toggleMetaEditMode() {
         if (!isEditingMeta) {
-            setTitle(portfolioItem.title);
-            setDescription(portfolioItem.description);
+            setName(skill.name);
         }
         setIsEditingMeta(!isEditingMeta);
     }
 
     function toggleContentEditMode() {
         if (isEditingContent) {
-            fetch('/api/admin/portfolio-item/image/cleanup', {
+            fetch('/api/admin/skill/image/cleanup', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    portfolioItemId: portfolioItem.id,
-                    content: portfolioItem.content,
+                    skillId: skill.id,
+                    content: skill.content,
                 }),
             });
         }
-        setContent(portfolioItem.content as object);
+        setContent(skill.content as object);
         setIsEditingContent(!isEditingContent);
     }
 
@@ -54,15 +51,14 @@ export default function PageClient({ portfolioItem }: { portfolioItem: Portfolio
         setIsSaving(true);
         try {
             const response: ResponseBase = await (
-                await fetch(`/api/admin/portfolio-item/update/${portfolioItem.id}`, {
+                await fetch('/api/admin/skill/update', {
                     method: 'PATCH',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ title, description }),
+                    body: JSON.stringify({ id: skill.id, name }),
                 })
             ).json();
             if (response.isSuccess) {
-                portfolioItem.title = title;
-                portfolioItem.description = description;
+                skill.name = name;
                 setIsEditingMeta(false);
                 dispatch(userActions.refresh());
             }
@@ -78,17 +74,17 @@ export default function PageClient({ portfolioItem }: { portfolioItem: Portfolio
         setIsSaving(true);
         try {
             const response: ResponseBase = await (
-                await fetch(`/api/admin/portfolio-item/update/${portfolioItem.id}`, {
+                await fetch('/api/admin/skill/update', {
                     method: 'PATCH',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ content }),
+                    body: JSON.stringify({ id: skill.id, content }),
                 })
             ).json();
             if (response.isSuccess) {
-                portfolioItem.content = content;
+                skill.content = content;
                 setIsEditingContent(false);
             } else {
-                setContent(portfolioItem.content as object);
+                setContent(skill.content as object);
                 alert(response.message);
             }
         } catch (error) {
@@ -119,30 +115,18 @@ export default function PageClient({ portfolioItem }: { portfolioItem: Portfolio
                     </div>
                 )}
                 <div className="w-full h-auto flex justify-start items-center gap-8 p-6 pr-32">
-                    <Link href={'/portfolio'}>
+                    <Link href={'/resume'}>
                         <Button variant={ButtonVariant.PRIMARY}>←</Button>
                     </Link>
                     {isEditingMeta ? (
                         <Input
-                            value={title}
-                            onChange={(e) => setTitle(e.target.value)}
-                            placeholder="Title"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            placeholder="Skill name"
                             className="text-2xl font-semibold"
                         />
                     ) : (
-                        <p className="font-semibold text-2xl">{portfolioItem.title}</p>
-                    )}
-                </div>
-                <div className="w-full h-auto p-6">
-                    {isEditingMeta ? (
-                        <TextArea
-                            value={description}
-                            onChange={(e) => setDescription(e.target.value)}
-                            placeholder="Description"
-                            rows={3}
-                        />
-                    ) : (
-                        <p>{portfolioItem.description}</p>
+                        <p className="font-semibold text-2xl">{skill.name}</p>
                     )}
                 </div>
             </div>
@@ -161,9 +145,9 @@ export default function PageClient({ portfolioItem }: { portfolioItem: Portfolio
                     <ContentEditor
                         initialContent={content}
                         onContentChange={setContent}
-                        entityId={portfolioItem.id}
-                        imageUploadUrl="/api/admin/portfolio-item/image/upload"
-                        entityIdField="portfolioItemId"
+                        entityId={skill.id}
+                        imageUploadUrl="/api/admin/skill/image/upload"
+                        entityIdField="skillId"
                         onSave={handleSaveContent}
                         isSaving={isSaving}
                         onCancel={toggleContentEditMode}

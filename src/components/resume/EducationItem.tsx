@@ -140,7 +140,7 @@ export function EducationItem({
                                     <Button
                                         onClick={() => setIsExpanded(true)}
                                         variant={ButtonVariant.LINK}
-                                        className="inline-flex items-center ml-1 font-medium"
+                                        className="cursor-pointer inline-flex items-center ml-1 font-medium"
                                     >
                                         <span className="tracking-wider">...</span>
                                         <svg
@@ -163,7 +163,7 @@ export function EducationItem({
                                 <Button
                                     onClick={() => setIsExpanded(false)}
                                     variant={ButtonVariant.LINK}
-                                    className="flex items-center mt-2 text-sm font-medium"
+                                    className="cursor-pointer flex items-center mt-2 text-sm font-medium"
                                 >
                                     <span>Show less</span>
                                     <svg

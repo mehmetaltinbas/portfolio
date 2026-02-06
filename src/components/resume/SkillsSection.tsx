@@ -7,6 +7,7 @@ import { ButtonVariant } from '@/enums/button-variants.enum';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { userActions } from '@/store/slices/user-slice';
 import { ResponseBase } from '@/types/response/response-base';
+import Link from 'next/link';
 import { useState } from 'react';
 
 export function SkillsSection() {
@@ -47,7 +48,9 @@ export function SkillsSection() {
         }
     }
 
-    async function deleteSkill(id: string) {
+    async function deleteSkill(id: string, skillName: string) {
+        if (!confirm(`Are you you sure you want to delete the ${skillName} skill?`)) return;
+
         if (isSaving) return;
 
         setIsSaving(true);
@@ -74,7 +77,10 @@ export function SkillsSection() {
         <div className="relative w-full max-w-[700px] py-10 px-4 md:px-0">
             {isAdmin && !isEditMode && (
                 <div className="absolute top-2 right-2 md:right-0">
-                    <Button onClick={toggleEditMode} variant={ButtonVariant.PRIMARY}>
+                    <Button
+                        onClick={toggleEditMode}
+                        variant={ButtonVariant.PRIMARY}
+                    >
                         Edit
                     </Button>
                 </div>
@@ -104,23 +110,29 @@ export function SkillsSection() {
 
             <div className="mt-6">
                 <div className="flex flex-wrap gap-2">
-                    {user.skills.map((skill) => (
-                        <span
-                            key={skill.id}
-                            className="px-3 py-1.5 bg-gray-100 text-gray-700 text-sm font-medium rounded-full border border-gray-200 hover:bg-gray-200 transition-colors flex items-center gap-1.5"
-                        >
-                            {skill.name}
-                            {isEditMode && (
+                    {user.skills.map((skill) =>
+                        isEditMode ? (
+                            <span
+                                key={skill.id}
+                                className="px-3 py-1.5 bg-gray-100 text-gray-700 text-sm font-medium rounded-full border border-gray-200 hover:bg-gray-200 transition-colors flex items-center gap-1.5"
+                            >
+                                {skill.name}
                                 <button
-                                    onClick={() => deleteSkill(skill.id)}
+                                    onClick={() => deleteSkill(skill.id, skill.name)}
                                     disabled={isSaving}
-                                    className="text-gray-400 hover:text-red-500 transition-colors ml-0.5"
+                                    className="text-red-400 hover:text-red-800 transition-colors ml-0.5"
                                 >
                                     &times;
                                 </button>
-                            )}
-                        </span>
-                    ))}
+                            </span>
+                        ) : (
+                            <Link key={skill.id} href={`/skill/${skill.id}`}>
+                                <span className="px-3 py-1.5 bg-gray-100 text-gray-700 text-sm font-medium rounded-full border border-gray-200 hover:bg-gray-200 transition-colors flex items-center gap-1.5">
+                                    {skill.name}
+                                </span>
+                            </Link>
+                        )
+                    )}
                 </div>
 
                 {isEditMode && (
@@ -138,7 +150,11 @@ export function SkillsSection() {
                             placeholder="New skill..."
                             className="flex-1"
                         />
-                        <Button onClick={addSkill} variant={ButtonVariant.PRIMARY} disabled={isSaving || !newSkillName.trim()}>
+                        <Button
+                            onClick={addSkill}
+                            variant={ButtonVariant.PRIMARY}
+                            disabled={isSaving || !newSkillName.trim()}
+                        >
                             Add
                         </Button>
                     </div>

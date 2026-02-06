@@ -29,7 +29,7 @@ body {
 .prose img {
     max-width: 100% !important;
     height: auto !important;
-    max-height: 400px !important;
+    max-height: 300px !important;
     object-fit: contain !important;
     margin-left: auto !important;
     margin-right: auto !important;
