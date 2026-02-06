@@ -67,9 +67,11 @@ export const portfolioItemService = {
         }
     },
 
-    async delete(id: string): Promise<ResponseBase> {
+    async deleteById(id: string): Promise<ResponseBase> {
         try {
-            const { data: files } = await supabase.storage.from(SupabaseBucketName.PORTFOLIO_ITEM_IMAGES).list(id);
+            const { data: files } = await supabase.storage
+                .from(SupabaseBucketName.PORTFOLIO_ITEM_IMAGES)
+                .list(id);
 
             if (files && files.length > 0) {
                 const filePaths = files.map((f) => `${id}/${f.name}`);
@@ -77,6 +79,7 @@ export const portfolioItemService = {
             }
 
             await prisma.portfolioItem.delete({ where: { id } });
+
             return { isSuccess: true, message: 'portfolio item deleted' };
         } catch (error) {
             console.error('Error deleting portfolio item:', error);

@@ -87,8 +87,10 @@ export default function PageClient({ portfolioItem }: { portfolioItem: Portfolio
             if (response.isSuccess) {
                 portfolioItem.content = content;
                 setIsEditingContent(false);
+            } else {
+                setContent(portfolioItem.content as object);
+                alert(response.message);
             }
-            alert(response.message);
         } catch (error) {
             alert('Error saving');
         } finally {

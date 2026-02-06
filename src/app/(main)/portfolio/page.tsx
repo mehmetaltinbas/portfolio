@@ -38,7 +38,10 @@ export default function Page() {
                     )}
                 </div>
                 {user.portfolioItems.map((portfolioItem, index) => (
-                    <PortfolioItemCard key={portfolioItem.id} portfolioItem={portfolioItem} />
+                    <PortfolioItemCard 
+                        key={portfolioItem.id}
+                        portfolioItem={portfolioItem} 
+                    />
                 ))}
 
                 <CreatePortfolioItemForm

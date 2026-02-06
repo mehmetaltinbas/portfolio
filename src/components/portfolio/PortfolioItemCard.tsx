@@ -1,8 +1,46 @@
+'use client';
+
+import { Button } from '@/components/Button';
+import { ButtonVariant } from '@/enums/button-variants.enum';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { userActions } from '@/store/slices/user-slice';
 import { PortfolioItemRow } from '@/types/db/portfolio-item-row';
+import { ResponseBase } from '@/types/response/response-base';
 import Link from 'next/link';
+import React from 'react';
 import { FaFolder } from 'react-icons/fa';
 
 export default function PortfolioItemCard({ portfolioItem }: { portfolioItem: PortfolioItemRow }) {
+    const dispatch = useAppDispatch();
+    const isAdmin = useAppSelector(state => state.isAdmin);
+    const [isDeleting, setIsDeleting] = React.useState<boolean>(false);
+
+    async function deletePortfolioItem(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+        event.stopPropagation();
+        event.preventDefault();
+
+        if (!confirm('Are you sure you want to delete this portfolio item?')) return;
+
+        setIsDeleting(true);
+        try {
+            const response: ResponseBase = await (
+                await fetch(`/api/admin/portfolio-item/delete/${portfolioItem.id}`, {
+                    method: 'DELETE',
+                })
+            ).json();
+
+            if (response.isSuccess) {
+                await dispatch(userActions.refresh());
+            } else {
+                alert(response.message);
+            }
+        } catch (error) {
+            alert("error");
+        } finally {
+            setIsDeleting(false);
+        }
+    }
+
     return (
         <Link
             href={`/portfolio/${portfolioItem.id}`}
@@ -17,6 +55,17 @@ export default function PortfolioItemCard({ portfolioItem }: { portfolioItem: Po
             {/* <div className="w-full flex items-center gap-[10px] overflow-x-auto">
                 project skills...
             </div> */}
+            {isAdmin && (
+                <div className='w-full mt-4'>
+                    <Button
+                        onClick={event => deletePortfolioItem(event)}
+                        variant={ButtonVariant.DANGER}
+                        disabled={isDeleting}
+                    >
+                        Delete
+                    </Button>
+                </div>
+            )}
         </Link>
     );
 }
