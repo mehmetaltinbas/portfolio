@@ -22,6 +22,7 @@ export const portfolioItemService = {
                 data: {
                     userId,
                     ...createPortfolioItemDto,
+                    order: 1, // mock order
                 },
             });
             return { isSuccess: true, message: 'portfolio item created' };
