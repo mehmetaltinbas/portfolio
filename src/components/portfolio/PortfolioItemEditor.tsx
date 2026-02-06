@@ -1,6 +1,6 @@
 'use client';
 
-import EditorToolbar from '@/components/EditorToolbar';
+import EditorToolbar from '@/components/portfolio/EditorToolbar';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import Image from '@tiptap/extension-image';
 import Link from '@tiptap/extension-link';

@@ -39,6 +39,8 @@ export default function Page() {
             headline: user.headline ?? undefined,
             bio: user.bio ?? undefined,
         });
+        setUserImageFile(null);
+        setCvFile(null);
         setIsEditMode((prev) => !prev);
     }
 
@@ -198,10 +200,11 @@ export default function Page() {
                     </>
                 ) : (
                     <>
-                        <div className="absolute top-2 right-2">
+                        <div className="absolute top-2 right-2 flex gap-2">
                             <Button onClick={onSave} variant={ButtonVariant.PRIMARY} disabled={isSaving}>
                                 {isSaving ? 'Saving...' : 'Save'}
                             </Button>
+                            <Button onClick={toggleEditMode} variant={ButtonVariant.SECONDARY}>Cancel</Button>
                         </div>
 
                         <div className="relative w-full h-full flex justify-center items-start">

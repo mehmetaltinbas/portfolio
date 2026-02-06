@@ -67,10 +67,11 @@ export function SkillsSection() {
                 </div>
             )}
             {isEditMode && (
-                <div className="absolute top-2 right-2">
+                <div className="absolute top-2 right-2 flex gap-2">
                     <Button onClick={onSave} variant={ButtonVariant.PRIMARY} disabled={isSaving}>
                         {isSaving ? 'Saving...' : 'Save'}
                     </Button>
+                    <Button onClick={toggleEditMode} variant={ButtonVariant.SECONDARY}>Cancel</Button>
                 </div>
             )}
             <SectionHeader

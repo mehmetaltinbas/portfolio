@@ -36,6 +36,11 @@ export default function CreatePortfolioItemForm({
         });
     }
 
+    function cancelCreate() {
+        setCreatePortfolioItemDto({ title: '', description: '' });
+        setIsCreatePortfolioItemFormHidden(true);
+    }
+
     async function createPortfolioItem() {
         setIsSaving(true);
         try {
@@ -71,7 +76,10 @@ export default function CreatePortfolioItemForm({
         >
             <Input onChange={(event) => handleOnChange(event)} name="title" placeholder="title..." />
             <Input onChange={(event) => handleOnChange(event)} name="description" placeholder="description..." />
-            <Button onClick={async (event) => await createPortfolioItem()} variant={ButtonVariant.PRIMARY} disabled={isSaving}>{isSaving ? 'Creating...' : 'Create'}</Button>
+            <div className="flex gap-2">
+                <Button onClick={async (event) => await createPortfolioItem()} variant={ButtonVariant.PRIMARY} disabled={isSaving}>{isSaving ? 'Creating...' : 'Create'}</Button>
+                <Button onClick={cancelCreate} variant={ButtonVariant.SECONDARY}>Cancel</Button>
+            </div>
         </div>
     );
 }
