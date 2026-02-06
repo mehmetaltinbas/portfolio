@@ -26,6 +26,17 @@ body {
     /* font-family: Arial, Helvetica, sans-serif; */
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
+[id='about'],
+[id='skills'],
+[id='experiences'],
+[id='educations'] {
+    scroll-margin-top: 68px;
+}
+
 .prose img {
     max-width: 100% !important;
     height: auto !important;

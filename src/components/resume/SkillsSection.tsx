@@ -10,7 +10,7 @@ import { ResponseBase } from '@/types/response/response-base';
 import Link from 'next/link';
 import { useState } from 'react';
 
-export function SkillsSection() {
+export function SkillsSection({ id }: { id?: string }) {
     const dispatch = useAppDispatch();
     const user = useAppSelector((state) => state.user);
     const isAdmin = useAppSelector((state) => state.isAdmin);
@@ -74,7 +74,7 @@ export function SkillsSection() {
     }
 
     return (
-        <div className="relative w-full max-w-[700px] py-10 px-4 md:px-0">
+        <div id={id} className="relative w-full max-w-[700px] py-10 px-4 md:px-0">
             {isAdmin && !isEditMode && (
                 <div className="absolute top-2 right-2 md:right-0">
                     <Button

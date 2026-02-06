@@ -115,7 +115,7 @@ export default function PageClient({ skill }: { skill: SkillRow }) {
                     </div>
                 )}
                 <div className="w-full h-auto flex justify-start items-center gap-8 p-6 pr-32">
-                    <Link href={'/resume'}>
+                    <Link href={'/resume#skills'}>
                         <Button variant={ButtonVariant.PRIMARY}>←</Button>
                     </Link>
                     {isEditingMeta ? (
