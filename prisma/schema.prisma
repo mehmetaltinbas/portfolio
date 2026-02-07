@@ -20,9 +20,9 @@ model User {
     about          String?
     location       String?
     cvUrl          String?
-    skills         Skill[]
     userImages     UserImage[]
     contacts       Contact[]
+    skills         Skill[]
     experiences    Experience[]
     educations     Education[]
     portfolioItems PortfolioItem[]

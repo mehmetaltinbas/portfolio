@@ -1,0 +1,1 @@
+export const TOOLTIP_LINE_CHAR_LIMIT = 50;
