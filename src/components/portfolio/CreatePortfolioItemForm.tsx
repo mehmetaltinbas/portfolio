@@ -2,9 +2,9 @@
 
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
+import { TextArea } from '@/components/TextArea';
 import { ButtonVariant } from '@/enums/button-variants.enum';
 import { useAppDispatch } from '@/store/hooks';
-import { isAdminActions } from '@/store/slices/is-admin-slice';
 import { userActions } from '@/store/slices/user-slice';
 import { CreatePortfolioItemDto } from '@/types/dto/portfolio-item/create-portfolio-item.dto';
 import { ResponseBase } from '@/types/response/response-base';
@@ -26,12 +26,12 @@ export default function CreatePortfolioItemForm({
         description: '',
     });
 
-    function handleOnChange(event: React.ChangeEvent<HTMLInputElement>) {
-        const inputElement = event.currentTarget;
+    function handleOnChange(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
+        const element = event.currentTarget;
         setCreatePortfolioItemDto((prev) => {
             return {
                 ...prev,
-                [inputElement.name]: inputElement.value,
+                [element.name]: element.value,
             };
         });
     }
@@ -43,6 +43,7 @@ export default function CreatePortfolioItemForm({
 
     async function createPortfolioItem() {
         setIsSaving(true);
+
         try {
             const response = (await (
                 await fetch('/api/admin/portfolio-item/create', {
@@ -53,12 +54,15 @@ export default function CreatePortfolioItemForm({
                     },
                 })
             ).json()) as ResponseBase;
+
             setIsCreatePortfolioItemFormHidden((prev) => !prev);
-            alert(response.message);
-            if (!response.isSuccess) dispatch(isAdminActions.set(false));
-            else if (response.isSuccess) {
+
+            if (!response.isSuccess) {
+                alert(response.message);
+            } else {
                 dispatch(userActions.refresh());
             }
+
         } finally {
             setIsSaving(false);
         }
@@ -69,13 +73,22 @@ export default function CreatePortfolioItemForm({
             ref={createPortfolioItemFormRef}
             className={`
                 ${isCreatePortfolioItemFormHidden ? 'invisible opacity-0 pointer-events-none' : 'visible opacity-100'}
-                z-50 absolute w-auto h-auto p-4 bg-white
+                z-50 absolute w-[400px] h-auto p-4 bg-white
                 border rounded-xl
                 flex flex-col justify-start items-center gap-2
             `}
         >
-            <Input onChange={(event) => handleOnChange(event)} name="title" placeholder="title..." />
-            <Input onChange={(event) => handleOnChange(event)} name="description" placeholder="description..." />
+            <Input
+                name="title"
+                onChange={(event) => handleOnChange(event)}
+                placeholder="title..."
+            />
+            <TextArea
+                name="description"
+                onChange={(event) => handleOnChange(event)}
+                placeholder="description..."
+                className='min-h-[100px]'
+            />
             <div className="flex gap-2">
                 <Button
                     onClick={async (event) => await createPortfolioItem()}

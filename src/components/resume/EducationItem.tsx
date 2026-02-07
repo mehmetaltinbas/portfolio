@@ -134,7 +134,7 @@ export function EducationItem({
 
                     {education.description && (
                         <div className="mt-3">
-                            <p className="text-gray-600 text-sm leading-relaxed inline">
+                            <p className="text-gray-600 text-sm leading-relaxed inline whitespace-pre-wrap">
                                 {displayDescription}
                                 {shouldTruncate && !isExpanded && (
                                     <Button

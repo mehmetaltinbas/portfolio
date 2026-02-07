@@ -29,10 +29,10 @@ export default function PortfolioItemCard({ portfolioItem }: { portfolioItem: Po
                 })
             ).json();
 
-            if (response.isSuccess) {
-                await dispatch(userActions.refresh());
-            } else {
+            if (!response.isSuccess) {
                 alert(response.message);
+            } else {
+                await dispatch(userActions.refresh());
             }
         } catch (error) {
             alert('error');
@@ -51,7 +51,7 @@ export default function PortfolioItemCard({ portfolioItem }: { portfolioItem: Po
                 <FaFolder className="text-xl" />
             </div>
             <p className="text-lg font-semibold">{portfolioItem.title}</p>
-            {/* <p className="text-gray-600">{portfolioItem.description}</p> */}
+            {/* <p className="text-gray-600 whitespace-pre-wrap">{portfolioItem.description}</p> */}
             {/* <div className="w-full flex items-center gap-[10px] overflow-x-auto">
                 project skills...
             </div> */}

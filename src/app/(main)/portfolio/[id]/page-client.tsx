@@ -142,7 +142,7 @@ export default function PageClient({ portfolioItem }: { portfolioItem: Portfolio
                             rows={3}
                         />
                     ) : (
-                        <p>{portfolioItem.description}</p>
+                        <p className='whitespace-pre-wrap'>{portfolioItem.description}</p>
                     )}
                 </div>
             </div>
