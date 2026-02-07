@@ -14,8 +14,8 @@ export function ResumeNavigationSidebar() {
             rafId = requestAnimationFrame(() => {
                 let current = RESUME_NAVIGATION_ITEMS[0].id;
                 for (const item of RESUME_NAVIGATION_ITEMS) {
-                    const el = document.getElementById(item.id);
-                    if (el && el.getBoundingClientRect().top <= 100) {
+                    const element = document.getElementById(item.id);
+                    if (element && element.getBoundingClientRect().top <= 100) {
                         current = item.id;
                     }
                 }
