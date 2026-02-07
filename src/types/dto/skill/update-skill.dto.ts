@@ -4,5 +4,4 @@ export interface UpdateSkillDto {
     id: string;
     name?: string;
     content?: JsonValue;
-    order?: number;
 }

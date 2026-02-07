@@ -1,14 +1,14 @@
 import { skillService } from '@/services/skill.service';
-import { UpdateSkillDto } from '@/types/dto/skill/update-skill.dto';
+import { ReorderSkillsDto } from '@/types/dto/skill/reorder-skills.dto';
 import { NextResponse } from 'next/server';
 
 export async function PATCH(req: Request) {
     const reqBody = await req.json();
 
-    const { id, name, content } = reqBody;
+    const { orderedIds } = reqBody;
 
-    const dto: UpdateSkillDto = { id, name, content };
+    const dto: ReorderSkillsDto = { orderedIds };
 
-    const response = await skillService.updateById(dto);
+    const response = await skillService.reorder(dto);
     return NextResponse.json(response);
 }

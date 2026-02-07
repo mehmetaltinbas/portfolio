@@ -9,22 +9,36 @@ import { ReadAllPortfolioItemsResponse } from '@/types/response/portfolio-item/r
 import { ReadSinglePortfolioItemResponse } from '@/types/response/portfolio-item/read-single-portfolio-item-response';
 import { UploadPortfolioItemImageResponse } from '@/types/response/portfolio-item/upload-portfolio-item-image.response';
 import { ResponseBase } from '@/types/response/response-base';
+import { TransactionClient } from '@/types/transaction-client.type';
 import { extractImageUrlsFromTipTapJson } from '@/utils/extract-image-urls-from-tip-tap-json.util';
 import { supabase } from '@/utils/supabase-client';
 import { prisma } from 'prisma/prisma-client';
 
-// TODO order management
 export const portfolioItemService = {
     async create(createPortfolioItemDto: CreatePortfolioItemDto): Promise<ResponseBase> {
+        if (!createPortfolioItemDto.title) {
+            return { isSuccess: false, message: 'title must exist' };
+        }
+        if (!createPortfolioItemDto.description) {
+            return { isSuccess: false, message: 'description must exist' };
+        }
+
         try {
-            if (!userId) return { isSuccess: false, message: 'userId is undefined' };
-            await prisma.portfolioItem.create({
-                data: {
-                    userId,
-                    ...createPortfolioItemDto,
-                    order: 1, // mock order
-                },
+            await prisma.$transaction(async (tx: TransactionClient) => {
+                await tx.portfolioItem.updateMany({
+                    where: { userId },
+                    data: { order: { increment: 1 } },
+                });
+
+                await prisma.portfolioItem.create({
+                    data: {
+                        userId,
+                        ...createPortfolioItemDto,
+                        order: 1,
+                    },
+                });
             });
+
             return { isSuccess: true, message: 'portfolio item created' };
         } catch (error) {
             return { isSuccess: false, message: "portfolio item couldn't created" };

@@ -224,7 +224,7 @@ export default function Page() {
                                 className="rounded-full"
                                 alt="profile photo"
                             />
-                            <div className="absolute top-2 left-2 flex flex-col justify-center items-center gap-2">
+                            <div className="absolute top-0 left-0 flex flex-col justify-center items-center gap-2">
                                 <label
                                     className={`cursor-pointer right-0 px-2 py-0.5
                                     border-2 border-black rounded-[10px]
@@ -232,7 +232,7 @@ export default function Page() {
                                     hover:bg-white hover:text-black
                                         duration-300 ${isSaving ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''}`}
                                 >
-                                    Edit
+                                    Change
                                     <input
                                         name="file"
                                         type="file"

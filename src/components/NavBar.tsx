@@ -1,29 +1,14 @@
 'use client';
 
 import { Button } from '@/components/Button';
+import { links } from '@/constants/links.constant';
 import { ButtonVariant } from '@/enums/button-variants.enum';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { isAdminActions } from '@/store/slices/is-admin-slice';
-import { Link as LinkInterface } from '@/types/link';
 import { ResponseBase } from '@/types/response/response-base';
 import { Menu, X } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
-
-const links: LinkInterface[] = [
-    {
-        name: 'Home',
-        href: '/',
-    },
-    {
-        name: 'Resume',
-        href: '/resume',
-    },
-    {
-        name: 'Portfolio',
-        href: '/portfolio',
-    },
-];
 
 export default function NavBar() {
     const dispatch = useAppDispatch();

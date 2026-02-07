@@ -62,7 +62,6 @@ export default function CreatePortfolioItemForm({
             } else {
                 dispatch(userActions.refresh());
             }
-
         } finally {
             setIsSaving(false);
         }
@@ -78,16 +77,12 @@ export default function CreatePortfolioItemForm({
                 flex flex-col justify-start items-center gap-2
             `}
         >
-            <Input
-                name="title"
-                onChange={(event) => handleOnChange(event)}
-                placeholder="title..."
-            />
+            <Input name="title" onChange={(event) => handleOnChange(event)} placeholder="title..." />
             <TextArea
                 name="description"
                 onChange={(event) => handleOnChange(event)}
                 placeholder="description..."
-                className='min-h-[100px]'
+                className="min-h-[100px]"
             />
             <div className="flex gap-2">
                 <Button

@@ -1,19 +1,19 @@
 import { userId } from '@/constants/user-id.constant';
 import { SupabaseBucketName } from '@/enums/supabase-bucket-name.enum';
-import { Prisma, PrismaClient } from '@/generated/client';
+import { Prisma } from '@/generated/client';
 import { InputJsonValue } from '@/generated/client/runtime/library';
 import { CleanUpOrphanedSkillImagesDto } from '@/types/dto/skill/clean-up-orphaned-skill-images.dto';
 import { CreateSkillDto } from '@/types/dto/skill/create-skill.dto';
+import { ReorderSkillsDto } from '@/types/dto/skill/reorder-skills.dto';
 import { UpdateSkillDto } from '@/types/dto/skill/update-skill.dto';
 import { UploadSkillImageDto } from '@/types/dto/skill/upload-skill-image.dto';
+import { ResponseBase } from '@/types/response/response-base';
 import { ReadSingleSkillResponse } from '@/types/response/skill/read-single-skill-response';
 import { UploadSkillImageResponse } from '@/types/response/skill/upload-skill-image-response';
-import { ResponseBase } from '@/types/response/response-base';
+import { TransactionClient } from '@/types/transaction-client.type';
 import { extractImageUrlsFromTipTapJson } from '@/utils/extract-image-urls-from-tip-tap-json.util';
 import { supabase } from '@/utils/supabase-client';
 import { prisma } from 'prisma/prisma-client';
-
-type TransactionClient = Omit<PrismaClient, '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'>;
 
 export const skillService = {
     async create(dto: CreateSkillDto): Promise<ResponseBase> {
@@ -48,26 +48,25 @@ export const skillService = {
         return { isSuccess: true, message: 'skill read', skill };
     },
 
-    async updateById(id: string, dto: UpdateSkillDto): Promise<ResponseBase> {
+    async updateById(dto: UpdateSkillDto): Promise<ResponseBase> {
         try {
-            const skill = await prisma.skill.findUnique({ where: { id } });
+            const skill = await prisma.skill.findUnique({ where: { id: dto.id } });
             if (!skill) {
                 return { isSuccess: false, message: 'skill not found' };
             }
 
             await prisma.skill.update({
-                where: { id },
+                where: { id: dto.id },
                 data: {
                     name: dto.name ?? skill.name,
                     content: dto.content !== undefined ? (dto.content as InputJsonValue) : undefined,
-                    order: dto.order ?? skill.order,
                 },
             });
 
             if (dto.content) {
                 skillService
                     .cleanUpOrphanedImages({
-                        skillId: id,
+                        skillId: dto.id,
                         content: dto.content,
                     })
                     .catch(console.error);
@@ -103,6 +102,19 @@ export const skillService = {
             return { isSuccess: true, message: 'skill deleted' };
         } catch {
             return { isSuccess: false, message: "skill couldn't be deleted" };
+        }
+    },
+
+    async reorder(dto: ReorderSkillsDto): Promise<ResponseBase> {
+        console.log('reordering?');
+        try {
+            await prisma.$transaction(
+                dto.orderedIds.map((id, index) => prisma.skill.update({ where: { id }, data: { order: index } }))
+            );
+
+            return { isSuccess: true, message: 'skills reordered' };
+        } catch {
+            return { isSuccess: false, message: "skills couldn't be reordered" };
         }
     },
 
@@ -160,9 +172,7 @@ export const skillService = {
             return { isSuccess: false, message: 'content is not in intended form' };
         }
         try {
-            const { data: files } = await supabase.storage
-                .from(SupabaseBucketName.SKILL_IMAGES)
-                .list(dto.skillId);
+            const { data: files } = await supabase.storage.from(SupabaseBucketName.SKILL_IMAGES).list(dto.skillId);
             if (!files || files.length === 0) return { isSuccess: true, message: 'no orphaned images to remove' };
 
             const referencedUrls = extractImageUrlsFromTipTapJson(dto.content);

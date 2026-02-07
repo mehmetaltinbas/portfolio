@@ -53,7 +53,7 @@ export default function PortfolioItemCard({ portfolioItem }: { portfolioItem: Po
             <p className="text-lg font-semibold">{portfolioItem.title}</p>
             {/* <p className="text-gray-600 whitespace-pre-wrap">{portfolioItem.description}</p> */}
             {/* <div className="w-full flex items-center gap-[10px] overflow-x-auto">
-                project skills...
+                slideable project skills...
             </div> */}
             {isAdmin && (
                 <div className="w-full mt-4">

@@ -3,12 +3,27 @@
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
 import { SectionHeader } from '@/components/resume/SectionHeader';
+import { SortableSkillPill } from '@/components/resume/SortableSkillPill';
 import { ButtonVariant } from '@/enums/button-variants.enum';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { userActions } from '@/store/slices/user-slice';
 import { ResponseBase } from '@/types/response/response-base';
+import {
+    DndContext,
+    DragEndEvent,
+    DragOverlay,
+    DragStartEvent,
+    KeyboardSensor,
+    PointerSensor,
+    closestCenter,
+    useSensor,
+    useSensors,
+} from '@dnd-kit/core';
+import { SortableContext, arrayMove, rectSortingStrategy, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
+import { GripVertical } from 'lucide-react';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { SkillRow } from '@/types/db/skill-row';
 
 export function SkillsSection({ id }: { id?: string }) {
     const dispatch = useAppDispatch();
@@ -17,6 +32,26 @@ export function SkillsSection({ id }: { id?: string }) {
     const [isEditMode, setIsEditMode] = useState<boolean>(false);
     const [newSkillName, setNewSkillName] = useState<string>('');
     const [isSaving, setIsSaving] = useState(false);
+    const [localSkills, setLocalSkills] = useState<SkillRow[]>(user.skills);
+    const [activeId, setActiveId] = useState<string | null>(null);
+
+    useEffect(() => {
+        setLocalSkills(user.skills);
+    }, [user.skills]);
+
+    useEffect(() => {
+        if (activeId) {
+            document.body.style.cursor = 'grabbing';
+            return () => {
+                document.body.style.cursor = '';
+            };
+        }
+    }, [activeId]);
+
+    const sensors = useSensors(
+        useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+        useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+    );
 
     function toggleEditMode() {
         setNewSkillName('');
@@ -73,14 +108,47 @@ export function SkillsSection({ id }: { id?: string }) {
         }
     }
 
+    function handleDragStart(event: DragStartEvent) {
+        setActiveId(event.active.id as string);
+    }
+
+    async function handleDragEnd(event: DragEndEvent) {
+        setActiveId(null);
+        const { active, over } = event;
+        if (!over || active.id === over.id) return;
+
+        const oldIndex = localSkills.findIndex((s) => s.id === active.id);
+        const newIndex = localSkills.findIndex((s) => s.id === over.id);
+
+        const reordered = arrayMove(localSkills, oldIndex, newIndex);
+        const previous = localSkills;
+        setLocalSkills(reordered);
+
+        try {
+            const response: ResponseBase = await (
+                await fetch('/api/admin/skill/reorder', {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ orderedIds: reordered.map((s) => s.id) }),
+                })
+            ).json();
+
+            if (response.isSuccess) {
+                await dispatch(userActions.refresh());
+            } else {
+                setLocalSkills(previous);
+                alert(response.message);
+            }
+        } catch {
+            setLocalSkills(previous);
+        }
+    }
+
     return (
         <div id={id} className="relative w-full max-w-[700px] py-10 px-4 md:px-0">
             {isAdmin && !isEditMode && (
                 <div className="absolute top-2 right-2 md:right-0">
-                    <Button
-                        onClick={toggleEditMode}
-                        variant={ButtonVariant.PRIMARY}
-                    >
+                    <Button onClick={toggleEditMode} variant={ButtonVariant.PRIMARY}>
                         Edit
                     </Button>
                 </div>
@@ -110,28 +178,42 @@ export function SkillsSection({ id }: { id?: string }) {
 
             <div className="mt-6">
                 <div className="flex flex-wrap gap-2">
-                    {user.skills.map((skill) =>
-                        isEditMode ? (
-                            <span
-                                key={skill.id}
-                                className="px-3 py-1.5 bg-gray-100 text-gray-700 text-sm font-medium rounded-full border border-gray-200 hover:bg-gray-200 transition-colors flex items-center gap-1.5"
-                            >
-                                {skill.name}
-                                <button
-                                    onClick={() => deleteSkill(skill.id, skill.name)}
-                                    disabled={isSaving}
-                                    className="text-red-400 hover:text-red-800 transition-colors ml-0.5"
-                                >
-                                    &times;
-                                </button>
-                            </span>
-                        ) : (
+                    {isEditMode ? (
+                        <DndContext
+                            sensors={sensors}
+                            collisionDetection={closestCenter}
+                            onDragStart={handleDragStart}
+                            onDragEnd={handleDragEnd}
+                        >
+                            <SortableContext items={localSkills.map((s) => s.id)} strategy={rectSortingStrategy}>
+                                {localSkills.map((skill) => (
+                                    <SortableSkillPill
+                                        key={skill.id}
+                                        skill={skill}
+                                        onDelete={deleteSkill}
+                                        isSaving={isSaving}
+                                    />
+                                ))}
+                            </SortableContext>
+                            <DragOverlay>
+                                {activeId ? (
+                                    <span className="px-3 py-1.5 bg-gray-100 text-gray-700 text-sm font-medium rounded-full border border-gray-200 flex items-center gap-1.5 shadow-lg select-none">
+                                        <span className="text-gray-400 -ml-1">
+                                            <GripVertical size={14} />
+                                        </span>
+                                        {localSkills.find((s) => s.id === activeId)?.name}
+                                    </span>
+                                ) : null}
+                            </DragOverlay>
+                        </DndContext>
+                    ) : (
+                        user.skills.map((skill) => (
                             <Link key={skill.id} href={`/skill/${skill.id}`}>
                                 <span className="px-3 py-1.5 bg-gray-100 text-gray-700 text-sm font-medium rounded-full border border-gray-200 hover:bg-gray-200 transition-colors flex items-center gap-1.5">
                                     {skill.name}
                                 </span>
                             </Link>
-                        )
+                        ))
                     )}
                 </div>
 

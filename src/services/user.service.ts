@@ -1,6 +1,6 @@
 import { userId } from '@/constants/user-id.constant';
 import { SupabaseBucketName } from '@/enums/supabase-bucket-name.enum';
-import { DecodedJwtPayload } from '@/types/decoded-jwt-payload';
+import { DecodedJwtPayload } from '@/types/decoded-jwt-payload.interface';
 import { UpdateUserDto } from '@/types/dto/user/update-user.dto';
 import { UserSignInDto } from '@/types/dto/user/user-sign-in.dto';
 import { UserSignUpDto } from '@/types/dto/user/user-sign-up.dto';
