@@ -35,6 +35,11 @@ export default function Page() {
     const [activeId, setActiveId] = useState<string | null>(null);
 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setLocalPortfolioItems(user.portfolioItems);
+    }, [user.portfolioItems]);
+
+    useEffect(() => {
         if (activeId) {
             document.body.style.cursor = 'grabbing';
             return () => {

@@ -118,6 +118,22 @@ export default function EditorToolbar({
             >
                 Code
             </Button>
+            <Button
+                onClick={() => {
+                    if (editor.isActive('link')) {
+                        editor.chain().focus().unsetLink().run();
+                        return;
+                    }
+                    const input = window.prompt('URL:');
+                    if (!input) return;
+                    const href = /^\w+:\/\//.test(input) ? input : `https://${input}`;
+                    editor.chain().focus().setLink({ href, target: '_blank' }).run();
+                }}
+                variant={ButtonVariant.TOOLBAR}
+                isActive={editor.isActive('link')}
+            >
+                Link
+            </Button>
             <label
                 className={`cursor-pointer px-3 py-1 rounded border text-sm hover:bg-gray-100 border-gray-300 ${isUploading ? 'opacity-50 pointer-events-none' : ''}`}
             >
