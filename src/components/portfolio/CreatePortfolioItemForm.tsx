@@ -21,10 +21,11 @@ export default function CreatePortfolioItemForm({
 }) {
     const dispatch = useAppDispatch();
     const [isSaving, setIsSaving] = useState(false);
-    const [createPortfolioItemDto, setCreatePortfolioItemDto] = React.useState<CreatePortfolioItemDto>({
+    const initialCreatePortfolioItemDto: CreatePortfolioItemDto = {
         title: '',
         description: '',
-    });
+    };
+    const [createPortfolioItemDto, setCreatePortfolioItemDto] = React.useState<CreatePortfolioItemDto>(initialCreatePortfolioItemDto);
 
     function handleOnChange(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
         const element = event.currentTarget;
@@ -60,6 +61,7 @@ export default function CreatePortfolioItemForm({
             if (!response.isSuccess) {
                 alert(response.message);
             } else {
+                setCreatePortfolioItemDto(initialCreatePortfolioItemDto);
                 dispatch(userActions.refresh());
             }
         } finally {
@@ -77,9 +79,14 @@ export default function CreatePortfolioItemForm({
                 flex flex-col justify-start items-center gap-2
             `}
         >
-            <Input name="title" onChange={(event) => handleOnChange(event)} placeholder="title..." />
+            <Input 
+                name="title" 
+                value={createPortfolioItemDto.title}
+                onChange={(event) => handleOnChange(event)} 
+                placeholder="title..." />
             <TextArea
                 name="description"
+                value={createPortfolioItemDto.description}
                 onChange={(event) => handleOnChange(event)}
                 placeholder="description..."
                 className="min-h-[100px]"

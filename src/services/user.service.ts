@@ -107,7 +107,7 @@ export const userService = {
                             startDate: 'desc',
                         },
                     },
-                    portfolioItems: true,
+                    portfolioItems: { orderBy: { order: 'asc' } },
                 },
             });
 

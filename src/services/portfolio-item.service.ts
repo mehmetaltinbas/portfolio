@@ -3,6 +3,7 @@ import { SupabaseBucketName } from '@/enums/supabase-bucket-name.enum';
 import { InputJsonValue } from '@/generated/client/runtime/library';
 import { CleanUpOrphanedPortfolioImagesDto } from '@/types/dto/portfolio-item/clean-up-orphaned-portfolio-images.dto';
 import { CreatePortfolioItemDto } from '@/types/dto/portfolio-item/create-portfolio-item.dto';
+import { ReorderPortfolioItemsDto } from '@/types/dto/portfolio-item/reorder-portfolio-items.dto';
 import { UpdatePortfolioItemDto } from '@/types/dto/portfolio-item/update-portfolio-item.dto';
 import { UploadPortfolioItemImageDto } from '@/types/dto/portfolio-item/upload-portfolio-item-image.dto';
 import { ReadAllPortfolioItemsResponse } from '@/types/response/portfolio-item/read-all-portfolio-items-response';
@@ -100,6 +101,20 @@ export const portfolioItemService = {
         } catch (error) {
             console.error('Error deleting portfolio item:', error);
             return { isSuccess: false, message: "portfolio item couldn't be deleted" };
+        }
+    },
+
+    async reorder(dto: ReorderPortfolioItemsDto): Promise<ResponseBase> {
+        try {
+            await prisma.$transaction(
+                dto.orderedIds.map((id, index) =>
+                    prisma.portfolioItem.update({ where: { id }, data: { order: index } })
+                )
+            );
+
+            return { isSuccess: true, message: 'portfolio items reordered' };
+        } catch {
+            return { isSuccess: false, message: "portfolio items couldn't be reordered" };
         }
     },
 

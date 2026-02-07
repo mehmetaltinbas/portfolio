@@ -44,7 +44,9 @@ export default function PortfolioItemCard({ portfolioItem }: { portfolioItem: Po
     return (
         <Link
             href={`/portfolio/${portfolioItem.id}`}
-            className="w-full h-full bg-white p-6 rounded-2xl shadow-md border flex flex-col justify-center items-center gap-0 transition-all hover:border-[#00316E] duration-300 hover:cursor-pointer
+            className="w-[300px] h-[150px] bg-white p-6 rounded-2xl shadow-md border 
+            flex flex-col justify-center items-center gap-0 transition-all 
+            hover:border-[#00316E] duration-300 hover:cursor-pointer
             ease-out hover:shadow-xl"
         >
             <div className="w-full flex justify-between items-center gap-2">
