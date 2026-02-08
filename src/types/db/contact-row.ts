@@ -3,4 +3,5 @@ export interface ContactRow {
     label: string;
     name: string;
     value: string;
+    order: number;
 }

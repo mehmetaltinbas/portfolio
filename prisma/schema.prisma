@@ -53,6 +53,7 @@ model Contact {
     userId String
     label  String
     name   String
+    order  Int
     value  String
 }
 

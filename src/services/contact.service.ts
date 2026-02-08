@@ -2,6 +2,7 @@ import { MAX_CONTACTS } from '@/constants/max-contacts.constant';
 import { userId } from '@/constants/user-id.constant';
 import { CreateContactDto } from '@/types/dto/contact/create-contact.dto';
 import { DeleteContactDto } from '@/types/dto/contact/delete-contact.dto';
+import { ReorderContactsDto } from '@/types/dto/contact/reorder-contacts.dto';
 import { UpdateContactDto } from '@/types/dto/contact/update-contact.dto';
 import { ReadAllContactsResponse } from '@/types/response/contact/read-all-contacts-response';
 import { ResponseBase } from '@/types/response/response-base';
@@ -9,7 +10,7 @@ import { prisma } from 'prisma/prisma-client';
 
 export const contactService = {
     async readAllByUserId(): Promise<ReadAllContactsResponse> {
-        const contacts = await prisma.contact.findMany({ where: { userId } });
+        const contacts = await prisma.contact.findMany({ where: { userId }, orderBy: { order: 'asc' } });
         return { isSuccess: true, message: 'all contacts read', contacts };
     },
 
@@ -25,6 +26,7 @@ export const contactService = {
                 label: dto.label,
                 name: dto.name,
                 value: dto.value,
+                order: count,
             },
         });
         return { isSuccess: true, message: 'contact created' };
@@ -55,5 +57,18 @@ export const contactService = {
 
         await prisma.contact.delete({ where: { id: dto.id } });
         return { isSuccess: true, message: 'contact deleted' };
+    },
+
+    async reorder(dto: ReorderContactsDto): Promise<ResponseBase> {
+        try {
+            await prisma.$transaction(
+                dto.orderedIds.map((id, index) =>
+                    prisma.contact.update({ where: { id }, data: { order: index } })
+                )
+            );
+            return { isSuccess: true, message: 'contacts reordered' };
+        } catch {
+            return { isSuccess: false, message: "contacts couldn't be reordered" };
+        }
     },
 };

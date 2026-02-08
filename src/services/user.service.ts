@@ -96,7 +96,7 @@ export const userService = {
                 include: {
                     skills: { orderBy: { order: 'asc' } },
                     userImages: true,
-                    contacts: true,
+                    contacts: { orderBy: { order: 'asc' } },
                     experiences: {
                         orderBy: {
                             startDate: 'desc',
