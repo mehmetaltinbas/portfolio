@@ -52,6 +52,7 @@ model Contact {
     user   User   @relation(fields: [userId], references: [id])
     userId String
     label  String
+    name   String
     value  String
 }
 

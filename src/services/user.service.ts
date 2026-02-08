@@ -55,7 +55,7 @@ export const userService = {
         if (!jwt)
             return {
                 isSuccess: false,
-                message: 'no jwt found in cookies',
+                message: 'Authorization failed. You need to sign in again.',
             };
 
         try {
