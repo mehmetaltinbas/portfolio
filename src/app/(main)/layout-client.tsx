@@ -1,6 +1,6 @@
 'use client';
 
-import { Contacts } from '@/components/Contacts';
+import { Contacts } from '@/components/contacts/Contacts';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import NavBar from '@/components/NavBar';
 import { NAVBAR_HEIGHT } from '@/constants/navbar-height.constant';
