@@ -18,6 +18,6 @@ export async function PATCH(req: Request) {
         endDate,
     };
 
-    const response = await educationService.update(dto);
+    const response = await educationService.updateById(dto);
     return NextResponse.json(response);
 }

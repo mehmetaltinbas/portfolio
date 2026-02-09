@@ -4,24 +4,22 @@ import { DeleteEducationDto } from '@/types/dto/education/delete-education.dto';
 import { UpdateEducationDto } from '@/types/dto/education/update-education.dto';
 import { ReadAllEducationsResponse } from '@/types/response/education/read-all-educations-response';
 import { ResponseBase } from '@/types/response/response-base';
+import { isValidYearMonth } from '@/utils/validate-year-month.util';
 import { prisma } from 'prisma/prisma-client';
 
 export const educationService = {
-    async readAllByUserId(): Promise<ReadAllEducationsResponse> {
-        try {
-            const educations = await prisma.education.findMany({
-                where: { userId },
-                orderBy: [{ isCurrent: 'desc' }, { startDate: 'desc' }],
-            });
-            return { isSuccess: true, message: 'all educations read', educations };
-        } catch {
-            return { isSuccess: false, message: "educations couldn't be read" };
-        }
-    },
-
     async create(dto: CreateEducationDto): Promise<ResponseBase> {
-        if (!dto.isCurrent && dto.endDate && dto.endDate < dto.startDate) {
-            return { isSuccess: false, message: 'End date cannot be before start date' };
+        if (!isValidYearMonth(dto.startDate)) {
+            return { isSuccess: false, message: 'Invalid start date format. Use YYYY-MM' };
+        }
+
+        if (!dto.isCurrent && dto.endDate) {
+            if (!isValidYearMonth(dto.endDate)) {
+                return { isSuccess: false, message: 'Invalid end date format. Use YYYY-MM' };
+            }
+            if (dto.endDate < dto.startDate) {
+                return { isSuccess: false, message: 'End date cannot be before start date' };
+            }
         }
 
         try {
@@ -43,11 +41,31 @@ export const educationService = {
         }
     },
 
-    async update(dto: UpdateEducationDto): Promise<ResponseBase> {
+    async readAllByUserId(): Promise<ReadAllEducationsResponse> {
+        try {
+            const educations = await prisma.education.findMany({
+                where: { userId },
+                orderBy: [{ isCurrent: 'desc' }, { startDate: 'desc' }],
+            });
+            return { isSuccess: true, message: 'all educations read', educations };
+        } catch {
+            return { isSuccess: false, message: "educations couldn't be read" };
+        }
+    },
+
+    async updateById(dto: UpdateEducationDto): Promise<ResponseBase> {
         try {
             const education = await prisma.education.findUnique({ where: { id: dto.id } });
             if (!education) {
                 return { isSuccess: false, message: 'education not found' };
+            }
+
+            if (dto.startDate && !isValidYearMonth(dto.startDate)) {
+                return { isSuccess: false, message: 'Invalid start date format. Use YYYY-MM' };
+            }
+
+            if (dto.endDate && !isValidYearMonth(dto.endDate)) {
+                return { isSuccess: false, message: 'Invalid end date format. Use YYYY-MM' };
             }
 
             const startDate = dto.startDate ?? education.startDate.toISOString().slice(0, 7);
@@ -76,7 +94,7 @@ export const educationService = {
         }
     },
 
-    async delete(dto: DeleteEducationDto): Promise<ResponseBase> {
+    async deleteById(dto: DeleteEducationDto): Promise<ResponseBase> {
         try {
             const education = await prisma.education.findUnique({ where: { id: dto.id } });
             if (!education) {

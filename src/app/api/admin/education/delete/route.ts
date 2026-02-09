@@ -9,6 +9,6 @@ export async function DELETE(req: Request) {
 
     const dto: DeleteEducationDto = { id };
 
-    const response = await educationService.delete(dto);
+    const response = await educationService.deleteById(dto);
     return NextResponse.json(response);
 }

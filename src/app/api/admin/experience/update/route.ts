@@ -17,6 +17,6 @@ export async function PATCH(req: Request) {
         description,
     };
 
-    const response = await experienceService.update(dto);
+    const response = await experienceService.updateById(dto);
     return NextResponse.json(response);
 }

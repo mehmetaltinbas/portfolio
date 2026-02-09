@@ -9,6 +9,6 @@ export async function DELETE(req: Request) {
 
     const dto: DeleteExperienceDto = { id };
 
-    const response = await experienceService.delete(dto);
+    const response = await experienceService.deleteById(dto);
     return NextResponse.json(response);
 }
