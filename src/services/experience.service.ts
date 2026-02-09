@@ -8,11 +8,15 @@ import { prisma } from 'prisma/prisma-client';
 
 export const experienceService = {
     async readAllByUserId(): Promise<ReadAllExperiencesResponse> {
-        const experiences = await prisma.experience.findMany({
-            where: { userId },
-            orderBy: [{ isCurrent: 'desc' }, { startDate: 'desc' }],
-        });
-        return { isSuccess: true, message: 'all experiences read', experiences };
+        try {
+            const experiences = await prisma.experience.findMany({
+                where: { userId },
+                orderBy: [{ isCurrent: 'desc' }, { startDate: 'desc' }],
+            });
+            return { isSuccess: true, message: 'all experiences read', experiences };
+        } catch {
+            return { isSuccess: false, message: "experiences couldn't be read" };
+        }
     },
 
     async create(dto: CreateExperienceDto): Promise<ResponseBase> {
@@ -20,54 +24,66 @@ export const experienceService = {
             return { isSuccess: false, message: 'End date cannot be before start date' };
         }
 
-        await prisma.experience.create({
-            data: {
-                userId,
-                title: dto.title,
-                company: dto.company,
-                isCurrent: dto.isCurrent,
-                startDate: new Date(dto.startDate + '-01'),
-                endDate: dto.isCurrent ? null : new Date(dto.endDate + '-01'),
-            },
-        });
-        return { isSuccess: true, message: 'experience created' };
+        try {
+            await prisma.experience.create({
+                data: {
+                    userId,
+                    title: dto.title,
+                    company: dto.company,
+                    isCurrent: dto.isCurrent,
+                    startDate: new Date(dto.startDate + '-01'),
+                    endDate: dto.isCurrent ? null : new Date(dto.endDate + '-01'),
+                },
+            });
+            return { isSuccess: true, message: 'experience created' };
+        } catch {
+            return { isSuccess: false, message: "experience couldn't be created" };
+        }
     },
 
     async update(dto: UpdateExperienceDto): Promise<ResponseBase> {
-        const experience = await prisma.experience.findUnique({ where: { id: dto.id } });
-        if (!experience) {
-            return { isSuccess: false, message: 'experience not found' };
+        try {
+            const experience = await prisma.experience.findUnique({ where: { id: dto.id } });
+            if (!experience) {
+                return { isSuccess: false, message: 'experience not found' };
+            }
+
+            const startDate = dto.startDate ?? experience.startDate.toISOString().slice(0, 7);
+            const endDate = dto.endDate ?? (experience.endDate ? experience.endDate.toISOString().slice(0, 7) : undefined);
+            const isCurrent = dto.isCurrent ?? experience.isCurrent;
+
+            if (!isCurrent && endDate && endDate < startDate) {
+                return { isSuccess: false, message: 'End date cannot be before start date' };
+            }
+
+            await prisma.experience.update({
+                where: { id: dto.id },
+                data: {
+                    title: dto.title ?? experience.title,
+                    company: dto.company ?? experience.company,
+                    isCurrent: dto.isCurrent ?? experience.isCurrent,
+                    startDate: dto.startDate ? new Date(dto.startDate + '-01') : experience.startDate,
+                    endDate: dto.isCurrent ? null : dto.endDate ? new Date(dto.endDate + '-01') : experience.endDate,
+                    description: dto.description ?? experience.description,
+                },
+            });
+            return { isSuccess: true, message: 'experience updated' };
+        } catch {
+            return { isSuccess: false, message: "experience couldn't be updated" };
         }
-
-        const startDate = dto.startDate ?? experience.startDate.toISOString().slice(0, 7);
-        const endDate = dto.endDate ?? (experience.endDate ? experience.endDate.toISOString().slice(0, 7) : undefined);
-        const isCurrent = dto.isCurrent ?? experience.isCurrent;
-
-        if (!isCurrent && endDate && endDate < startDate) {
-            return { isSuccess: false, message: 'End date cannot be before start date' };
-        }
-
-        await prisma.experience.update({
-            where: { id: dto.id },
-            data: {
-                title: dto.title ?? experience.title,
-                company: dto.company ?? experience.company,
-                isCurrent: dto.isCurrent ?? experience.isCurrent,
-                startDate: dto.startDate ? new Date(dto.startDate + '-01') : experience.startDate,
-                endDate: dto.isCurrent ? null : dto.endDate ? new Date(dto.endDate + '-01') : experience.endDate,
-                description: dto.description ?? experience.description,
-            },
-        });
-        return { isSuccess: true, message: 'experience updated' };
     },
 
     async delete(dto: DeleteExperienceDto): Promise<ResponseBase> {
-        const experience = await prisma.experience.findUnique({ where: { id: dto.id } });
-        if (!experience) {
-            return { isSuccess: false, message: 'experience not found' };
-        }
+        try {
+            const experience = await prisma.experience.findUnique({ where: { id: dto.id } });
+            if (!experience) {
+                return { isSuccess: false, message: 'experience not found' };
+            }
 
-        await prisma.experience.delete({ where: { id: dto.id } });
-        return { isSuccess: true, message: 'experience deleted' };
+            await prisma.experience.delete({ where: { id: dto.id } });
+            return { isSuccess: true, message: 'experience deleted' };
+        } catch {
+            return { isSuccess: false, message: "experience couldn't be deleted" };
+        }
     },
 };

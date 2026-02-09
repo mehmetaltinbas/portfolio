@@ -11,7 +11,7 @@ import { prisma } from 'prisma/prisma-client';
 export const userImageService = {
     async upsert(upsertUserImageDto: UpsertUserImageDto): Promise<ResponseBase> {
         if (!upsertUserImageDto.file || !upsertUserImageDto.place) {
-            return { isSuccess: false, message: "file or place does'nt exist" };
+            return { isSuccess: false, message: "file or place doesn't exist" };
         }
         if (!upsertUserImageDto.file.type.startsWith('image/')) {
             return { isSuccess: false, message: 'file must be an image' };

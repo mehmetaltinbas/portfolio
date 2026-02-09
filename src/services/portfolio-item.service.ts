@@ -47,16 +47,24 @@ export const portfolioItemService = {
     },
 
     async readById(id: string): Promise<ReadSinglePortfolioItemResponse> {
-        const portfolioItem = await prisma.portfolioItem.findUnique({ where: { id } });
+        try {
+            const portfolioItem = await prisma.portfolioItem.findUnique({ where: { id } });
 
-        if (!portfolioItem) return { isSuccess: false, message: "portfolio item couldn't read" };
+            if (!portfolioItem) return { isSuccess: false, message: "portfolio item couldn't read" };
 
-        return { isSuccess: true, message: 'portfolio item read', portfolioItem };
+            return { isSuccess: true, message: 'portfolio item read', portfolioItem };
+        } catch {
+            return { isSuccess: false, message: "portfolio item couldn't be read" };
+        }
     },
 
     async readAllByUserId(): Promise<ReadAllPortfolioItemsResponse> {
-        const portfolioItems = await prisma.portfolioItem.findMany({ where: { userId } });
-        return { isSuccess: true, message: 'all portfolio items read', portfolioItems };
+        try {
+            const portfolioItems = await prisma.portfolioItem.findMany({ where: { userId } });
+            return { isSuccess: true, message: 'all portfolio items read', portfolioItems };
+        } catch {
+            return { isSuccess: false, message: "portfolio items couldn't be read" };
+        }
     },
 
     async updateById(id: string, updatePortfolioItemDto: UpdatePortfolioItemDto): Promise<ResponseBase> {

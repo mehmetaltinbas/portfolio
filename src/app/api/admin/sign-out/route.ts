@@ -1,13 +1,14 @@
-import { NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
+import { jwtCookieSettings } from '@/constants/cookie-settings.constant';
 import { ResponseCookie } from 'next/dist/compiled/@edge-runtime/cookies';
+import { cookies } from 'next/headers';
+import { NextResponse } from 'next/server';
 
 export async function POST() {
     const cookieOptions: Partial<ResponseCookie> = {
-        maxAge: 0, // this expires the cookie immediately
-        secure: Boolean(process.env.JWT_IS_SECURE),
-        httpOnly: Boolean(process.env.JWT_IS_HTTP_ONLY),
-        sameSite: process.env.JWT_SAME_SITE as 'lax' | 'strict' | 'none',
+        maxAge: jwtCookieSettings.expiresIn, // this expires the cookie immediately
+        secure: jwtCookieSettings.isSecure === 'true',
+        httpOnly: jwtCookieSettings.isHttpOnly === 'true',
+        sameSite: jwtCookieSettings.sameSite,
         path: '/', // important: must match the path used when setting
     };
 

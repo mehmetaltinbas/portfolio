@@ -41,11 +41,15 @@ export const skillService = {
     },
 
     async readById(id: string): Promise<ReadSingleSkillResponse> {
-        const skill = await prisma.skill.findUnique({ where: { id } });
+        try {
+            const skill = await prisma.skill.findUnique({ where: { id } });
 
-        if (!skill) return { isSuccess: false, message: "skill couldn't be read" };
+            if (!skill) return { isSuccess: false, message: "skill couldn't be read" };
 
-        return { isSuccess: true, message: 'skill read', skill };
+            return { isSuccess: true, message: 'skill read', skill };
+        } catch {
+            return { isSuccess: false, message: "skill couldn't be read" };
+        }
     },
 
     async updateById(dto: UpdateSkillDto): Promise<ResponseBase> {
@@ -106,7 +110,6 @@ export const skillService = {
     },
 
     async reorder(dto: ReorderSkillsDto): Promise<ResponseBase> {
-        console.log('reordering?');
         try {
             await prisma.$transaction(
                 dto.orderedIds.map((id, index) => prisma.skill.update({ where: { id }, data: { order: index } }))

@@ -1,3 +1,4 @@
+import { jwtCookieSettings } from '@/constants/cookie-settings.constant';
 import { userService } from '@/services/user.service';
 import { UserSignInDto } from '@/types/dto/user/user-sign-in.dto';
 import { ResponseBase } from '@/types/response/response-base';
@@ -12,10 +13,10 @@ export async function POST(req: Request) {
     if (!response.isSuccess || !response.jwt) return Response.json(response);
 
     const cookieOptions: Partial<ResponseCookie> = {
-        maxAge: Number(process.env.JWT_EXPIRES_IN),
-        secure: Boolean(process.env.JWT_IS_SECURE),
-        httpOnly: Boolean(process.env.JWT_IS_HTTP_ONLY),
-        sameSite: process.env.JWT_SAME_SITE as 'lax' | 'strict' | 'none',
+        maxAge: jwtCookieSettings.expiresIn,
+        secure: jwtCookieSettings.isSecure === 'true',
+        httpOnly: jwtCookieSettings.isHttpOnly === 'true',
+        sameSite: jwtCookieSettings.sameSite
     };
     // add validation here to validate cookie options
     const cookieStore = await cookies();

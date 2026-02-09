@@ -1,3 +1,4 @@
+import { jwtCookieSettings } from '@/constants/cookie-settings.constant';
 import { userId } from '@/constants/user-id.constant';
 import { SupabaseBucketName } from '@/enums/supabase-bucket-name.enum';
 import { DecodedJwtPayload } from '@/types/decoded-jwt-payload.interface';
@@ -31,24 +32,28 @@ export const userService = {
     },
 
     async signIn(userSignInDto: UserSignInDto): Promise<UserSignInResponse> {
-        const user = await prisma.user.findUnique({
-            where: {
-                userName: userSignInDto.userName,
-            },
-        });
-        if (!user) return { isSuccess: false, message: 'no user found associated with given username' };
+        try {
+            const user = await prisma.user.findUnique({
+                where: {
+                    userName: userSignInDto.userName,
+                },
+            });
+            if (!user) return { isSuccess: false, message: 'no user found associated with given username' };
 
-        const isMatch = bcrypt.compareSync(userSignInDto.password, user.passwordHash);
-        if (!isMatch) return { isSuccess: false, message: 'invalid password' };
+            const isMatch = bcrypt.compareSync(userSignInDto.password, user.passwordHash);
+            if (!isMatch) return { isSuccess: false, message: 'invalid password' };
 
-        const jwtSecret = process.env.JWT_SECRET;
-        const jwtExpiresIn = Number(process.env.JWT_EXPIRES_IN);
-        if (!jwtSecret || !jwtExpiresIn) return { isSuccess: false, message: 'secret is undefined' };
-        const token = jsonwebtoken.sign({ userId: user.id }, jwtSecret, {
-            expiresIn: jwtExpiresIn,
-        });
+            const jwtSecret = jwtCookieSettings.secret;
+            const jwtExpiresIn = jwtCookieSettings.expiresIn;
+            if (!jwtSecret || !jwtExpiresIn) return { isSuccess: false, message: 'secret is undefined' };
+            const token = jsonwebtoken.sign({ userId: user.id }, jwtSecret, {
+                expiresIn: jwtExpiresIn,
+            });
 
-        return { isSuccess: true, message: 'signed in', jwt: token };
+            return { isSuccess: true, message: 'signed in', jwt: token };
+        } catch {
+            return { isSuccess: false, message: "sign in failed" };
+        }
     },
 
     authorize(jwt: string | undefined): ResponseBase {
@@ -59,7 +64,7 @@ export const userService = {
             };
 
         try {
-            const decoded = jsonwebtoken.verify(jwt, process.env.JWT_SECRET!) as DecodedJwtPayload;
+            const decoded = jsonwebtoken.verify(jwt, jwtCookieSettings.secret!) as DecodedJwtPayload;
             if (!(decoded.userId === userId))
                 return {
                     isSuccess: false,
@@ -72,19 +77,23 @@ export const userService = {
     },
 
     async readById(): Promise<ReadUserByIdResponse> {
-        const user = await prisma.user.findUnique({
-            where: {
-                id: userId,
-            },
-        });
-        if (!user) {
-            return { isSuccess: false, message: 'no user found' };
+        try {
+            const user = await prisma.user.findUnique({
+                where: {
+                    id: userId,
+                },
+            });
+            if (!user) {
+                return { isSuccess: false, message: 'no user found' };
+            }
+            return {
+                isSuccess: true,
+                message: 'user read',
+                user,
+            };
+        } catch {
+            return { isSuccess: false, message: "user couldn't be read" };
         }
-        return {
-            isSuccess: true,
-            message: 'user read',
-            user,
-        };
     },
 
     async readExtendedById(): Promise<ReadExtendedUserByIdResponse> {
@@ -150,7 +159,7 @@ export const userService = {
 
     async upsertCv(file: File): Promise<ResponseBase> {
         if (!file) {
-            return { isSuccess: false, message: "file does'nt exist" };
+            return { isSuccess: false, message: "file doesn't exist" };
         }
         if (file.type !== 'application/pdf') {
             return { isSuccess: false, message: 'file must be a pdf' };

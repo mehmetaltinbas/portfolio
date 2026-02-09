@@ -86,8 +86,10 @@ model PortfolioItem {
     id          String @id @default(uuid())
     user        User   @relation(fields: [userId], references: [id])
     userId      String
-    title       String @unique
+    title       String
     description String
     order       Int
     content     Json?
+
+    @@unique([userId, title])
 }
