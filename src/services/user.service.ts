@@ -9,6 +9,7 @@ import { ResponseBase } from '@/types/response/response-base';
 import { ReadExtendedUserByIdResponse } from '@/types/response/user/read-extended-user-by-id-response';
 import { ReadUserByIdResponse } from '@/types/response/user/read-user-by-id-response';
 import { UserSignInResponse } from '@/types/response/user/user-sign-in-response';
+import { checkErrorMessage } from '@/utils/check-error-message.util';
 import { supabase } from '@/utils/supabase-client';
 import bcrypt from 'bcrypt';
 import jsonwebtoken from 'jsonwebtoken';
@@ -212,10 +213,7 @@ export const userService = {
 
             return { isSuccess: true, message: 'cv uploaded' };
         } catch (error) {
-            const message =
-                error && typeof error === 'object' && 'message' in error
-                    ? `${error.message}`
-                    : "cv couldn't be upserted";
+            const message = checkErrorMessage(error, "cv couldn't be upserted");
             return { isSuccess: false, message };
         }
     },
@@ -249,10 +247,7 @@ export const userService = {
 
             return { isSuccess: true, message: 'cv deleted' };
         } catch (error) {
-            const message =
-                error && typeof error === 'object' && 'message' in error
-                    ? `${error.message}`
-                    : "cv couldn't be deleted";
+            const message = checkErrorMessage(error, "cv couldn't be deleted");
             return { isSuccess: false, message };
         }
     },

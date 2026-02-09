@@ -11,6 +11,7 @@ import { ReadSinglePortfolioItemResponse } from '@/types/response/portfolio-item
 import { UploadPortfolioItemImageResponse } from '@/types/response/portfolio-item/upload-portfolio-item-image.response';
 import { ResponseBase } from '@/types/response/response-base';
 import { TransactionClient } from '@/types/transaction-client.type';
+import { checkErrorMessage } from '@/utils/check-error-message.util';
 import { extractImageUrlsFromTipTapJson } from '@/utils/extract-image-urls-from-tip-tap-json.util';
 import { supabase } from '@/utils/supabase-client';
 import { prisma } from 'prisma/prisma-client';
@@ -26,6 +27,16 @@ export const portfolioItemService = {
 
         try {
             await prisma.$transaction(async (tx: TransactionClient) => {
+                const existingPortfolioItem = await tx.portfolioItem.findFirst({
+                    where: {
+                        userId,
+                        title: createPortfolioItemDto.title
+                    }
+                });
+                if (existingPortfolioItem) {
+                    throw new Error('Portfolio item with this title already exists');
+                }
+
                 await tx.portfolioItem.updateMany({
                     where: { userId },
                     data: { order: { increment: 1 } },
@@ -42,7 +53,8 @@ export const portfolioItemService = {
 
             return { isSuccess: true, message: 'portfolio item created' };
         } catch (error) {
-            return { isSuccess: false, message: "portfolio item couldn't created" };
+            const message = checkErrorMessage(error, "portfolio item couldn't created");
+            return { isSuccess: false, message };
         }
     },
 
@@ -69,6 +81,16 @@ export const portfolioItemService = {
 
     async updateById(id: string, updatePortfolioItemDto: UpdatePortfolioItemDto): Promise<ResponseBase> {
         try {
+            const existingPortfolioItem = await prisma.portfolioItem.findFirst({
+                where: {
+                    userId,
+                    title: updatePortfolioItemDto.title
+                }
+            });
+            if (existingPortfolioItem) {
+                throw new Error('Portfolio item with this title already exists');
+            }
+
             await prisma.portfolioItem.update({
                 where: {
                     id,
@@ -90,7 +112,8 @@ export const portfolioItemService = {
 
             return { isSuccess: true, message: 'updated' };
         } catch (error) {
-            return { isSuccess: false, message: 'internal server error' };
+            const message = checkErrorMessage(error, "portfolio item couldn't be updated");
+            return { isSuccess: false, message };
         }
     },
 

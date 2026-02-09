@@ -56,13 +56,12 @@ export default function CreatePortfolioItemForm({
                 })
             ).json()) as ResponseBase;
 
-            setIsCreatePortfolioItemFormHidden((prev) => !prev);
-
             if (!response.isSuccess) {
                 alert(response.message);
             } else {
                 setCreatePortfolioItemDto(initialCreatePortfolioItemDto);
                 dispatch(userActions.refresh());
+                setIsCreatePortfolioItemFormHidden((prev) => !prev);
             }
         } finally {
             setIsSaving(false);
@@ -93,7 +92,7 @@ export default function CreatePortfolioItemForm({
             />
             <div className="flex gap-2">
                 <Button
-                    onClick={async (event) => await createPortfolioItem()}
+                    onClick={createPortfolioItem}
                     variant={ButtonVariant.PRIMARY}
                     disabled={isSaving}
                 >
