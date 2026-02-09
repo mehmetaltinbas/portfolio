@@ -107,8 +107,8 @@ export default function Page() {
     const activeItem = activeId ? localPortfolioItems.find((item) => item.id === activeId) : null;
 
     return (
-        <div className="w-full h-full flex flex-col items-center gap-16 px-24">
-            <div className="relative w-[700px] xl:w-[1000px] h-auto flex flex-col gap-8">
+        <div className="w-full h-full flex flex-col items-center gap-16">
+            <div className="relative w-[300px] sm:w-[700px] xl:w-[1000px] h-auto flex flex-col gap-8">
                 <div className="flex justify-center items-center gap-4">
                     <div className="flex justify-center items-center">
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -165,7 +165,7 @@ export default function Page() {
                         </DragOverlay>
                     </DndContext>
                 ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {user.portfolioItems.map((portfolioItem) => (
                             <PortfolioItemCard key={portfolioItem.id} portfolioItem={portfolioItem} />
                         ))}

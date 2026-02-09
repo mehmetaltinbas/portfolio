@@ -73,7 +73,7 @@ export default function CreatePortfolioItemForm({
             ref={createPortfolioItemFormRef}
             className={`
                 ${isCreatePortfolioItemFormHidden ? 'invisible opacity-0 pointer-events-none' : 'visible opacity-100'}
-                z-50 absolute w-[400px] h-auto p-4 bg-white
+                z-50 absolute w-[300px] sm:w-[400px] h-auto p-4 bg-white
                 border rounded-xl
                 flex flex-col justify-start items-center gap-2
             `}

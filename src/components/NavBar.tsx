@@ -36,7 +36,7 @@ export default function NavBar() {
             )}
 
             <div className="w-full h-auto bg-black flex justify-end md:hidden py-2 pr-2">
-                <Button onClick={() => setIsOpen((prev) => !prev)} variant={ButtonVariant.GHOST}>
+                <Button onClick={() => setIsOpen((prev) => !prev)} variant={ButtonVariant.PRIMARY}>
                     {isOpen ? <X className="text-white" /> : <Menu className="text-white" />}
                 </Button>
             </div>

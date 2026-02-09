@@ -190,7 +190,7 @@ export function Contacts({ contacts }: { contacts: ContactRow[] }) {
 
     return (localContacts.length !== 0 || isAdmin ? (
         <div
-            className="fixed left-8 bottom-8 z-50
+            className="fixed left-2 bottom-2 sm:left-8 sm:bottom-8 z-50
                 flex flex-col gap-4 justify-center items-center"
         >
             {localContacts.map((contact) => (

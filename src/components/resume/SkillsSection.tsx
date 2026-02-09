@@ -145,7 +145,7 @@ export function SkillsSection({ id }: { id?: string }) {
     }
 
     return (
-        <div id={id} className="relative w-full max-w-[700px] py-10 px-4 md:px-0">
+        <div id={id} className="relative w-[300px] sm:w-[700px] py-10 md:px-0">
             {isAdmin && !isEditMode && (
                 <div className="absolute top-2 right-2 md:right-0">
                     <Button onClick={toggleEditMode} variant={ButtonVariant.PRIMARY}>

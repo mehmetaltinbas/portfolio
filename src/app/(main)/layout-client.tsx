@@ -23,7 +23,7 @@ export default function LayoutClient({ children, isAuthorized }: { children: Rea
     }, [dispatch, isAuthorized]);
 
     return (
-        <div className="w-ful h-full flex flex-col justify-start items-center">
+        <div className="w-full h-full flex flex-col justify-start items-center">
             <NavBar />
             <Contacts contacts={user.contacts} />
             {isReady ? (
