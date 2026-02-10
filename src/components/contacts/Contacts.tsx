@@ -190,14 +190,14 @@ export function Contacts({ contacts }: { contacts: Contact[] }) {
 
     return (localContacts.length !== 0 || isAdmin ? (
         <div
-            className="fixed left-2 bottom-2 sm:left-8 sm:bottom-8 z-50
+            className="fixed left-2 bottom-0 sm:left-8 md:left-12 sm:bottom-0 z-50
                 flex flex-col gap-4 justify-center items-center"
         >
             {localContacts.map((contact) => (
                 <ContactLink key={contact.id} contact={contact} />
             ))}
 
-            <span className="block w-[2px] h-[75px] rounded-full bg-black"></span>
+            <span className="block w-[2px] h-[150px] rounded-full bg-black"></span>
 
             {isAdmin && (
                 <div className="relative">
