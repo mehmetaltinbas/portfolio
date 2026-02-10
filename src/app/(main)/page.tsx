@@ -288,7 +288,7 @@ export default function Page() {
                             <Image
                                 src={
                                     user.userImages.find((userImage) => userImage.place === UserImagePlace.LANDING_PAGE)
-                                        ?.url ?? `/default-avatar-profile-icon.jpg`
+                                        ?.url ?? `/default-avatar-profile-icon.png`
                                 }
                                 width={200}
                                 height={200}
