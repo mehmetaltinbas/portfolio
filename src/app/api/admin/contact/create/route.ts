@@ -1,4 +1,4 @@
-import { contactService } from '@/services/contact.service';
+import { ContactService } from '@/services/contact.service';
 import { CreateContactDto } from '@/types/dto/contact/create-contact.dto';
 import { NextResponse } from 'next/server';
 
@@ -13,6 +13,6 @@ export async function POST(req: Request) {
         value,
     };
 
-    const response = await contactService.create(dto);
+    const response = await ContactService.create(dto);
     return NextResponse.json(response);
 }

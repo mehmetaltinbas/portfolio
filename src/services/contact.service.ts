@@ -9,8 +9,10 @@ import { ResponseBase } from '@/types/response/response-base';
 import { TransactionClient } from '@/types/transaction-client.type';
 import { prisma } from 'prisma/prisma-client';
 
-export const contactService = {
-    async create(dto: CreateContactDto): Promise<ResponseBase> {
+export class ContactService {
+    private constructor() {}
+
+    static async create(dto: CreateContactDto): Promise<ResponseBase> {
         try {
             await prisma.$transaction(async (tx: TransactionClient)=> {
                 const count = await tx.contact.count({ where: { userId } });
@@ -33,9 +35,9 @@ export const contactService = {
         } catch (error) {
             return { isSuccess: false, message: "contact couldn't created" };
         }
-    },
+    }
 
-    async readAllByUserId(): Promise<ReadAllContactsResponse> {
+    static async readAllByUserId(): Promise<ReadAllContactsResponse> {
         try {
             const contacts = await prisma.contact.findMany({ where: { userId }, orderBy: { order: 'asc' } });
             
@@ -46,9 +48,9 @@ export const contactService = {
         } catch (error) {
             return { isSuccess: false, message: "contacts couldn't read" };
         }
-    },
+    }
 
-    async update(dto: UpdateContactDto): Promise<ResponseBase> {
+    static async update(dto: UpdateContactDto): Promise<ResponseBase> {
         try {
             const contact = await prisma.contact.findUnique({ where: { id: dto.id } });
             if (!contact) {
@@ -67,9 +69,9 @@ export const contactService = {
         } catch {
             return { isSuccess: false, message: "contact couldn't be updated" };
         }
-    },
+    }
 
-    async delete(dto: DeleteContactDto): Promise<ResponseBase> {
+    static async delete(dto: DeleteContactDto): Promise<ResponseBase> {
         try {
             const contact = await prisma.contact.findUnique({ where: { id: dto.id } });
             if (!contact) {
@@ -81,9 +83,9 @@ export const contactService = {
         } catch {
             return { isSuccess: false, message: "contact couldn't be deleted" };
         }
-    },
+    }
 
-    async reorder(dto: ReorderContactsDto): Promise<ResponseBase> {
+    static async reorder(dto: ReorderContactsDto): Promise<ResponseBase> {
         try {
             await prisma.$transaction(
                 dto.orderedIds.map((id, index) =>
@@ -94,5 +96,5 @@ export const contactService = {
         } catch {
             return { isSuccess: false, message: "contacts couldn't be reordered" };
         }
-    },
-};
+    }
+}

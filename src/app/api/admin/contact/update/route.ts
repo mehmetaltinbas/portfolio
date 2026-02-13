@@ -1,4 +1,4 @@
-import { contactService } from '@/services/contact.service';
+import { ContactService } from '@/services/contact.service';
 import { UpdateContactDto } from '@/types/dto/contact/update-contact.dto';
 import { NextResponse } from 'next/server';
 
@@ -14,6 +14,6 @@ export async function PATCH(req: Request) {
         value,
     };
 
-    const response = await contactService.update(dto);
+    const response = await ContactService.update(dto);
     return NextResponse.json(response);
 }
