@@ -66,14 +66,14 @@ export default function PortfolioItemCard({ portfolioItem }: { portfolioItem: Po
             <p className="w-full h-[120px] text-gray-600 whitespace-pre-wrap truncate text-sm">{portfolioItem.description}</p>
 
             <div className="w-full h-[30px] flex justify-start items-center gap-3 overflow-x-scroll text-sm whitespace-nowrap">
-                <p>* skill-1</p>
+                {/* <p>* skill-1</p>
                 <p>* skill-2</p>
                 <p>* skill-3</p>
                 <p>* skill-4</p>
                 <p>* skill-5</p>
                 <p>* skill-6</p>
                 <p>* skill-7</p>
-                <p>* skill-8</p>
+                <p>* skill-8</p> */}
             </div>
 
             {isAdmin && (
