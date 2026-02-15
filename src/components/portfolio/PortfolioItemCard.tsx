@@ -55,10 +55,10 @@ export default function PortfolioItemCard({ portfolioItem }: { portfolioItem: Po
 
             <Image 
                 alt='portfolio item cover image'
-                src={portfolioItem.coverImageUrl ? portfolioItem.coverImageUrl : '/default-avatar-profile-icon.png'}
+                src={portfolioItem.coverImageUrl ? portfolioItem.coverImageUrl : '/portfolio-item-cover-placeholder-image.png'}
                 width={250}
                 height={125}
-                className="object-contain w-auto h-[125] max-w-[250]"
+                className="object-contain w-auto h-[125] max-w-[250] rounded-[10px]"
             />
 
             <p className="w-full h-auto font-semibold">{portfolioItem.title}</p>
@@ -77,14 +77,12 @@ export default function PortfolioItemCard({ portfolioItem }: { portfolioItem: Po
             </div>
 
             {isAdmin && (
-                <div className="w-full mt-4">
+                <div className="absolute top-4 right-7">
                     <Button
                         onClick={(event) => deletePortfolioItem(event)}
-                        variant={ButtonVariant.DANGER}
+                        variant={ButtonVariant.TRASH}
                         disabled={isDeleting}
-                    >
-                        {isDeleting ? 'Deleting...' : 'Delete'}
-                    </Button>
+                    />
                 </div>
             )}
         </Link>

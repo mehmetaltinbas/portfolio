@@ -94,7 +94,10 @@ export class PortfolioItemService {
                 const duplicatePortfolioItem = await prisma.portfolioItem.findFirst({
                     where: {
                         userId,
-                        title: dto.title
+                        title: dto.title,
+                        NOT: {
+                            id
+                        }
                     }
                 });
                 
@@ -125,7 +128,7 @@ export class PortfolioItemService {
                     .catch(console.error);
             }
 
-            return { isSuccess: true, message: 'updated' };
+            return { isSuccess: true, message: 'Portfolio item updated' };
         } catch (error) {
             console.error(error);
             return { isSuccess: false, message: "internal server error" };
