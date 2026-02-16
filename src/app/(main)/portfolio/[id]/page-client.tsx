@@ -2,9 +2,9 @@
 
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
-import PortfolioViewer from '@/components/portfolio/PortfolioItemViewer';
 import { TextArea } from '@/components/TextArea';
 import ContentEditor from '@/components/tiptap/ContentEditor';
+import TipTapContentViewer from '@/components/tiptap/TipTapContentViewer';
 import { NAVBAR_HEIGHT } from '@/constants/navbar-height.constant';
 import { PORTFOLIO_ITEM_DESCRIPTION_CHAR_LIMIT } from '@/constants/portfolio-item/portfolio-item-description-char-limit.constant';
 import { PORTFOLIO_ITEM_TITLE_CHAR_LIMIT } from '@/constants/portfolio-item/portfolio-item-title-char-limit.constant';
@@ -290,7 +290,7 @@ export default function PageClient({ initialPortfolioItem }: { initialPortfolioI
                         onCancel={toggleContentEditMode}
                     />
                 ) : (
-                    <PortfolioViewer content={content} />
+                    <TipTapContentViewer content={content} />
                 )}
             </div>
         </div>
