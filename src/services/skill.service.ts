@@ -87,7 +87,8 @@ export class SkillService {
             const duplicateSkill = await prisma.skill.findFirst({
                 where: {
                     userId,
-                    name: dto.name
+                    name: dto.name,
+                    NOT: { id: dto.id }
                 }
             });
 
