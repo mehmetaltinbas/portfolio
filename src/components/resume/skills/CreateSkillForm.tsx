@@ -65,7 +65,7 @@ export function CreateSkillForm({ isSaving, setIsSaving }:
                         }
                     }}
                     placeholder="New skill..."
-                    className=""
+                    className="pr-12"
                 />
 
                 <p className={`${newSkillName.length >= SKILL_NAME_CHAR_LIMIT ? 'text-red-500' : ''} text-xs absolute bottom-1 right-2`}>{newSkillName.length}/{SKILL_NAME_CHAR_LIMIT}</p>

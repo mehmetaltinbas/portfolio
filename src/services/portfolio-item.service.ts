@@ -1,4 +1,6 @@
 import { INVALID_UUID_RESPONSE_MESSAGE } from '@/constants/invalid-uuid-response-message.constant';
+import { PORTFOLIO_ITEM_DESCRIPTION_CHAR_LIMIT } from '@/constants/portfolio-item/portfolio-item-description-char-limit.constant';
+import { PORTFOLIO_ITEM_TITLE_CHAR_LIMIT } from '@/constants/portfolio-item/portfolio-item-title-char-limit.constant';
 import { userId } from '@/constants/user-id.constant';
 import { SupabaseBucketName } from '@/enums/supabase-bucket-name.enum';
 import { InputJsonValue } from '@/generated/client/runtime/library';
@@ -42,6 +44,17 @@ export class PortfolioItemService {
                     message: `Portfolio item with title ${dto.title} already exists`
                 };
             }
+
+            if (dto.title.length > PORTFOLIO_ITEM_TITLE_CHAR_LIMIT)
+                return {
+                    isSuccess: false,
+                    message: `Failed! Title char length can't exceed ${PORTFOLIO_ITEM_TITLE_CHAR_LIMIT}.`
+                };
+            else if (dto.description.length > PORTFOLIO_ITEM_DESCRIPTION_CHAR_LIMIT)
+                return {
+                    isSuccess: false,
+                    message: `Failed! Description char length can't exceed ${PORTFOLIO_ITEM_DESCRIPTION_CHAR_LIMIT}.`
+                };
 
             await prisma.$transaction(async (tx: TransactionClient) => {
 
@@ -108,6 +121,17 @@ export class PortfolioItemService {
                     };
                 }
             }
+
+            if (dto.title && dto.title.length > PORTFOLIO_ITEM_TITLE_CHAR_LIMIT)
+                return {
+                    isSuccess: false,
+                    message: `Failed! Title char length can't exceed ${PORTFOLIO_ITEM_TITLE_CHAR_LIMIT}.`
+                };
+            else if (dto.description && dto.description.length > PORTFOLIO_ITEM_DESCRIPTION_CHAR_LIMIT)
+                return {
+                    isSuccess: false,
+                    message: `Failed! Description char length can't exceed ${PORTFOLIO_ITEM_DESCRIPTION_CHAR_LIMIT}.`
+                };
 
             await prisma.portfolioItem.update({
                 where: {
