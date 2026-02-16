@@ -31,9 +31,9 @@ export function SortableSkillPill({
                 ref={setNodeRef}
                 style={style}
                 className={`max-w-[220px] h-auto
-                    px-3 py-1.5 bg-gray-100 text-gray-700 font-medium rounded-full border   
-                    ${skill.name.length > SKILL_NAME_CHAR_LIMIT / 2 ? 'text-xs' : 'text-sm'}
-                    border-gray-200 hover:bg-gray-200 transition-colors flex items-center gap-1.5 select-none
+                    px-2 py-1 sm:px-3 sm:py-1.5 bg-gray-100 text-gray-700 font-medium rounded-full border   
+                    text-xs ${skill.name.length > SKILL_NAME_CHAR_LIMIT / 2 ? '' : 'sm:text-sm'}
+                    border-gray-200 hover:bg-gray-200 transition-colors flex items-cente gap-0.5 sm:gap-1.5 select-none
                 `}
             >
                 {isSaving ? 
@@ -55,7 +55,7 @@ export function SortableSkillPill({
                     </button>
                 }
 
-                <p className='max-w-[186px] truncate'>{skill.name}</p>
+                <p className='max-w-[115px] sm:max-w-[175px] truncate'>{skill.name}</p>
 
                 <button
                     onClick={() => onDelete(skill.id, skill.name)}

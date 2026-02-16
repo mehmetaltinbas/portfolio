@@ -156,7 +156,7 @@ export function SkillsSection({ id }: { id?: string }) {
             />
 
             <div className="mt-6">
-                <div className="grid grid-cols-3 justify-between gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-3 justify-between gap-4">
                     {isEditMode ? (
                         <DndContext
                             sensors={sensors}

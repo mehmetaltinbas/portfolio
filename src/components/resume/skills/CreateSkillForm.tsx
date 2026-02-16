@@ -54,7 +54,7 @@ export function CreateSkillForm({ isSaving, setIsSaving }:
     return (
         <div className="flex justify-center gap-2 mt-4">
             <div className="w-[300px] relative">
-                <Input // TODO add SKILL_NAME_CHAR_LIMIT check
+                <Input
                     name="newSkill"
                     value={newSkillName}
                     onChange={(e) => onChange(e.currentTarget)}
