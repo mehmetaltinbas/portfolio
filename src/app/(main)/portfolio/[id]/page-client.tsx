@@ -288,7 +288,7 @@ export default function PageClient({ initialPortfolioItem }: { initialPortfolioI
                 </div>
 
                 <div className="w-full flex justify-start items-center gap-4 p-6">
-                    {isEditingMeta ? 
+                    {isEditingMeta ?
                         <>
                             <Button 
                                 onClick={event => toggleAttachSkillForm(event.currentTarget)}>
