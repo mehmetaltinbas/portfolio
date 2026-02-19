@@ -55,10 +55,10 @@ export default function PortfolioItemCard({ portfolioItem }: { portfolioItem: Ex
 
             <Image 
                 alt='portfolio item cover image'
-                src={portfolioItem.coverImageUrl ? portfolioItem.coverImageUrl : '/portfolio-item-cover-placeholder-image.png'}
+                src={portfolioItem.coverImageUrl || '/portfolio-item-cover-placeholder-image.png'}
                 width={250}
                 height={125}
-                className="object-contain w-auto h-[125] max-w-[250] rounded-[10px]"
+                className="w-auto max-w-[250px] h-[125px] object-contain rounded-[10px]"
             />
 
             <p className="w-full h-auto font-semibold text-center">{portfolioItem.title}</p>

@@ -160,27 +160,31 @@ export function AboutSection({ id }: { id?: string }) {
                 <div className="flex justify-center md:order-2">
                     {!isEditMode ? (
                         resumeImageUrl && (
-                            <Image
-                                src={resumeImageUrl}
-                                width={180}
-                                height={240}
-                                className="rounded-lg border border-gray-200 shadow-sm object-cover"
-                                alt="resume photo"
-                            />
+                            <div className='h-[75%] flex justify-center items-center'>
+                                <Image
+                                    alt="resume photo"
+                                    src={resumeImageUrl}
+                                    width={180}
+                                    height={240}
+                                    className="w-[180px] h-[240px] object-cover rounded-[10px]"
+                                />
+                            </div>
                         )
                     ) : (
-                        <div className="flex flex-col items-center gap-3">
-                            <Image
-                                src={
-                                    (userImageFile ? URL.createObjectURL(userImageFile) : null) ??
-                                    resumeImageUrl ??
-                                    '/default-avatar-profile-icon.jpg'
-                                }
-                                width={180}
-                                height={240}
-                                className="rounded-lg border border-gray-200 shadow-sm object-cover"
-                                alt="resume photo"
-                            />
+                        <div className="flex flex-col items-center gap-4">
+                            <div className='flex justify-center items-center'>
+                                <Image
+                                    alt="resume photo"
+                                    src={
+                                        (userImageFile ? URL.createObjectURL(userImageFile) : null) ??
+                                        resumeImageUrl ??
+                                        '/default-avatar-profile-icon.jpg'
+                                    }
+                                    width={180}
+                                    height={240}
+                                    className="w-[180px] h-[240px] object-cover rounded-[10px]"
+                                />
+                            </div>
                             <div className="flex gap-2">
                                 <label
                                     className="cursor-pointer px-3 py-1.5

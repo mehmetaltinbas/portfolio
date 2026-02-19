@@ -184,6 +184,7 @@ export default function Page() {
 
                         <div className="relative w-full h-full flex justify-center items-start">
                             <Image
+                                alt="profile photo"
                                 src={
                                     (userImageFile ? URL.createObjectURL(userImageFile) : null) ??
                                     user.userImages.find((userImage) => userImage.place === UserImagePlace.LANDING_PAGE)
@@ -192,8 +193,7 @@ export default function Page() {
                                 }
                                 width={200}
                                 height={200}
-                                className="rounded-full"
-                                alt="profile photo"
+                                className="w-[200px] h-[200px] object-cover rounded-full"
                             />
 
                             <div className="absolute top-0 left-0 flex flex-col justify-center items-center gap-2">
@@ -290,14 +290,14 @@ export default function Page() {
 
                         <div className="h-full flex justify-center items-start">
                             <Image
+                                alt="profile photo"
                                 src={
                                     user.userImages.find((userImage) => userImage.place === UserImagePlace.LANDING_PAGE)
                                         ?.url ?? `/default-avatar-profile-icon.png`
                                 }
                                 width={200}
                                 height={200}
-                                className="rounded-full"
-                                alt="profile photo"
+                                className="w-[200px] h-[200px] object-cover rounded-full"
                             />
                         </div>
 
