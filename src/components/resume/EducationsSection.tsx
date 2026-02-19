@@ -160,7 +160,9 @@ export function EducationsSection({ id }: { id?: string }) {
         }
     }
 
-    return (
+    return (user.educations.length === 0 && !isAdmin ?
+        <></>
+        :
         <div id={id} className="relative w-[300px] sm:w-[700px] py-10 md:px-0">
             {isAdmin && !isEditMode && (
                 <div className="absolute top-2 right-2 md:right-0">
