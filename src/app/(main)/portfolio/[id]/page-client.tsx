@@ -4,7 +4,7 @@ import AttachOrDetachSkillForm from '@/components/AttachSkillForm';
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
 import { TextArea } from '@/components/TextArea';
-import ContentEditor from '@/components/tiptap/ContentEditor';
+import ContentEditor from '@/components/tiptap/TipTapContentEditor';
 import TipTapContentViewer from '@/components/tiptap/TipTapContentViewer';
 import { NAVBAR_HEIGHT } from '@/constants/navbar-height.constant';
 import { PORTFOLIO_ITEM_DESCRIPTION_CHAR_LIMIT } from '@/constants/portfolio-item/portfolio-item-description-char-limit.constant';
