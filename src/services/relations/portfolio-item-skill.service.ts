@@ -1,4 +1,4 @@
-import { AttachOrDetachPortfolioItemSkillDto } from '@/types/dto/relations/portfolio-item-skill/attach-or-detach-portfolio-item-skill.dto';
+import { AttachOrDetachPortfolioItemSkillDto } from '@/types/dto/relations/portfolio-item-skill/attach-portfolio-item-skill.dto';
 import { ResponseBase } from '@/types/response/response-base';
 import { prisma } from 'prisma/prisma-client';
 

@@ -6,8 +6,6 @@ import { TextArea } from '@/components/TextArea';
 import { PORTFOLIO_ITEM_DESCRIPTION_CHAR_LIMIT } from '@/constants/portfolio-item/portfolio-item-description-char-limit.constant';
 import { PORTFOLIO_ITEM_TITLE_CHAR_LIMIT } from '@/constants/portfolio-item/portfolio-item-title-char-limit.constant';
 import { ButtonVariant } from '@/enums/button-variant.enum';
-import { useAppDispatch } from '@/store/hooks';
-import { userActions } from '@/store/slices/user-slice';
 import { CreatePortfolioItemDto } from '@/types/dto/portfolio-item/create-portfolio-item.dto';
 import { ResponseBase } from '@/types/response/response-base';
 import React, { useState } from 'react';
@@ -16,12 +14,13 @@ export default function CreatePortfolioItemForm({
     createPortfolioItemFormRef,
     isCreatePortfolioItemFormHidden,
     setIsCreatePortfolioItemFormHidden,
+    refreshPortfolioItems,
 }: {
     createPortfolioItemFormRef: React.RefObject<HTMLDivElement | null>;
     isCreatePortfolioItemFormHidden: boolean;
     setIsCreatePortfolioItemFormHidden: React.Dispatch<React.SetStateAction<boolean>>;
+    refreshPortfolioItems(): Promise<void>;
 }) {
-    const dispatch = useAppDispatch();
     const [isSaving, setIsSaving] = useState(false);
     const initialCreatePortfolioItemDto: CreatePortfolioItemDto = {
         title: '',
@@ -64,7 +63,7 @@ export default function CreatePortfolioItemForm({
                 alert(response.message);
             } else {
                 setCreatePortfolioItemDto(initialCreatePortfolioItemDto);
-                dispatch(userActions.refresh());
+                await refreshPortfolioItems();
                 setIsCreatePortfolioItemFormHidden((prev) => !prev);
             }
         } finally {
@@ -102,7 +101,7 @@ export default function CreatePortfolioItemForm({
                     className="min-h-[100px]"
                 />
 
-                <p className={`${createPortfolioItemDto.description.length >= PORTFOLIO_ITEM_DESCRIPTION_CHAR_LIMIT ? 'text-red-500' : ''} text-xs absolute bottom-2 right-2`}>{createPortfolioItemDto.description.length}/{PORTFOLIO_ITEM_DESCRIPTION_CHAR_LIMIT}</p>
+                <p className={`${createPortfolioItemDto.description!.length >= PORTFOLIO_ITEM_DESCRIPTION_CHAR_LIMIT ? 'text-red-500' : ''} text-xs absolute bottom-2 right-2`}>{createPortfolioItemDto.description!.length}/{PORTFOLIO_ITEM_DESCRIPTION_CHAR_LIMIT}</p>
             </div>
 
             <div className="flex gap-2">

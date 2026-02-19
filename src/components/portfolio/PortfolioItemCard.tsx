@@ -2,16 +2,22 @@
 
 import { Button } from '@/components/Button';
 import { ButtonVariant } from '@/enums/button-variant.enum';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { userActions } from '@/store/slices/user-slice';
+import { useAppSelector } from '@/store/hooks';
 import { ExtendedPortfolioItemModel } from '@/types/db/extended-portfolio-item.model';
 import { ResponseBase } from '@/types/response/response-base';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 
-export default function PortfolioItemCard({ portfolioItem }: { portfolioItem: ExtendedPortfolioItemModel }) {
-    const dispatch = useAppDispatch();
+export default function PortfolioItemCard(
+    {
+        portfolioItem,
+        refreshPortfolioItems,
+    }: {
+        portfolioItem: ExtendedPortfolioItemModel;
+        refreshPortfolioItems(): Promise<void>;
+    }
+) {
     const isAdmin = useAppSelector((state) => state.isAdmin);
     const [isDeleting, setIsDeleting] = React.useState<boolean>(false);
 
@@ -32,7 +38,7 @@ export default function PortfolioItemCard({ portfolioItem }: { portfolioItem: Ex
             if (!response.isSuccess) {
                 alert(response.message);
             } else {
-                await dispatch(userActions.refresh());
+                await refreshPortfolioItems();
             }
         } catch (error) {
             alert('error');
@@ -68,7 +74,7 @@ export default function PortfolioItemCard({ portfolioItem }: { portfolioItem: Ex
             </p>
 
             <div 
-                className="w-full h-[30px] flex justify-start items-center gap-3 overflow-x-scroll text-xs whitespace-nowrap"
+                className="w-full h-[30px] flex justify-start items-center gap-3 overflow-x-auto text-xs whitespace-nowrap"
             >
                 {portfolioItem.skills.map(skill => (
                     <p key={skill.id}>• {skill.name}</p>

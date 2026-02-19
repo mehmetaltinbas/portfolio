@@ -6,7 +6,15 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { GripVertical } from 'lucide-react';
 
-export function SortablePortfolioItemCard({ portfolioItem }: { portfolioItem: ExtendedPortfolioItemModel }) {
+export function SortablePortfolioItemCard(
+    {
+        portfolioItem,
+        refreshPortfolioItems,
+    }: {
+        portfolioItem: ExtendedPortfolioItemModel;
+        refreshPortfolioItems(): Promise<void>;
+    }
+) {
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
         id: portfolioItem.id,
     });
@@ -31,7 +39,7 @@ export function SortablePortfolioItemCard({ portfolioItem }: { portfolioItem: Ex
             >
                 <GripVertical size={18} />
             </button>
-            <PortfolioItemCard portfolioItem={portfolioItem} />
+            <PortfolioItemCard portfolioItem={portfolioItem} refreshPortfolioItems={refreshPortfolioItems} />
         </div>
     );
 }

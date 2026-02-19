@@ -41,7 +41,7 @@ export default function PageClient({ initialPortfolioItem }: { initialPortfolioI
     const [isEditingContent, setIsEditingContent] = useState(false);
 
     const [title, setTitle] = useState(portfolioItem.title);
-    const [description, setDescription] = useState(portfolioItem.description);
+    const [description, setDescription] = useState(portfolioItem.description ?? '');
     const [content, setContent] = useState<object>(portfolioItem.content as object);
     const [coverImage, setCoverImage] = useState<File | null>(null);
     const [isAttachSkillFormHidden, setIsAttachSkillFormHidden] = useState<boolean>(true);
@@ -53,7 +53,7 @@ export default function PageClient({ initialPortfolioItem }: { initialPortfolioI
     function toggleMetaEditMode() {
         if (!isEditingMeta) {
             setTitle(portfolioItem.title);
-            setDescription(portfolioItem.description);
+            setDescription(portfolioItem.description ?? '');
         }
         setIsEditingMeta(!isEditingMeta);
         setIsAttachSkillFormHidden(true);
@@ -296,17 +296,21 @@ export default function PageClient({ initialPortfolioItem }: { initialPortfolioI
                                 </Button>
                         </>
                         :
-                        <div className='flex flex-col justify-start items-start'>
-                            <p className='font-semibold'>Skills</p>
-                            <div
-                                className='w-full h-[40px] flex justify-start items-center gap-4 p-2 overflow-x-scroll text-sm whitespace-nowrap'
-                                style={{ overflowY: 'hidden' }}
-                            >
-                                {portfolioItem.skills.map(skill => (
-                                    <p key={skill.id}>• {skill.name}</p>
-                                ))}
+                        portfolioItem.skills.length === 0 ?
+                            <></>
+                            :
+                            <div className='w-full flex flex-col justify-start items-start'>
+                                <p className='w-full font-semibold'>Skills</p>
+                                <div
+                                    className='w-full h-[40px] flex justify-start items-center gap-4 p-2 overflow-x-auto text-sm whitespace-nowrap'
+                                    style={{ overflowY: 'hidden' }}
+                                >
+                                    {portfolioItem.skills.map(skill => (
+                                        <p key={skill.id}>• {skill.name}</p>
+                                    ))}
+                                </div>
                             </div>
-                        </div>
+
                     }
                 </div>
 

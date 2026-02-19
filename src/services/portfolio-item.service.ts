@@ -28,9 +28,6 @@ export class PortfolioItemService {
         if (!dto.title) {
             return { isSuccess: false, message: 'title must exist' };
         }
-        if (!dto.description) {
-            return { isSuccess: false, message: 'description must exist' };
-        }
 
         try {
             const duplicatePortfolioItem = await prisma.portfolioItem.findFirst({
@@ -52,7 +49,7 @@ export class PortfolioItemService {
                     isSuccess: false,
                     message: `Failed! Title char length can't exceed ${PORTFOLIO_ITEM_TITLE_CHAR_LIMIT}.`
                 };
-            else if (dto.description.length > PORTFOLIO_ITEM_DESCRIPTION_CHAR_LIMIT)
+            else if (dto.description && dto.description.length > PORTFOLIO_ITEM_DESCRIPTION_CHAR_LIMIT)
                 return {
                     isSuccess: false,
                     message: `Failed! Description char length can't exceed ${PORTFOLIO_ITEM_DESCRIPTION_CHAR_LIMIT}.`

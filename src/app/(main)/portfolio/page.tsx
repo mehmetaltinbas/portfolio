@@ -33,12 +33,10 @@ export default function Page() {
     const [portfolioItems, setPortfolioItems] = useState<ExtendedPortfolioItemModel[]>([]);
     const [activeId, setActiveId] = useState<string | null>(null);
 
-    async function refreshPortfolioItem() {
+    async function refreshPortfolioItems() {
         const response: ReadMultipleExtendedPortfolioItemsResponse = await (
             await fetch('/api/visitor/portfolio-item/read-all-extended-by-user-id')
         ).json();
-
-        console.log("response: ", response);
 
         if (response.isSuccess && response.portfolioItems) {
             setPortfolioItems(response.portfolioItems);
@@ -47,7 +45,7 @@ export default function Page() {
 
     useEffect(() => {
         // eslint-disable-next-line react-hooks/set-state-in-effect
-        refreshPortfolioItem();
+        refreshPortfolioItems();
     }, []);
 
     useEffect(() => {
@@ -105,7 +103,7 @@ export default function Page() {
             ).json();
 
             if (response.isSuccess) {
-                await refreshPortfolioItem();
+                await refreshPortfolioItems();
             } else {
                 setPortfolioItems(previous);
                 alert(response.message);
@@ -159,6 +157,7 @@ export default function Page() {
                                     <SortablePortfolioItemCard
                                         key={portfolioItem.id}
                                         portfolioItem={portfolioItem}
+                                        refreshPortfolioItems={refreshPortfolioItems}
                                     />
                                 ))}
                             </div>
@@ -183,6 +182,7 @@ export default function Page() {
                             <PortfolioItemCard
                                 key={portfolioItem.id}
                                 portfolioItem={portfolioItem}
+                                refreshPortfolioItems={refreshPortfolioItems}
                             />
                         ))}
                     </div>
@@ -192,6 +192,7 @@ export default function Page() {
                     createPortfolioItemFormRef={createPortfolioItemFormRef}
                     isCreatePortfolioItemFormHidden={isCreatePortfolioItemFormHidden}
                     setIsCreatePortfolioItemFormHidden={setIsCreatePortfolioItemFormHidden}
+                    refreshPortfolioItems={refreshPortfolioItems}
                 />
             </div>
         </div>
