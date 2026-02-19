@@ -6,7 +6,7 @@ import { CreateSkillForm } from '@/components/resume/skills/CreateSkillForm';
 import { SkillDragOverlayPill } from '@/components/resume/skills/SkillDragOverlayPill';
 import { SkillPill } from '@/components/resume/skills/SkillPill';
 import { SortableSkillPill } from '@/components/resume/skills/SortableSkillPill';
-import { ButtonVariant } from '@/enums/button-variants.enum';
+import { ButtonVariant } from '@/enums/button-variant.enum';
 import { Skill } from '@/generated/client';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { userActions } from '@/store/slices/user-slice';

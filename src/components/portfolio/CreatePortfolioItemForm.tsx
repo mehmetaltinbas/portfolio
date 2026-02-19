@@ -5,7 +5,7 @@ import { Input } from '@/components/Input';
 import { TextArea } from '@/components/TextArea';
 import { PORTFOLIO_ITEM_DESCRIPTION_CHAR_LIMIT } from '@/constants/portfolio-item/portfolio-item-description-char-limit.constant';
 import { PORTFOLIO_ITEM_TITLE_CHAR_LIMIT } from '@/constants/portfolio-item/portfolio-item-title-char-limit.constant';
-import { ButtonVariant } from '@/enums/button-variants.enum';
+import { ButtonVariant } from '@/enums/button-variant.enum';
 import { useAppDispatch } from '@/store/hooks';
 import { userActions } from '@/store/slices/user-slice';
 import { CreatePortfolioItemDto } from '@/types/dto/portfolio-item/create-portfolio-item.dto';
@@ -41,7 +41,7 @@ export default function CreatePortfolioItemForm({
         });
     }
 
-    function cancelCreate() {
+    function cancel() {
         setCreatePortfolioItemDto({ title: '', description: '' });
         setIsCreatePortfolioItemFormHidden(true);
     }
@@ -78,7 +78,7 @@ export default function CreatePortfolioItemForm({
             className={`
                 ${isCreatePortfolioItemFormHidden ? 'invisible opacity-0 pointer-events-none' : 'visible opacity-100'}
                 z-50 absolute w-[300px] sm:w-[400px] h-auto p-4 bg-white
-                border rounded-xl
+                border rounded-xl shadow-lg
                 flex flex-col justify-start items-center gap-2
             `}
         >
@@ -113,7 +113,7 @@ export default function CreatePortfolioItemForm({
                 >
                     {isSaving ? 'Creating...' : 'Create'}
                 </Button>
-                <Button onClick={cancelCreate} variant={ButtonVariant.SECONDARY}>
+                <Button onClick={cancel} variant={ButtonVariant.SECONDARY}>
                     Cancel
                 </Button>
             </div>

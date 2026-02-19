@@ -1,16 +1,16 @@
 'use client';
 
 import { Button } from '@/components/Button';
-import { ButtonVariant } from '@/enums/button-variants.enum';
-import { PortfolioItem } from '@/generated/client';
+import { ButtonVariant } from '@/enums/button-variant.enum';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { userActions } from '@/store/slices/user-slice';
+import { ExtendedPortfolioItemModel } from '@/types/db/extended-portfolio-item.model';
 import { ResponseBase } from '@/types/response/response-base';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 
-export default function PortfolioItemCard({ portfolioItem }: { portfolioItem: PortfolioItem }) {
+export default function PortfolioItemCard({ portfolioItem }: { portfolioItem: ExtendedPortfolioItemModel }) {
     const dispatch = useAppDispatch();
     const isAdmin = useAppSelector((state) => state.isAdmin);
     const [isDeleting, setIsDeleting] = React.useState<boolean>(false);
@@ -61,19 +61,18 @@ export default function PortfolioItemCard({ portfolioItem }: { portfolioItem: Po
                 className="object-contain w-auto h-[125] max-w-[250] rounded-[10px]"
             />
 
-            <p className="w-full h-auto font-semibold">{portfolioItem.title}</p>
+            <p className="w-full h-auto font-semibold text-center">{portfolioItem.title}</p>
 
-            <p className="w-full h-[120px] text-gray-600 whitespace-pre-wrap truncate text-sm">{portfolioItem.description}</p>
+            <p className="w-full h-[120px] text-gray-600 whitespace-pre-wrap truncate text-sm text-center">
+                {portfolioItem.description}
+            </p>
 
-            <div className="w-full h-[30px] flex justify-start items-center gap-3 overflow-x-scroll text-sm whitespace-nowrap">
-                {/* <p>* skill-1</p>
-                <p>* skill-2</p>
-                <p>* skill-3</p>
-                <p>* skill-4</p>
-                <p>* skill-5</p>
-                <p>* skill-6</p>
-                <p>* skill-7</p>
-                <p>* skill-8</p> */}
+            <div 
+                className="w-full h-[30px] flex justify-start items-center gap-3 overflow-x-scroll text-xs whitespace-nowrap"
+            >
+                {portfolioItem.skills.map(skill => (
+                    <p key={skill.id}>• {skill.name}</p>
+                ))}
             </div>
 
             {isAdmin && (

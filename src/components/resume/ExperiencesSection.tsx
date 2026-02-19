@@ -4,7 +4,7 @@ import { Button } from '@/components/Button';
 import { ExperienceForm } from '@/components/resume/ExperienceForm';
 import { ExperienceItem } from '@/components/resume/ExperienceItem';
 import { SectionHeader } from '@/components/resume/SectionHeader';
-import { ButtonVariant } from '@/enums/button-variants.enum';
+import { ButtonVariant } from '@/enums/button-variant.enum';
 import { Experience } from '@/generated/client';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { userActions } from '@/store/slices/user-slice';

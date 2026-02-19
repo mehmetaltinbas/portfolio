@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/Button';
 import { links } from '@/constants/links.constant';
-import { ButtonVariant } from '@/enums/button-variants.enum';
+import { ButtonVariant } from '@/enums/button-variant.enum';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { isAdminActions } from '@/store/slices/is-admin-slice';
 import { ResponseBase } from '@/types/response/response-base';

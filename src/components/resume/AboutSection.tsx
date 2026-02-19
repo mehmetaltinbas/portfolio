@@ -3,7 +3,7 @@
 import { Button } from '@/components/Button';
 import { TextArea } from '@/components/TextArea';
 import { SectionHeader } from '@/components/resume/SectionHeader';
-import { ButtonVariant } from '@/enums/button-variants.enum';
+import { ButtonVariant } from '@/enums/button-variant.enum';
 import { UserImagePlace } from '@/enums/user-image-place.enum';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { userActions } from '@/store/slices/user-slice';
