@@ -3,6 +3,7 @@
 import { Button } from '@/components/Button';
 import { SectionHeader } from '@/components/resume/SectionHeader';
 import { CreateSkillForm } from '@/components/resume/skills/CreateSkillForm';
+import { PlaceholderSortableSkillPill } from '@/components/resume/skills/PlaceholderSortableSkillPill';
 import { SkillDragOverlayPill } from '@/components/resume/skills/SkillDragOverlayPill';
 import { SkillPill } from '@/components/resume/skills/SkillPill';
 import { SortableSkillPill } from '@/components/resume/skills/SortableSkillPill';
@@ -34,9 +35,15 @@ export function SkillsSection({ id }: { id?: string }) {
     const [localSkills, setLocalSkills] = useState<Skill[]>(user.skills);
     const [activeSkill, setActiveSkill] = useState<Skill | null>(null);
     const [isSaving, setIsSaving] = useState(false);
+    const [skillsPlaceholdersCount, setSkillsPlaceHoldersCount] = useState<number>((3 - (user.skills.length % 3)) % 3);
+
+    const COLS = 3;
+    const placeholderCount = localSkills.length % COLS === 0 ? 0 : COLS - (localSkills.length % COLS);
+    const placeholderIds = Array.from({ length: placeholderCount }, (_, i) => `placeholder-${i}`);
 
     useEffect(() => {
         setLocalSkills(user.skills);
+        setSkillsPlaceHoldersCount((3 - (user.skills.length % 3)) % 3);
     }, [user.skills]);
 
     useEffect(() => {
@@ -89,12 +96,19 @@ export function SkillsSection({ id }: { id?: string }) {
 
     async function handleDragEnd(event: DragEndEvent) {
         setActiveSkill(null);
-        setIsSaving(true);
         const { active, over } = event;
         if (!over || active.id === over.id) return;
 
+        setIsSaving(true);
+
         const oldIndex = localSkills.findIndex((s) => s.id === active.id);
-        const newIndex = localSkills.findIndex((s) => s.id === over.id);
+
+        let newIndex: number;
+        if (String(over.id).startsWith('placeholder')) {
+            newIndex = localSkills.length - 1;
+        } else {
+            newIndex = localSkills.findIndex((s) => s.id === over.id);
+        }
 
         const reordered = arrayMove(localSkills, oldIndex, newIndex);
         const previous = localSkills;
@@ -158,7 +172,7 @@ export function SkillsSection({ id }: { id?: string }) {
             />
 
             <div className="mt-6">
-                <div className="grid grid-cols-2 sm:grid-cols-3 justify-between gap-4">
+                <div className={`grid grid-cols-2 sm:grid-cols-${COLS} justify-between gap-4`}>
                     {isEditMode ? (
                         <DndContext
                             sensors={sensors}
@@ -166,7 +180,7 @@ export function SkillsSection({ id }: { id?: string }) {
                             onDragStart={handleDragStart}
                             onDragEnd={handleDragEnd}
                         >
-                            <SortableContext items={localSkills.map((s) => s.id)} strategy={rectSortingStrategy}>
+                            <SortableContext items={[...localSkills.map((s) => s.id), ...placeholderIds]} strategy={rectSortingStrategy}>
                                 {localSkills.map((skill) => (
                                     <SortableSkillPill
                                         key={skill.id}
@@ -174,6 +188,10 @@ export function SkillsSection({ id }: { id?: string }) {
                                         onDelete={deleteSkill}
                                         isSaving={isSaving}
                                     />
+                                ))}
+
+                                {placeholderIds.map((id) => (
+                                    <PlaceholderSortableSkillPill key={id} id={id} />
                                 ))}
                             </SortableContext>
                             <DragOverlay>

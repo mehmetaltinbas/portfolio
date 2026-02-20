@@ -3,6 +3,7 @@
 import { Button } from '@/components/Button';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import CreatePortfolioItemForm from '@/components/portfolio/CreatePortfolioItemForm';
+import { PlaceholderSortablePortfolioItemCard } from '@/components/portfolio/PlaceholderSortablePortfolioItemCard';
 import PortfolioItemCard from '@/components/portfolio/PortfolioItemCard';
 import { SortablePortfolioItemCard } from '@/components/portfolio/SortablePortfolioItemCard';
 import { ButtonVariant } from '@/enums/button-variant.enum';
@@ -32,6 +33,10 @@ export default function Page() {
     const createPortfolioItemFormRef = useRef<HTMLDivElement>(null);
     const [portfolioItems, setPortfolioItems] = useState<ExtendedPortfolioItemModel[]>([]);
     const [activeId, setActiveId] = useState<string | null>(null);
+
+    const COLS = 3;
+    const placeholderCount = portfolioItems.length % COLS === 0 ? 0 : COLS - (portfolioItems.length % COLS);
+    const placeholderIds = Array.from({ length: placeholderCount }, (_, i) => `placeholder-${i}`);
 
     async function refreshPortfolioItems() {
         const response: ReadMultipleExtendedPortfolioItemsResponse = await (
@@ -83,11 +88,14 @@ export default function Page() {
 
     async function handleDragEnd(event: DragEndEvent) {
         setActiveId(null);
+
         const { active, over } = event;
         if (!over || active.id === over.id) return;
 
         const oldIndex = portfolioItems.findIndex((item) => item.id === active.id);
-        const newIndex = portfolioItems.findIndex((item) => item.id === over.id);
+        const newIndex = String(over.id).startsWith('placeholder')
+            ? portfolioItems.length - 1
+            : portfolioItems.findIndex((item) => item.id === over.id);
 
         const reordered = arrayMove(portfolioItems, oldIndex, newIndex);
         const previous = portfolioItems;
@@ -149,16 +157,19 @@ export default function Page() {
                         onDragEnd={handleDragEnd}
                     >
                         <SortableContext
-                            items={portfolioItems.map((item) => item.id)}
+                            items={[...portfolioItems.map((item) => item.id), ...placeholderIds]}
                             strategy={rectSortingStrategy}
                         >
-                            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
+                            <div className={`grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-${COLS} gap-8`}>
                                 {portfolioItems.map((portfolioItem) => (
                                     <SortablePortfolioItemCard
                                         key={portfolioItem.id}
                                         portfolioItem={portfolioItem}
                                         refreshPortfolioItems={refreshPortfolioItems}
                                     />
+                                ))}
+                                {placeholderIds.map((id) => (
+                                    <PlaceholderSortablePortfolioItemCard key={id} id={id} />
                                 ))}
                             </div>
                         </SortableContext>
@@ -177,7 +188,7 @@ export default function Page() {
                         </DragOverlay>
                     </DndContext>
                 ) : (
-                    <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8 justify-items-center">
+                    <div className={`grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-${COLS} gap-8 justify-items-center`}>
                         {portfolioItems.map((portfolioItem) => (
                             <PortfolioItemCard
                                 key={portfolioItem.id}
