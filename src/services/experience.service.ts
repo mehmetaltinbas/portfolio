@@ -1,27 +1,16 @@
 import { userId } from '@/constants/user-id.constant';
 import { CreateExperienceDto } from '@/types/dto/experience/create-experience.dto';
-import { DeleteExperienceDto } from '@/types/dto/experience/delete-experience.dto';
 import { UpdateExperienceDto } from '@/types/dto/experience/update-experience.dto';
 import { ReadAllExperiencesResponse } from '@/types/response/experience/read-all-experiences.response';
 import { ResponseBase } from '@/types/response/response-base';
-import { isValidYearMonth } from '@/utils/validate-year-month.util';
 import { prisma } from 'prisma/prisma-client';
 
 export class ExperienceService {
     private constructor() {}
 
     static async create(dto: CreateExperienceDto): Promise<ResponseBase> {
-        if (!isValidYearMonth(dto.startDate)) {
-            return { isSuccess: false, message: 'Invalid start date format. Use YYYY-MM' };
-        }
-
-        if (!dto.isCurrent && dto.endDate) {
-            if (!isValidYearMonth(dto.endDate)) {
-                return { isSuccess: false, message: 'Invalid end date format. Use YYYY-MM' };
-            }
-            if (dto.endDate < dto.startDate) {
-                return { isSuccess: false, message: 'End date cannot be before start date' };
-            }
+        if (!dto.isCurrent && dto.endDate && dto.endDate < dto.startDate) {
+            return { isSuccess: false, message: 'End date cannot be before start date' };
         }
 
         try {
@@ -57,18 +46,11 @@ export class ExperienceService {
         }
     }
 
-    static async updateById(dto: UpdateExperienceDto): Promise<ResponseBase> {
+    static async updateById(id: string, dto: UpdateExperienceDto): Promise<ResponseBase> {
         try {
-            const experience = await prisma.experience.findUnique({ where: { id: dto.id } });
+            const experience = await prisma.experience.findUnique({ where: { id } });
             if (!experience) {
                 return { isSuccess: false, message: 'experience not found' };
-            }
-
-            if (dto.startDate && !isValidYearMonth(dto.startDate)) {
-                return { isSuccess: false, message: 'Invalid start date format. Use YYYY-MM' };
-            }
-            if (dto.endDate && !isValidYearMonth(dto.endDate)) {
-                return { isSuccess: false, message: 'Invalid end date format. Use YYYY-MM' };
             }
 
             const startDate = dto.startDate ?? experience.startDate.toISOString().slice(0, 7);
@@ -80,7 +62,7 @@ export class ExperienceService {
             }
 
             await prisma.experience.update({
-                where: { id: dto.id },
+                where: { id },
                 data: {
                     title: dto.title ?? experience.title,
                     company: dto.company ?? experience.company,
@@ -97,14 +79,14 @@ export class ExperienceService {
         }
     }
 
-    static async deleteById(dto: DeleteExperienceDto): Promise<ResponseBase> {
+    static async deleteById(id: string): Promise<ResponseBase> {
         try {
-            const experience = await prisma.experience.findUnique({ where: { id: dto.id } });
+            const experience = await prisma.experience.findUnique({ where: { id } });
             if (!experience) {
                 return { isSuccess: false, message: 'experience not found' };
             }
 
-            await prisma.experience.delete({ where: { id: dto.id } });
+            await prisma.experience.delete({ where: { id } });
             return { isSuccess: true, message: 'experience deleted' };
         } catch (error) {
             console.error(error);

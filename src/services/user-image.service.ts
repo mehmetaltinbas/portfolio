@@ -1,29 +1,17 @@
 import { userId } from '@/constants/user-id.constant';
 import { SupabaseBucketName } from '@/enums/supabase-bucket-name.enum';
-import { UserImagePlace } from '@/enums/user-image-place.enum';
 import { DeleteUserImageDto } from '@/types/dto/user-image/delete-user-image.dto';
 import { UpsertUserImageDto } from '@/types/dto/user-image/upsert-user-image.dto';
 import { ResponseBase } from '@/types/response/response-base';
-import { isValidEnumValue } from '@/utils/is-string-valid-enum.util';
 import { supabase } from '@/utils/supabase-client';
 import { prisma } from 'prisma/prisma-client';
 
 export class UserImageService {
     private constructor() {}
 
-    static async upsert(upsertUserImageDto: UpsertUserImageDto): Promise<ResponseBase> {
-        if (!upsertUserImageDto.file || !upsertUserImageDto.place) {
-            return { isSuccess: false, message: "file or place doesn't exist" };
-        }
-        if (!upsertUserImageDto.file.type.startsWith('image/')) {
-            return { isSuccess: false, message: 'file must be an image' };
-        }
-        if (!isValidEnumValue(UserImagePlace, upsertUserImageDto.place)) {
-            return { isSuccess: false, message: `${upsertUserImageDto.place} is not a valid user image place value` };
-        }
-
+    static async upsert(file: File, upsertUserImageDto: UpsertUserImageDto): Promise<ResponseBase> {
         try {
-            const fileBuffer = Buffer.from(await upsertUserImageDto.file.arrayBuffer());
+            const fileBuffer = Buffer.from(await file.arrayBuffer());
 
             const existingImage = await prisma.userImage.findUnique({
                 where: { userId_place: { userId: userId!, place: upsertUserImageDto.place } },
@@ -33,7 +21,7 @@ export class UserImageService {
 
             const supabaseResponse = await supabase.storage
                 .from(SupabaseBucketName.USER_IMAGES)
-                .upload(newStoragePath, fileBuffer, { contentType: upsertUserImageDto.file.type });
+                .upload(newStoragePath, fileBuffer, { contentType: file.type });
 
             if (supabaseResponse.error) {
                 throw new Error(supabaseResponse.error.message);
@@ -79,13 +67,6 @@ export class UserImageService {
     }
 
     static async delete(deleteUserImageDto: DeleteUserImageDto): Promise<ResponseBase> {
-        if (!deleteUserImageDto.place) {
-            return { isSuccess: false, message: 'place is required' };
-        }
-        if (!isValidEnumValue(UserImagePlace, deleteUserImageDto.place)) {
-            return { isSuccess: false, message: `${deleteUserImageDto.place} is not a valid user image place value` };
-        }
-
         try {
             const existingImage = await prisma.userImage.findUnique({
                 where: { userId_place: { userId: userId!, place: deleteUserImageDto.place } },

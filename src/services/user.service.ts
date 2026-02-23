@@ -144,13 +144,6 @@ export class UserService {
     }
 
     static async upsertCv(file: File): Promise<ResponseBase> {
-        if (!file) {
-            return { isSuccess: false, message: "file doesn't exist" };
-        }
-        if (file.type !== 'application/pdf') {
-            return { isSuccess: false, message: 'file must be a pdf' };
-        }
-
         try {
             const fileBuffer = Buffer.from(await file.arrayBuffer());
 

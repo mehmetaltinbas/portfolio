@@ -1,6 +1,3 @@
-import { INVALID_UUID_RESPONSE_MESSAGE } from '@/constants/invalid-uuid-response-message.constant';
-import { PORTFOLIO_ITEM_DESCRIPTION_CHAR_LIMIT } from '@/constants/portfolio-item/portfolio-item-description-char-limit.constant';
-import { PORTFOLIO_ITEM_TITLE_CHAR_LIMIT } from '@/constants/portfolio-item/portfolio-item-title-char-limit.constant';
 import { userId } from '@/constants/user-id.constant';
 import { SupabaseBucketName } from '@/enums/supabase-bucket-name.enum';
 import { InputJsonValue } from '@/generated/client/runtime/library';
@@ -17,18 +14,13 @@ import { UploadPortfolioItemImageResponse } from '@/types/response/portfolio-ite
 import { ResponseBase } from '@/types/response/response-base';
 import { TransactionClient } from '@/types/transaction-client.type';
 import { extractImageUrlsFromTipTapJson } from '@/utils/extract-image-urls-from-tip-tap-json.util';
-import { isValidUUID } from '@/utils/is-valid-uuid.util';
 import { supabase } from '@/utils/supabase-client';
 import { prisma } from 'prisma/prisma-client';
 
 export class PortfolioItemService {
     private constructor() {}
- 
-    static async create(dto: CreatePortfolioItemDto): Promise<ResponseBase> {
-        if (!dto.title) {
-            return { isSuccess: false, message: 'title must exist' };
-        }
 
+    static async create(dto: CreatePortfolioItemDto): Promise<ResponseBase> {
         try {
             const duplicatePortfolioItem = await prisma.portfolioItem.findFirst({
                 where: {
@@ -36,24 +28,13 @@ export class PortfolioItemService {
                     title: dto.title
                 }
             });
-            
+
             if (duplicatePortfolioItem) {
                 return {
                     isSuccess: false,
                     message: `Portfolio item with title ${dto.title} already exists`
                 };
             }
-
-            if (dto.title.length > PORTFOLIO_ITEM_TITLE_CHAR_LIMIT)
-                return {
-                    isSuccess: false,
-                    message: `Failed! Title char length can't exceed ${PORTFOLIO_ITEM_TITLE_CHAR_LIMIT}.`
-                };
-            else if (dto.description && dto.description.length > PORTFOLIO_ITEM_DESCRIPTION_CHAR_LIMIT)
-                return {
-                    isSuccess: false,
-                    message: `Failed! Description char length can't exceed ${PORTFOLIO_ITEM_DESCRIPTION_CHAR_LIMIT}.`
-                };
 
             await prisma.$transaction(async (tx: TransactionClient) => {
 
@@ -134,7 +115,7 @@ export class PortfolioItemService {
                         NOT: { id }
                     }
                 });
-                
+
                 if (duplicatePortfolioItem) {
                     return {
                         isSuccess: false,
@@ -142,17 +123,6 @@ export class PortfolioItemService {
                     };
                 }
             }
-
-            if (dto.title && dto.title.length > PORTFOLIO_ITEM_TITLE_CHAR_LIMIT)
-                return {
-                    isSuccess: false,
-                    message: `Failed! Title char length can't exceed ${PORTFOLIO_ITEM_TITLE_CHAR_LIMIT}.`
-                };
-            else if (dto.description && dto.description.length > PORTFOLIO_ITEM_DESCRIPTION_CHAR_LIMIT)
-                return {
-                    isSuccess: false,
-                    message: `Failed! Description char length can't exceed ${PORTFOLIO_ITEM_DESCRIPTION_CHAR_LIMIT}.`
-                };
 
             await prisma.portfolioItem.update({
                 where: {
@@ -230,19 +200,10 @@ export class PortfolioItemService {
     }
 
     static async uploadImage(
+        file: File,
         uploadPortfolioItemImageDto: UploadPortfolioItemImageDto
     ): Promise<UploadPortfolioItemImageResponse> {
-        if (!uploadPortfolioItemImageDto.file) {
-            return { isSuccess: false, message: "file doesn't exist" };
-        }
-        if (!uploadPortfolioItemImageDto.file.type.startsWith('image/')) {
-            return { isSuccess: false, message: 'file must be an image' };
-        }
-        if (!uploadPortfolioItemImageDto.portfolioItemId) {
-            return { isSuccess: false, message: 'portfolioItemId is not provided' };
-        }
-
-        const { portfolioItemId, file } = uploadPortfolioItemImageDto;
+        const { portfolioItemId } = uploadPortfolioItemImageDto;
 
         try {
             const portfolioItem = await prisma.portfolioItem.findUnique({ where: { id: portfolioItemId } });
@@ -278,12 +239,10 @@ export class PortfolioItemService {
     }
 
     static async cleanUpOrphanedImagesFromContent(dto: CleanUpOrphanedPortfolioImagesDto): Promise<ResponseBase> {
-        if (!dto.portfolioItemId || !dto.content) {
-            return { isSuccess: false, message: "portfolioItemId or content isn't provided" };
-        }
         if (typeof dto.content !== 'object' || (dto.content as { type: string }).type !== 'doc') {
             return { isSuccess: false, message: 'content is not in intended form' };
         }
+        
         try {
             const { data: files } = await supabase.storage
                 .from(SupabaseBucketName.PORTFOLIO_ITEM_IMAGES)
@@ -315,19 +274,7 @@ export class PortfolioItemService {
         }
     }
 
-    static async upsertCoverImage(id: string, file: any): Promise<ResponseBase> {
-        if (!isValidUUID(id))
-            return {
-                isSuccess: false,
-                message: INVALID_UUID_RESPONSE_MESSAGE
-            };
-
-        if (!file || !(file instanceof File))
-            return { isSuccess: false, message: "file isn't given or isn't File" };
-
-        if (!file.type.startsWith('image/'))
-            return { isSuccess: false, message: 'file must be an image' };
-
+    static async upsertCoverImage(id: string, file: File): Promise<ResponseBase> {
         try {
             const imageBuffer = Buffer.from(await file.arrayBuffer());
 

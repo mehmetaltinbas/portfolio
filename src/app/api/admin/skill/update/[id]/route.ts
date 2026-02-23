@@ -1,20 +1,21 @@
 import { SkillService } from '@/services/skill.service';
-import { CreateSkillDto } from '@/types/dto/skill/create-skill.dto';
+import { UpdateSkillDto } from '@/types/dto/skill/update-skill.dto';
 import { ResponseBase } from '@/types/response/response-base';
 import { validateDto } from '@/utils/validate-dto.util';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
-export async function POST(req: Request) {
+export async function PATCH(req: NextRequest, context: { params: Promise<{ id: string }> }) {
     try {
+        const { id } = await context.params;
         const reqBody = await req.json();
 
-        const validateDtoResponse = await validateDto(CreateSkillDto, reqBody);
+        const validateDtoResponse = await validateDto(UpdateSkillDto, reqBody);
 
         if (!validateDtoResponse.isSuccess || !validateDtoResponse.body) {
             return NextResponse.json(validateDtoResponse);
         }
 
-        const response = await SkillService.create(validateDtoResponse.body);
+        const response = await SkillService.updateById(id, validateDtoResponse.body);
 
         return NextResponse.json(response);
     } catch (error) {

@@ -2,7 +2,6 @@ import { MAX_CONTACTS } from '@/constants/max-contacts.constant';
 import { userId } from '@/constants/user-id.constant';
 import { ContactLabel } from '@/enums/contact-label.enum';
 import { CreateContactDto } from '@/types/dto/contact/create-contact.dto';
-import { DeleteContactDto } from '@/types/dto/contact/delete-contact.dto';
 import { ReorderContactsDto } from '@/types/dto/contact/reorder-contacts.dto';
 import { UpdateContactDto } from '@/types/dto/contact/update-contact.dto';
 import { ReadAllContactsResponse } from '@/types/response/contact/read-all-contacts.response';
@@ -21,7 +20,7 @@ export class ContactService {
                 if (count >= MAX_CONTACTS) {
                     return { isSuccess: false, message: `Maximum of ${MAX_CONTACTS} contacts reached` };
                 }
-        
+
                 await tx.contact.create({
                     data: {
                         userId,
@@ -43,7 +42,7 @@ export class ContactService {
     static async readAllByUserId(): Promise<ReadAllContactsResponse> {
         try {
             const contacts = await prisma.contact.findMany({ where: { userId }, orderBy: { order: 'asc' } });
-            
+
             if (contacts.length === 0) {
                 return { isSuccess: false, message: 'no contact found' };
             }
@@ -54,8 +53,8 @@ export class ContactService {
         }
     }
 
-    static async update(dto: UpdateContactDto): Promise<ResponseBase> {
-        const { id, label, name, ...restOfDto } = dto;
+    static async update(id: string, dto: UpdateContactDto): Promise<ResponseBase> {
+        const { label, name, ...restOfDto } = dto;
 
         try {
             const contact = await prisma.contact.findUnique({ where: { id } });
@@ -88,14 +87,14 @@ export class ContactService {
         }
     }
 
-    static async delete(dto: DeleteContactDto): Promise<ResponseBase> {
+    static async delete(id: string): Promise<ResponseBase> {
         try {
-            const contact = await prisma.contact.findUnique({ where: { id: dto.id } });
+            const contact = await prisma.contact.findUnique({ where: { id } });
             if (!contact) {
                 return { isSuccess: false, message: 'contact not found' };
             }
 
-            await prisma.contact.delete({ where: { id: dto.id } });
+            await prisma.contact.delete({ where: { id } });
             return { isSuccess: true, message: 'contact deleted' };
         } catch {
             return { isSuccess: false, message: "contact couldn't be deleted" };

@@ -1,4 +1,3 @@
-import { SKILL_NAME_CHAR_LIMIT } from '@/constants/skill-name-char-limit.constant';
 import { userId } from '@/constants/user-id.constant';
 import { SupabaseBucketName } from '@/enums/supabase-bucket-name.enum';
 import { Prisma } from '@/generated/client';
@@ -32,12 +31,6 @@ export class SkillService {
                 return {
                     isSuccess: false,
                     message: `Failed! A skill with name ${dto.name} already exists.`
-                };
-
-            if (dto.name.length > SKILL_NAME_CHAR_LIMIT)
-                return {
-                    isSuccess: false,
-                    message: `Failed! Skill's name char length can't exceed ${SKILL_NAME_CHAR_LIMIT}.`
                 };
 
             await prisma.$transaction(async (tx: TransactionClient) => {
@@ -76,9 +69,9 @@ export class SkillService {
         }
     }
 
-    static async updateById(dto: UpdateSkillDto): Promise<ResponseBase> {
+    static async updateById(id: string, dto: UpdateSkillDto): Promise<ResponseBase> {
         try {
-            const skill = await prisma.skill.findUnique({ where: { id: dto.id } });
+            const skill = await prisma.skill.findUnique({ where: { id } });
 
             if (!skill) {
                 return { isSuccess: false, message: 'skill not found' };
@@ -88,7 +81,7 @@ export class SkillService {
                 where: {
                     userId,
                     name: dto.name,
-                    NOT: { id: dto.id }
+                    NOT: { id }
                 }
             });
 
@@ -98,14 +91,8 @@ export class SkillService {
                     message: `Failed! A skill with name ${dto.name} already exists.`
                 };
 
-            if (dto.name && dto.name.length > SKILL_NAME_CHAR_LIMIT)
-                return {
-                    isSuccess: false,
-                    message: `Failed! Skill's name char length can't exceed ${SKILL_NAME_CHAR_LIMIT}.`
-                };
-
             await prisma.skill.update({
-                where: { id: dto.id },
+                where: { id },
                 data: {
                     name: dto.name ?? skill.name,
                     content: dto.content !== undefined ? (dto.content as InputJsonValue) : undefined,
@@ -115,7 +102,7 @@ export class SkillService {
             if (dto.content) {
                 SkillService
                     .cleanUpOrphanedImages({
-                        skillId: dto.id,
+                        skillId: id,
                         content: dto.content,
                     })
                     .catch(console.error);
@@ -169,18 +156,8 @@ export class SkillService {
         }
     }
 
-    static async uploadImage(dto: UploadSkillImageDto): Promise<UploadSkillImageResponse> {
-        if (!dto.file) {
-            return { isSuccess: false, message: "file doesn't exist" };
-        }
-        if (!dto.file.type.startsWith('image/')) {
-            return { isSuccess: false, message: 'file must be an image' };
-        }
-        if (!dto.skillId) {
-            return { isSuccess: false, message: 'skillId is not provided' };
-        }
-
-        const { skillId, file } = dto;
+    static async uploadImage(file: File, dto: UploadSkillImageDto): Promise<UploadSkillImageResponse> {
+        const { skillId } = dto;
 
         try {
             const skill = await prisma.skill.findUnique({ where: { id: skillId } });
@@ -216,9 +193,6 @@ export class SkillService {
     }
 
     static async cleanUpOrphanedImages(dto: CleanUpOrphanedSkillImagesDto): Promise<ResponseBase> {
-        if (!dto.skillId || !dto.content) {
-            return { isSuccess: false, message: "skillId or content isn't provided" };
-        }
         if (typeof dto.content !== 'object' || (dto.content as { type: string }).type !== 'doc') {
             return { isSuccess: false, message: 'content is not in intended form' };
         }
