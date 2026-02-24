@@ -12,14 +12,14 @@ export async function PATCH(req: NextRequest, context: { params: Promise<{ id: s
         const validateDtoResponse = await validateDto(UpdateExperienceDto, reqBody);
 
         if (!validateDtoResponse.isSuccess || !validateDtoResponse.body) {
-            return NextResponse.json(validateDtoResponse);
+            return NextResponse.json(validateDtoResponse, { status: validateDtoResponse.statusCode });
         }
 
         const response = await ExperienceService.updateById(id, validateDtoResponse.body);
 
-        return NextResponse.json(response);
+        return NextResponse.json(response, { status: response.statusCode });
     } catch (error) {
-        const response: ResponseBase = { isSuccess: false, message: 'internal server error' };
-        return NextResponse.json(response);
+        const response: ResponseBase = { isSuccess: false, message: 'internal server error', statusCode: 500 };
+        return NextResponse.json(response, { status: 500 });
     }
 }

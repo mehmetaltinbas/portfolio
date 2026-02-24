@@ -59,10 +59,10 @@ export class UserImageService {
                 }
             }
 
-            return { isSuccess: true, message: 'image uploaded' };
+            return { isSuccess: true, message: 'image uploaded', statusCode: 200 };
         } catch (error) {
             console.error(error);
-            return { isSuccess: false, message: "internal server error" };
+            return { isSuccess: false, message: "internal server error", statusCode: 500 };
         }
     }
 
@@ -73,7 +73,7 @@ export class UserImageService {
             });
 
             if (!existingImage) {
-                return { isSuccess: false, message: 'image not found' };
+                return { isSuccess: false, message: 'image not found', statusCode: 404 };
             }
 
             await prisma.userImage.delete({
@@ -90,10 +90,10 @@ export class UserImageService {
                 }
             }
 
-            return { isSuccess: true, message: 'image deleted' };
+            return { isSuccess: true, message: 'image deleted', statusCode: 200 };
         } catch (error) {
             console.error(error);
-            return { isSuccess: false, message: "internal server error" };
+            return { isSuccess: false, message: "internal server error", statusCode: 500 };
         }
     }
 }

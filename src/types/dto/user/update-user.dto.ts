@@ -1,4 +1,4 @@
-import { IsEmail, IsOptional, IsString, ValidateIf } from 'class-validator';
+import { IsEmail, IsOptional, IsString } from 'class-validator';
 
 export class UpdateUserDto {
     @IsEmail()
@@ -34,8 +34,6 @@ export class UpdateUserDto {
     location?: string;
 
     @IsOptional()
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    @ValidateIf(o => o.cvUrl !== null)
     @IsString()
     cvUrl?: string | null;
 }

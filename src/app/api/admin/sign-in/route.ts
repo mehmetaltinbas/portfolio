@@ -14,12 +14,12 @@ export async function POST(req: Request) {
         const validateDtoResponse = await validateDto(UserSignInDto, reqBody);
 
         if (!validateDtoResponse.isSuccess || !validateDtoResponse.body) {
-            return NextResponse.json(validateDtoResponse);
+            return NextResponse.json(validateDtoResponse, { status: validateDtoResponse.statusCode });
         }
 
         const response = await UserService.signIn(validateDtoResponse.body);
 
-        if (!response.isSuccess || !response.jwt) return NextResponse.json(response);
+        if (!response.isSuccess || !response.jwt) return NextResponse.json(response, { status: response.statusCode });
 
         const cookieOptions: Partial<ResponseCookie> = {
             maxAge: jwtCookieSettings.expiresIn,
@@ -35,14 +35,15 @@ export async function POST(req: Request) {
         const responseBase: ResponseBase = {
             isSuccess: response.isSuccess,
             message: response.message,
+            statusCode: response.statusCode,
         };
 
-        return NextResponse.json(responseBase);
+        return NextResponse.json(responseBase, { status: responseBase.statusCode });
     } catch (error) {
         console.error(error);
 
-        const response: ResponseBase = { isSuccess: false, message: 'internal server error' };
-        
-        return NextResponse.json(response);
+        const response: ResponseBase = { isSuccess: false, message: 'internal server error', statusCode: 500 };
+
+        return NextResponse.json(response, { status: 500 });
     }
 }

@@ -30,7 +30,8 @@ export class SkillService {
             if (duplicateSkill)
                 return {
                     isSuccess: false,
-                    message: `Failed! A skill with name ${dto.name} already exists.`
+                    message: `Failed! A skill with name ${dto.name} already exists.`,
+                    statusCode: 409,
                 };
 
             await prisma.$transaction(async (tx: TransactionClient) => {
@@ -49,10 +50,10 @@ export class SkillService {
                 });
             });
 
-            return { isSuccess: true, message: 'skill created' };
+            return { isSuccess: true, message: 'skill created', statusCode: 201 };
         } catch (error) {
             console.error(error);
-            return { isSuccess: false, message: "internal server error" };
+            return { isSuccess: false, message: "internal server error", statusCode: 500 };
         }
     }
 
@@ -60,12 +61,12 @@ export class SkillService {
         try {
             const skill = await prisma.skill.findUnique({ where: { id }, include: { experiences: true, educations: true, portfolioItems: true } });
 
-            if (!skill) return { isSuccess: false, message: "skill couldn't be read" };
+            if (!skill) return { isSuccess: false, message: "skill couldn't be read", statusCode: 404 };
 
-            return { isSuccess: true, message: 'skill read', skill };
+            return { isSuccess: true, message: 'skill read', skill, statusCode: 200 };
         } catch (error) {
             console.error(error);
-            return { isSuccess: false, message: "internal server error" };
+            return { isSuccess: false, message: "internal server error", statusCode: 500 };
         }
     }
 
@@ -74,7 +75,7 @@ export class SkillService {
             const skill = await prisma.skill.findUnique({ where: { id } });
 
             if (!skill) {
-                return { isSuccess: false, message: 'skill not found' };
+                return { isSuccess: false, message: 'skill not found', statusCode: 404 };
             }
 
             const duplicateSkill = await prisma.skill.findFirst({
@@ -88,7 +89,8 @@ export class SkillService {
             if (duplicateSkill)
                 return {
                     isSuccess: false,
-                    message: `Failed! A skill with name ${dto.name} already exists.`
+                    message: `Failed! A skill with name ${dto.name} already exists.`,
+                    statusCode: 409,
                 };
 
             await prisma.skill.update({
@@ -108,10 +110,10 @@ export class SkillService {
                     .catch(console.error);
             }
 
-            return { isSuccess: true, message: 'skill updated' };
+            return { isSuccess: true, message: 'skill updated', statusCode: 200 };
         } catch (error) {
             console.error(error);
-            return { isSuccess: false, message: "internal server error" };
+            return { isSuccess: false, message: "internal server error", statusCode: 500 };
         }
     }
 
@@ -119,7 +121,7 @@ export class SkillService {
         try {
             const skill = await prisma.skill.findUnique({ where: { id } });
             if (!skill) {
-                return { isSuccess: false, message: 'skill not found' };
+                return { isSuccess: false, message: 'skill not found', statusCode: 404 };
             }
 
             await prisma.$transaction(async (tx: TransactionClient) => {
@@ -136,10 +138,10 @@ export class SkillService {
                 });
             });
 
-            return { isSuccess: true, message: 'skill deleted' };
+            return { isSuccess: true, message: 'skill deleted', statusCode: 200 };
         } catch (error) {
             console.error(error);
-            return { isSuccess: false, message: "internal server error" };
+            return { isSuccess: false, message: "internal server error", statusCode: 500 };
         }
     }
 
@@ -149,10 +151,10 @@ export class SkillService {
                 dto.orderedIds.map((id, index) => prisma.skill.update({ where: { id }, data: { order: index } }))
             );
 
-            return { isSuccess: true, message: 'skills reordered' };
+            return { isSuccess: true, message: 'skills reordered', statusCode: 200 };
         } catch (error) {
             console.error(error);
-            return { isSuccess: false, message: "internal server error" };
+            return { isSuccess: false, message: "internal server error", statusCode: 500 };
         }
     }
 
@@ -162,7 +164,7 @@ export class SkillService {
         try {
             const skill = await prisma.skill.findUnique({ where: { id: skillId } });
             if (!skill) {
-                return { isSuccess: false, message: 'skill not found' };
+                return { isSuccess: false, message: 'skill not found', statusCode: 404 };
             }
 
             const buffer = Buffer.from(await file.arrayBuffer());
@@ -174,7 +176,7 @@ export class SkillService {
                 .upload(storagePath, buffer, { contentType: file.type });
 
             if (uploadError) {
-                return { isSuccess: false, message: uploadError.message };
+                return { isSuccess: false, message: uploadError.message, statusCode: 500 };
             }
 
             const { data: publicUrlData } = supabase.storage
@@ -185,20 +187,21 @@ export class SkillService {
                 isSuccess: true,
                 message: 'image uploaded',
                 url: publicUrlData.publicUrl,
+                statusCode: 200,
             };
         } catch (error) {
             console.error(error);
-            return { isSuccess: false, message: "internal server error" };
+            return { isSuccess: false, message: "internal server error", statusCode: 500 };
         }
     }
 
     static async cleanUpOrphanedImages(dto: CleanUpOrphanedSkillImagesDto): Promise<ResponseBase> {
         if (typeof dto.content !== 'object' || (dto.content as { type: string }).type !== 'doc') {
-            return { isSuccess: false, message: 'content is not in intended form' };
+            return { isSuccess: false, message: 'content is not in intended form', statusCode: 400 };
         }
         try {
             const { data: files } = await supabase.storage.from(SupabaseBucketName.SKILL_IMAGES).list(dto.skillId);
-            if (!files || files.length === 0) return { isSuccess: true, message: 'no orphaned images to remove' };
+            if (!files || files.length === 0) return { isSuccess: true, message: 'no orphaned images to remove', statusCode: 200 };
 
             const referencedUrls = extractImageUrlsFromTipTapJson(dto.content);
 
@@ -218,10 +221,10 @@ export class SkillService {
                 await supabase.storage.from(SupabaseBucketName.SKILL_IMAGES).remove(orphanedPaths);
             }
 
-            return { isSuccess: true, message: 'orphaned images removed' };
+            return { isSuccess: true, message: 'orphaned images removed', statusCode: 200 };
         } catch (error) {
             console.error(error);
-            return { isSuccess: false, message: "internal server error" };
+            return { isSuccess: false, message: "internal server error", statusCode: 500 };
         }
     }
 }

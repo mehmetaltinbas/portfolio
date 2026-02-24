@@ -11,19 +11,19 @@ export async function POST(req: Request) {
         const file = formData.get('file');
 
         if (!file || !(file instanceof File))
-            return NextResponse.json({ isSuccess: false, message: "file doesn't exist" });
+            return NextResponse.json({ isSuccess: false, message: "file doesn't exist", statusCode: 400 }, { status: 400 });
         if (!file.type.startsWith('image/'))
-            return NextResponse.json({ isSuccess: false, message: 'file must be an image' });
+            return NextResponse.json({ isSuccess: false, message: 'file must be an image', statusCode: 400 }, { status: 400 });
 
         const validateDtoResponse = await validateDto(UploadSkillImageDto, { skillId: formData.get('skillId') });
         if (!validateDtoResponse.isSuccess || !validateDtoResponse.body)
-            return NextResponse.json(validateDtoResponse);
+            return NextResponse.json(validateDtoResponse, { status: validateDtoResponse.statusCode });
 
         const response = await SkillService.uploadImage(file, validateDtoResponse.body);
 
-        return NextResponse.json(response);
+        return NextResponse.json(response, { status: response.statusCode });
     } catch (error) {
-        const response: ResponseBase = { isSuccess: false, message: 'internal server error' };
-        return NextResponse.json(response);
+        const response: ResponseBase = { isSuccess: false, message: 'internal server error', statusCode: 500 };
+        return NextResponse.json(response, { status: 500 });
     }
 }

@@ -32,7 +32,8 @@ export class PortfolioItemService {
             if (duplicatePortfolioItem) {
                 return {
                     isSuccess: false,
-                    message: `Portfolio item with title ${dto.title} already exists`
+                    message: `Portfolio item with title ${dto.title} already exists`,
+                    statusCode: 409,
                 };
             }
 
@@ -52,10 +53,10 @@ export class PortfolioItemService {
                 });
             });
 
-            return { isSuccess: true, message: 'portfolio item created' };
+            return { isSuccess: true, message: 'portfolio item created', statusCode: 201 };
         } catch (error) {
             console.error(error);
-            return { isSuccess: false, message: "internal server error" };
+            return { isSuccess: false, message: "internal server error", statusCode: 500 };
         }
     }
 
@@ -63,11 +64,11 @@ export class PortfolioItemService {
         try {
             const portfolioItem = await prisma.portfolioItem.findUnique({ where: { id } });
 
-            if (!portfolioItem) return { isSuccess: false, message: "portfolio item couldn't read" };
+            if (!portfolioItem) return { isSuccess: false, message: "portfolio item couldn't read", statusCode: 404 };
 
-            return { isSuccess: true, message: 'portfolio item read', portfolioItem };
+            return { isSuccess: true, message: 'portfolio item read', portfolioItem, statusCode: 200 };
         } catch {
-            return { isSuccess: false, message: "portfolio item couldn't be read" };
+            return { isSuccess: false, message: "portfolio item couldn't be read", statusCode: 500 };
         }
     }
 
@@ -75,11 +76,11 @@ export class PortfolioItemService {
         try {
             const portfolioItem = await prisma.portfolioItem.findUnique({ where: { id }, include: { skills: true } });
 
-            if (!portfolioItem) return { isSuccess: false, message: "portfolio item couldn't read" };
+            if (!portfolioItem) return { isSuccess: false, message: "portfolio item couldn't read", statusCode: 404 };
 
-            return { isSuccess: true, message: 'portfolio item read', portfolioItem };
+            return { isSuccess: true, message: 'portfolio item read', portfolioItem, statusCode: 200 };
         } catch {
-            return { isSuccess: false, message: "portfolio item couldn't be read" };
+            return { isSuccess: false, message: "portfolio item couldn't be read", statusCode: 500 };
         }
     }
 
@@ -87,10 +88,10 @@ export class PortfolioItemService {
         try {
             const portfolioItems = await prisma.portfolioItem.findMany({ where: { userId }, orderBy: { order: 'asc' } });
 
-            return { isSuccess: true, message: 'all portfolio items read', portfolioItems };
+            return { isSuccess: true, message: 'all portfolio items read', portfolioItems, statusCode: 200 };
         } catch (error) {
             console.error(error);
-            return { isSuccess: false, message: "internal server error" };
+            return { isSuccess: false, message: "internal server error", statusCode: 500 };
         }
     }
 
@@ -98,10 +99,10 @@ export class PortfolioItemService {
         try {
             const portfolioItems = await prisma.portfolioItem.findMany({ where: { userId }, orderBy: { order: 'asc' }, include: { skills: true } });
 
-            return { isSuccess: true, message: 'all portfolio items read', portfolioItems };
+            return { isSuccess: true, message: 'all portfolio items read', portfolioItems, statusCode: 200 };
         } catch (error) {
             console.error(error);
-            return { isSuccess: false, message: "internal server error" };
+            return { isSuccess: false, message: "internal server error", statusCode: 500 };
         }
     }
 
@@ -119,7 +120,8 @@ export class PortfolioItemService {
                 if (duplicatePortfolioItem) {
                     return {
                         isSuccess: false,
-                        message: `Portfolio item with title ${dto.title} already exists`
+                        message: `Portfolio item with title ${dto.title} already exists`,
+                        statusCode: 409,
                     };
                 }
             }
@@ -143,10 +145,10 @@ export class PortfolioItemService {
                     .catch(console.error);
             }
 
-            return { isSuccess: true, message: 'Portfolio item updated' };
+            return { isSuccess: true, message: 'Portfolio item updated', statusCode: 200 };
         } catch (error) {
             console.error(error);
-            return { isSuccess: false, message: "internal server error" };
+            return { isSuccess: false, message: "internal server error", statusCode: 500 };
         }
     }
 
@@ -177,10 +179,10 @@ export class PortfolioItemService {
                 if (supabaseResponse.error) console.error(supabaseResponse.error);
             }
 
-            return { isSuccess: true, message: 'portfolio item deleted' };
+            return { isSuccess: true, message: 'portfolio item deleted', statusCode: 200 };
         } catch (error) {
             console.error(error);
-            return { isSuccess: false, message: "internal server error" };
+            return { isSuccess: false, message: "internal server error", statusCode: 500 };
         }
     }
 
@@ -192,10 +194,10 @@ export class PortfolioItemService {
                 )
             );
 
-            return { isSuccess: true, message: 'portfolio items reordered' };
+            return { isSuccess: true, message: 'portfolio items reordered', statusCode: 200 };
         } catch (error) {
             console.error(error);
-            return { isSuccess: false, message: "internal server error" };
+            return { isSuccess: false, message: "internal server error", statusCode: 500 };
         }
     }
 
@@ -208,7 +210,7 @@ export class PortfolioItemService {
         try {
             const portfolioItem = await prisma.portfolioItem.findUnique({ where: { id: portfolioItemId } });
             if (!portfolioItem) {
-                return { isSuccess: false, message: 'portfolio item not found' };
+                return { isSuccess: false, message: 'portfolio item not found', statusCode: 404 };
             }
 
             const buffer = Buffer.from(await file.arrayBuffer());
@@ -220,7 +222,7 @@ export class PortfolioItemService {
                 .upload(storagePath, buffer, { contentType: file.type });
 
             if (uploadError) {
-                return { isSuccess: false, message: uploadError.message };
+                return { isSuccess: false, message: uploadError.message, statusCode: 500 };
             }
 
             const { data: publicUrlData } = supabase.storage
@@ -231,23 +233,24 @@ export class PortfolioItemService {
                 isSuccess: true,
                 message: 'image uploaded',
                 url: publicUrlData.publicUrl,
+                statusCode: 200,
             };
         } catch (error) {
             console.error(error);
-            return { isSuccess: false, message: "internal server error" };
+            return { isSuccess: false, message: "internal server error", statusCode: 500 };
         }
     }
 
     static async cleanUpOrphanedImagesFromContent(dto: CleanUpOrphanedPortfolioImagesDto): Promise<ResponseBase> {
         if (typeof dto.content !== 'object' || (dto.content as { type: string }).type !== 'doc') {
-            return { isSuccess: false, message: 'content is not in intended form' };
+            return { isSuccess: false, message: 'content is not in intended form', statusCode: 400 };
         }
-        
+
         try {
             const { data: files } = await supabase.storage
                 .from(SupabaseBucketName.PORTFOLIO_ITEM_IMAGES)
                 .list(dto.portfolioItemId);
-            if (!files || files.length === 0) return { isSuccess: true, message: 'no orphaned images to remove' };
+            if (!files || files.length === 0) return { isSuccess: true, message: 'no orphaned images to remove', statusCode: 200 };
 
             const referencedUrls = extractImageUrlsFromTipTapJson(dto.content);
 
@@ -267,10 +270,10 @@ export class PortfolioItemService {
                 await supabase.storage.from(SupabaseBucketName.PORTFOLIO_ITEM_IMAGES).remove(orphanedPaths);
             }
 
-            return { isSuccess: true, message: 'orphaned images removed' };
+            return { isSuccess: true, message: 'orphaned images removed', statusCode: 200 };
         } catch (error) {
             console.error(error);
-            return { isSuccess: false, message: "internal server error" };
+            return { isSuccess: false, message: "internal server error", statusCode: 500 };
         }
     }
 
@@ -295,7 +298,8 @@ export class PortfolioItemService {
                 console.error(supabaseUploadResponse.error);
                 return {
                     isSuccess: false,
-                    message: 'error while uploading to supabase'
+                    message: 'error while uploading to supabase',
+                    statusCode: 500,
                 };
             }
 
@@ -330,10 +334,10 @@ export class PortfolioItemService {
                 if (error) console.error(error);
             }
 
-            return { isSuccess: true, message: 'cover image uploaded' };
+            return { isSuccess: true, message: 'cover image uploaded', statusCode: 200 };
         } catch (error) {
             console.error(error);
-            return { isSuccess: false, message: "internal server error" };
+            return { isSuccess: false, message: "internal server error", statusCode: 500 };
         }
     }
 
@@ -347,7 +351,7 @@ export class PortfolioItemService {
             const existingCoverImageUrl = readPortfolioItemByIdResponse.portfolioItem.coverImageUrl;
 
             if (!existingCoverImageUrl) {
-                return { isSuccess: true, message: "there already isn't a cover image" };
+                return { isSuccess: true, message: "there already isn't a cover image", statusCode: 200 };
             }
 
             const updatePortfolioItemResponse = await this.updateById(portfolioItemId, {
@@ -366,10 +370,10 @@ export class PortfolioItemService {
 
             if (error) console.error(error);
 
-            return { isSuccess: true, message: 'cover image deleted' };
+            return { isSuccess: true, message: 'cover image deleted', statusCode: 200 };
         } catch (error) {
             console.error(error);
-            return { isSuccess: false, message: "internal server error" };
+            return { isSuccess: false, message: "internal server error", statusCode: 500 };
         }
     }
 }

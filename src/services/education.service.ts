@@ -10,7 +10,7 @@ export class EducationService {
 
     static async create(dto: CreateEducationDto): Promise<ResponseBase> {
         if (!dto.isCurrent && dto.endDate && dto.endDate < dto.startDate) {
-            return { isSuccess: false, message: 'End date cannot be before start date' };
+            return { isSuccess: false, message: 'End date cannot be before start date', statusCode: 400 };
         }
 
         try {
@@ -26,10 +26,10 @@ export class EducationService {
                     endDate: dto.isCurrent ? null : new Date(dto.endDate + '-01'),
                 },
             });
-            return { isSuccess: true, message: 'education created' };
+            return { isSuccess: true, message: 'education created', statusCode: 201 };
         } catch (error) {
             console.error(error);
-            return { isSuccess: false, message: "internal server error" };
+            return { isSuccess: false, message: "internal server error", statusCode: 500 };
         }
     }
 
@@ -39,10 +39,10 @@ export class EducationService {
                 where: { userId },
                 orderBy: [{ isCurrent: 'desc' }, { startDate: 'desc' }],
             });
-            return { isSuccess: true, message: 'all educations read', educations };
+            return { isSuccess: true, message: 'all educations read', educations, statusCode: 200 };
         } catch (error) {
             console.error(error);
-            return { isSuccess: false, message: "internal server error" };
+            return { isSuccess: false, message: "internal server error", statusCode: 500 };
         }
     }
 
@@ -50,7 +50,7 @@ export class EducationService {
         try {
             const education = await prisma.education.findUnique({ where: { id } });
             if (!education) {
-                return { isSuccess: false, message: 'education not found' };
+                return { isSuccess: false, message: 'education not found', statusCode: 404 };
             }
 
             const startDate = dto.startDate ?? education.startDate.toISOString().slice(0, 7);
@@ -58,7 +58,7 @@ export class EducationService {
             const isCurrent = dto.isCurrent ?? education.isCurrent;
 
             if (!isCurrent && endDate && endDate < startDate) {
-                return { isSuccess: false, message: 'End date cannot be before start date' };
+                return { isSuccess: false, message: 'End date cannot be before start date', statusCode: 400 };
             }
 
             await prisma.education.update({
@@ -73,10 +73,10 @@ export class EducationService {
                     endDate: dto.isCurrent ? null : dto.endDate ? new Date(dto.endDate + '-01') : education.endDate,
                 },
             });
-            return { isSuccess: true, message: 'education updated' };
+            return { isSuccess: true, message: 'education updated', statusCode: 200 };
         } catch (error) {
             console.error(error);
-            return { isSuccess: false, message: "internal server error" };
+            return { isSuccess: false, message: "internal server error", statusCode: 500 };
         }
     }
 
@@ -84,14 +84,14 @@ export class EducationService {
         try {
             const education = await prisma.education.findUnique({ where: { id } });
             if (!education) {
-                return { isSuccess: false, message: 'education not found' };
+                return { isSuccess: false, message: 'education not found', statusCode: 404 };
             }
 
             await prisma.education.delete({ where: { id } });
-            return { isSuccess: true, message: 'education deleted' };
+            return { isSuccess: true, message: 'education deleted', statusCode: 200 };
         } catch (error) {
             console.error(error);
-            return { isSuccess: false, message: "internal server error" };
+            return { isSuccess: false, message: "internal server error", statusCode: 500 };
         }
     }
 }

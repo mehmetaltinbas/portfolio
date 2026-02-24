@@ -18,7 +18,7 @@ export class ContactService {
                 const count = await tx.contact.count({ where: { userId } });
 
                 if (count >= MAX_CONTACTS) {
-                    return { isSuccess: false, message: `Maximum of ${MAX_CONTACTS} contacts reached` };
+                    return { isSuccess: false, message: `Maximum of ${MAX_CONTACTS} contacts reached`, statusCode: 400 };
                 }
 
                 await tx.contact.create({
@@ -32,10 +32,10 @@ export class ContactService {
                 });
             });
 
-            return { isSuccess: true, message: 'contact created' };
+            return { isSuccess: true, message: 'contact created', statusCode: 201 };
         } catch (error) {
             console.error(error);
-            return { isSuccess: false, message: "internal server error" };
+            return { isSuccess: false, message: "internal server error", statusCode: 500 };
         }
     }
 
@@ -44,12 +44,12 @@ export class ContactService {
             const contacts = await prisma.contact.findMany({ where: { userId }, orderBy: { order: 'asc' } });
 
             if (contacts.length === 0) {
-                return { isSuccess: false, message: 'no contact found' };
+                return { isSuccess: false, message: 'no contact found', statusCode: 404 };
             }
-            return { isSuccess: true, message: 'all contacts read', contacts };
+            return { isSuccess: true, message: 'all contacts read', contacts, statusCode: 200 };
         } catch (error) {
             console.error(error);
-            return { isSuccess: false, message: "internal server error" };
+            return { isSuccess: false, message: "internal server error", statusCode: 500 };
         }
     }
 
@@ -60,7 +60,7 @@ export class ContactService {
             const contact = await prisma.contact.findUnique({ where: { id } });
 
             if (!contact) {
-                return { isSuccess: false, message: 'contact not found' };
+                return { isSuccess: false, message: 'contact not found', statusCode: 404 };
             }
 
             const newLabel = label ?? contact.label;
@@ -80,10 +80,10 @@ export class ContactService {
                 },
             });
 
-            return { isSuccess: true, message: 'contact updated' };
+            return { isSuccess: true, message: 'contact updated', statusCode: 200 };
         } catch (error) {
             console.error(error);
-            return { isSuccess: false, message: "internal server error" };
+            return { isSuccess: false, message: "internal server error", statusCode: 500 };
         }
     }
 
@@ -91,13 +91,13 @@ export class ContactService {
         try {
             const contact = await prisma.contact.findUnique({ where: { id } });
             if (!contact) {
-                return { isSuccess: false, message: 'contact not found' };
+                return { isSuccess: false, message: 'contact not found', statusCode: 404 };
             }
 
             await prisma.contact.delete({ where: { id } });
-            return { isSuccess: true, message: 'contact deleted' };
+            return { isSuccess: true, message: 'contact deleted', statusCode: 200 };
         } catch {
-            return { isSuccess: false, message: "contact couldn't be deleted" };
+            return { isSuccess: false, message: "contact couldn't be deleted", statusCode: 500 };
         }
     }
 
@@ -108,10 +108,10 @@ export class ContactService {
                     prisma.contact.update({ where: { id }, data: { order: index } })
                 )
             );
-            return { isSuccess: true, message: 'contacts reordered' };
+            return { isSuccess: true, message: 'contacts reordered', statusCode: 200 };
         } catch (error) {
             console.error(error);
-            return { isSuccess: false, message: "internal server error" };
+            return { isSuccess: false, message: "internal server error", statusCode: 500 };
         }
     }
 }

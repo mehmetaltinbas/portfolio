@@ -11,14 +11,14 @@ export async function DELETE(req: Request) {
         const validateDtoResponse = await validateDto(DeleteUserImageDto, reqBody);
 
         if (!validateDtoResponse.isSuccess || !validateDtoResponse.body) {
-            return NextResponse.json(validateDtoResponse);
+            return NextResponse.json(validateDtoResponse, { status: validateDtoResponse.statusCode });
         }
 
         const response = await UserImageService.delete(validateDtoResponse.body);
 
-        return NextResponse.json(response);
+        return NextResponse.json(response, { status: response.statusCode });
     } catch (error) {
-        const response: ResponseBase = { isSuccess: false, message: 'internal server error' };
-        return NextResponse.json(response);
+        const response: ResponseBase = { isSuccess: false, message: 'internal server error', statusCode: 500 };
+        return NextResponse.json(response, { status: 500 });
     }
 }

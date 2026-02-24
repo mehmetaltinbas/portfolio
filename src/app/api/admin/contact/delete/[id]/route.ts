@@ -8,9 +8,9 @@ export async function DELETE(req: NextRequest, context: { params: Promise<{ id: 
 
         const response = await ContactService.delete(id);
 
-        return NextResponse.json(response);
+        return NextResponse.json(response, { status: response.statusCode });
     } catch (error) {
-        const response: ResponseBase = { isSuccess: false, message: 'internal server error' };
-        return NextResponse.json(response);
+        const response: ResponseBase = { isSuccess: false, message: 'internal server error', statusCode: 500 };
+        return NextResponse.json(response, { status: 500 });
     }
 }
