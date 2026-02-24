@@ -9,7 +9,7 @@ import { TimelineSectionShell } from '@/components/resume/timeline/TimelineSecti
 import { ButtonVariant } from '@/enums/button-variant.enum';
 import { Experience } from '@/generated/client';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { userActions } from '@/store/slices/user-slice';
+import { userActions } from '@/store/slices/user.slice';
 import { CreateExperienceDto } from '@/types/dto/experience/create-experience.dto';
 import { ResponseBase } from '@/types/response/response-base';
 import React, { ChangeEvent, useEffect, useState } from 'react';

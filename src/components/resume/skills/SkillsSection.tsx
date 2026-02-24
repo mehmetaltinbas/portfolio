@@ -10,7 +10,7 @@ import { SortableSkillPill } from '@/components/resume/skills/SortableSkillPill'
 import { ButtonVariant } from '@/enums/button-variant.enum';
 import { Skill } from '@/generated/client';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { userActions } from '@/store/slices/user-slice';
+import { userActions } from '@/store/slices/user.slice';
 import { ResponseBase } from '@/types/response/response-base';
 import {
     DndContext,

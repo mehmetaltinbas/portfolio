@@ -11,7 +11,7 @@ import { PORTFOLIO_ITEM_DESCRIPTION_CHAR_LIMIT } from '@/constants/portfolio-ite
 import { PORTFOLIO_ITEM_TITLE_CHAR_LIMIT } from '@/constants/portfolio-item/portfolio-item-title-char-limit.constant';
 import { ButtonVariant } from '@/enums/button-variant.enum';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { userActions } from '@/store/slices/user-slice';
+import { userActions } from '@/store/slices/user.slice';
 import { ExtendedPortfolioItemModel } from '@/types/db/extended-portfolio-item.model';
 import { ReadSingleExtendedPortfolioItemResponse } from '@/types/response/portfolio-item/read-single-extended-portfolio-item.response';
 import { ResponseBase } from '@/types/response/response-base';

@@ -9,7 +9,7 @@ import { TimelineSectionShell } from '@/components/resume/timeline/TimelineSecti
 import { ButtonVariant } from '@/enums/button-variant.enum';
 import { Education } from '@/generated/client';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { userActions } from '@/store/slices/user-slice';
+import { userActions } from '@/store/slices/user.slice';
 import { CreateEducationDto } from '@/types/dto/education/create-education.dto';
 import { ResponseBase } from '@/types/response/response-base';
 import React, { ChangeEvent, useState } from 'react';

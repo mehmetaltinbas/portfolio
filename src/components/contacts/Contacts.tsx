@@ -8,7 +8,7 @@ import { MAX_CONTACTS } from '@/constants/max-contacts.constant';
 import { ContactLabel } from '@/enums/contact-label.enum';
 import { Contact } from '@/generated/client';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { userActions } from '@/store/slices/user-slice';
+import { userActions } from '@/store/slices/user.slice';
 import { ContactFormData } from '@/types/contact-form-data.interface';
 import { CreateContactDto } from '@/types/dto/contact/create-contact.dto';
 import { ResponseBase } from '@/types/response/response-base';
