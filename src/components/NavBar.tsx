@@ -17,10 +17,12 @@ export default function NavBar() {
     async function signOut() {
         const response: ResponseBase = await (
             await fetch(`/api/admin/sign-out`, {
-                method: 'POST',
+                method: 'POST'
             })
         ).json();
-        if (response.isSuccess) await dispatch(isAdminActions.set(false));
+
+        if (response.isSuccess)
+            dispatch(isAdminActions.set(false));
     }
 
     // return ( // hamburger menu on mobile
