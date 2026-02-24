@@ -78,10 +78,12 @@ export class SkillService {
                 return { isSuccess: false, message: 'skill not found', statusCode: 404 };
             }
 
+            const { name, content, ...restOfDto } = dto;
+
             const duplicateSkill = await prisma.skill.findFirst({
                 where: {
                     userId,
-                    name: dto.name,
+                    name,
                     NOT: { id }
                 }
             });
@@ -89,23 +91,24 @@ export class SkillService {
             if (duplicateSkill)
                 return {
                     isSuccess: false,
-                    message: `Failed! A skill with name ${dto.name} already exists.`,
+                    message: `Failed! A skill with name ${name} already exists.`,
                     statusCode: 409,
                 };
 
             await prisma.skill.update({
                 where: { id },
                 data: {
-                    name: dto.name ?? skill.name,
-                    content: dto.content !== undefined ? (dto.content as InputJsonValue) : undefined,
+                    name: name ?? skill.name,
+                    content: content !== undefined ? (content as InputJsonValue) : undefined,
+                    ...restOfDto,
                 },
             });
 
-            if (dto.content) {
+            if (content) {
                 SkillService
                     .cleanUpOrphanedImages({
                         skillId: id,
-                        content: dto.content,
+                        content,
                     })
                     .catch(console.error);
             }

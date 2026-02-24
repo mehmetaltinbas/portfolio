@@ -61,16 +61,15 @@ export class EducationService {
                 return { isSuccess: false, message: 'End date cannot be before start date', statusCode: 400 };
             }
 
+            const { startDate: startDateDto, endDate: endDateDto, isCurrent: isCurrentDto, ...restOfDto } = dto;
+
             await prisma.education.update({
                 where: { id },
                 data: {
-                    school: dto.school ?? education.school,
-                    degree: dto.degree ?? education.degree,
-                    fieldOfStudy: dto.fieldOfStudy ?? education.fieldOfStudy,
-                    description: dto.description ?? education.description,
-                    isCurrent: dto.isCurrent ?? education.isCurrent,
-                    startDate: dto.startDate ? new Date(dto.startDate + '-01') : education.startDate,
-                    endDate: dto.isCurrent ? null : dto.endDate ? new Date(dto.endDate + '-01') : education.endDate,
+                    isCurrent,
+                    startDate: startDateDto ? new Date(startDateDto + '-01') : education.startDate,
+                    endDate: isCurrent ? null : endDateDto ? new Date(endDateDto + '-01') : education.endDate,
+                    ...restOfDto,
                 },
             });
             return { isSuccess: true, message: 'education updated', statusCode: 200 };

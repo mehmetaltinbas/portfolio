@@ -61,15 +61,15 @@ export class ExperienceService {
                 return { isSuccess: false, message: 'End date cannot be before start date', statusCode: 400 };
             }
 
+            const { startDate: startDateDto, endDate: endDateDto, isCurrent: isCurrentDto, ...restOfDto } = dto;
+
             await prisma.experience.update({
                 where: { id },
                 data: {
-                    title: dto.title ?? experience.title,
-                    company: dto.company ?? experience.company,
-                    isCurrent: dto.isCurrent ?? experience.isCurrent,
-                    startDate: dto.startDate ? new Date(dto.startDate + '-01') : experience.startDate,
-                    endDate: dto.isCurrent ? null : dto.endDate ? new Date(dto.endDate + '-01') : experience.endDate,
-                    description: dto.description ?? experience.description,
+                    isCurrent,
+                    startDate: startDateDto ? new Date(startDateDto + '-01') : experience.startDate,
+                    endDate: isCurrent ? null : endDateDto ? new Date(endDateDto + '-01') : experience.endDate,
+                    ...restOfDto,
                 },
             });
             return { isSuccess: true, message: 'experience updated', statusCode: 200 };
