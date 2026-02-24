@@ -4,13 +4,14 @@ import { Button } from '@/components/Button';
 import { EducationForm } from '@/components/resume/EducationForm';
 import { EducationItem } from '@/components/resume/EducationItem';
 import { SectionHeader } from '@/components/resume/SectionHeader';
+import { TimelineSectionShell } from '@/components/resume/TimelineSectionShell';
 import { ButtonVariant } from '@/enums/button-variant.enum';
 import { Education } from '@/generated/client';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { userActions } from '@/store/slices/user-slice';
 import { CreateEducationDto } from '@/types/dto/education/create-education.dto';
 import { ResponseBase } from '@/types/response/response-base';
-import { ChangeEvent, useState } from 'react';
+import React, { ChangeEvent, useState } from 'react';
 
 export function EducationsSection({ id }: { id?: string }) {
     const dispatch = useAppDispatch();
@@ -21,6 +22,15 @@ export function EducationsSection({ id }: { id?: string }) {
     const [educationForm, setEducationForm] = useState<Partial<CreateEducationDto & { id?: string }>>({});
     const [isAddingEducation, setIsAddingEducation] = useState<boolean>(false);
     const [isSaving, setIsSaving] = useState(false);
+
+    React.useEffect(() => {
+        if (educationForm.isCurrent === true) {
+            setEducationForm(prev => ({
+                ...prev,
+                endDate: undefined
+            }));
+        }
+    }, [educationForm.isCurrent]);
 
     function toggleEditMode() {
         setEditingEducationId(null);
@@ -119,7 +129,7 @@ export function EducationsSection({ id }: { id?: string }) {
         setIsSaving(true);
         try {
             const response: ResponseBase = await (
-                await fetch('/api/admin/education/update', {
+                await fetch(`/api/admin/education/update/${editingEducationId}`, {
                     method: 'PATCH',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(educationForm),
@@ -143,7 +153,7 @@ export function EducationsSection({ id }: { id?: string }) {
         setIsSaving(true);
         try {
             const response: ResponseBase = await (
-                await fetch('/api/admin/education/delete', {
+                await fetch(`/api/admin/education/delete/${id}`, {
                     method: 'DELETE',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ id }),
@@ -164,21 +174,6 @@ export function EducationsSection({ id }: { id?: string }) {
         <></>
         :
         <div id={id} className="relative w-[300px] sm:w-[700px] py-10 md:px-0">
-            {isAdmin && !isEditMode && (
-                <div className="absolute top-2 right-2 md:right-0">
-                    <Button onClick={toggleEditMode} variant={ButtonVariant.PRIMARY}>
-                        Edit
-                    </Button>
-                </div>
-            )}
-            {isEditMode && (
-                <div className="absolute top-2 right-2 md:right-0">
-                    <Button onClick={toggleEditMode} variant={ButtonVariant.SECONDARY}>
-                        Done
-                    </Button>
-                </div>
-            )}
-
             <div className="mb-8">
                 <SectionHeader
                     title={
@@ -209,54 +204,59 @@ export function EducationsSection({ id }: { id?: string }) {
                 />
             </div>
 
-            <div className="flex flex-col">
-                {user.educations.map((education, index) => (
-                    <div key={education.id} className="w-full">
-                        {editingEducationId === education.id ? (
-                            <div className="ml-10 md:ml-10 mb-4">
-                                <EducationForm
-                                    form={educationForm}
-                                    onChange={handleFormChange}
-                                    onSave={updateEducation}
-                                    onCancel={cancelEdit}
-                                    saveLabel="Save"
-                                    isSaving={isSaving}
-                                />
-                            </div>
-                        ) : (
-                            <EducationItem
-                                education={education}
-                                isEditMode={isEditMode}
-                                onEdit={() => startEdit(education)}
-                                onDelete={() => deleteEducation(education.id)}
-                                isLast={index === user.educations.length - 1 && !isAddingEducation}
+            <TimelineSectionShell
+                isAdmin={isAdmin}
+                isEditMode={isEditMode}
+                onToggleEditMode={toggleEditMode}
+            >
+
+            {user.educations.map((education, index) => (
+                <div key={education.id} className="w-full">
+                    {editingEducationId === education.id ? (
+                        <div className="ml-10 md:ml-10 mb-4">
+                            <EducationForm
+                                form={educationForm}
+                                onChange={handleFormChange}
+                                onSave={updateEducation}
+                                onCancel={cancelEdit}
+                                saveLabel="Save"
                                 isSaving={isSaving}
                             />
-                        )}
-                    </div>
-                ))}
-
-                {isAddingEducation && (
-                    <div className="ml-10 md:ml-10">
-                        <EducationForm
-                            form={educationForm}
-                            onChange={handleFormChange}
-                            onSave={createEducation}
-                            onCancel={cancelEdit}
-                            saveLabel="Add"
+                        </div>
+                    ) : (
+                        <EducationItem
+                            education={education}
+                            isEditMode={isEditMode}
+                            onEdit={() => startEdit(education)}
+                            onDelete={() => deleteEducation(education.id)}
+                            isLast={index === user.educations.length - 1 && !isAddingEducation}
                             isSaving={isSaving}
                         />
-                    </div>
-                )}
+                    )}
+                </div>
+            ))}
 
-                {isEditMode && !isAddingEducation && !editingEducationId && (
-                    <div className="ml-10 md:ml-10 mt-2">
-                        <Button onClick={startAdd} variant={ButtonVariant.PRIMARY}>
-                            + Add Education
-                        </Button>
-                    </div>
-                )}
-            </div>
+            {isAddingEducation && (
+                <div className="ml-10 md:ml-10">
+                    <EducationForm
+                        form={educationForm}
+                        onChange={handleFormChange}
+                        onSave={createEducation}
+                        onCancel={cancelEdit}
+                        saveLabel="Add"
+                        isSaving={isSaving}
+                    />
+                </div>
+            )}
+
+            {isEditMode && !isAddingEducation && !editingEducationId && (
+                <div className="ml-10 md:ml-10 mt-2">
+                    <Button onClick={startAdd} variant={ButtonVariant.PRIMARY}>
+                        + Add Education
+                    </Button>
+                </div>
+            )}
+            </TimelineSectionShell>
         </div>
     );
 }

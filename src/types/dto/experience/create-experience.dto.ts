@@ -15,13 +15,13 @@ export class CreateExperienceDto {
     isCurrent!: boolean;
 
     @IsString()
-    @IsNotEmpty()
     @Matches(YEAR_MONTH_REGEX, { message: 'startDate must be in YYYY-MM format' })
+    @IsNotEmpty()
     startDate!: string;
 
     @IsString()
-    @IsOptional()
     @Matches(YEAR_MONTH_REGEX, { message: 'endDate must be in YYYY-MM format' })
+    @IsOptional()
     endDate?: string;
 
     @IsString()
