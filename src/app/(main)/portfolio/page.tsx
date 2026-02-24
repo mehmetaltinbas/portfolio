@@ -34,8 +34,8 @@ export default function Page() {
     const [portfolioItems, setPortfolioItems] = useState<ExtendedPortfolioItemModel[]>([]);
     const [activeId, setActiveId] = useState<string | null>(null);
 
-    const COLS = 3;
-    const placeholderCount = portfolioItems.length % COLS === 0 ? 0 : COLS - (portfolioItems.length % COLS);
+    const MAX_COLS = 3;
+    const placeholderCount = portfolioItems.length % MAX_COLS === 0 ? 0 : MAX_COLS - (portfolioItems.length % MAX_COLS);
     const placeholderIds = Array.from({ length: placeholderCount }, (_, i) => `placeholder-${i}`);
 
     async function refreshPortfolioItems() {
@@ -160,7 +160,7 @@ export default function Page() {
                             items={[...portfolioItems.map((item) => item.id), ...placeholderIds]}
                             strategy={rectSortingStrategy}
                         >
-                            <div className={`grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-${COLS} gap-8`}>
+                            <div className={`grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8`}>
                                 {portfolioItems.map((portfolioItem) => (
                                     <SortablePortfolioItemCard
                                         key={portfolioItem.id}
@@ -188,7 +188,7 @@ export default function Page() {
                         </DragOverlay>
                     </DndContext>
                 ) : (
-                    <div className={`grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-${COLS} gap-8 justify-items-center`}>
+                    <div className={`grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8 justify-items-center`}>
                         {portfolioItems.map((portfolioItem) => (
                             <PortfolioItemCard
                                 key={portfolioItem.id}
