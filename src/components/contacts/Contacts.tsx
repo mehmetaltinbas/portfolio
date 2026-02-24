@@ -4,13 +4,13 @@ import { ContactForm } from '@/components/contacts/ContactForm';
 import { ContactLink } from '@/components/contacts/ContactLink';
 import { SortableContactItem } from '@/components/contacts/SortableContactItem';
 import { contactIconMap } from '@/constants/contact-icon-map.constant';
-import { DEFAULT_ADD_FORM } from '@/constants/default-add-form-values.constant';
 import { MAX_CONTACTS } from '@/constants/max-contacts.constant';
 import { ContactLabel } from '@/enums/contact-label.enum';
 import { Contact } from '@/generated/client';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { userActions } from '@/store/slices/user-slice';
 import { ContactFormData } from '@/types/contact-form-data.interface';
+import { CreateContactDto } from '@/types/dto/contact/create-contact.dto';
 import { ResponseBase } from '@/types/response/response-base';
 import {
     DndContext,
@@ -30,6 +30,8 @@ import React, { useEffect, useState } from 'react';
 export function Contacts({ contacts }: { contacts: Contact[] }) {
     const dispatch = useAppDispatch();
     const isAdmin = useAppSelector((state) => state.isAdmin);
+
+    const DEFAULT_ADD_FORM: CreateContactDto = { label: ContactLabel.CUSTOM, name: '', value: '' };
 
     const [isPanelOpen, setIsPanelOpen] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
