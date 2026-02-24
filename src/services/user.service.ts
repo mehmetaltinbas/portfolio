@@ -96,11 +96,13 @@ export class UserService {
                         orderBy: {
                             startDate: 'desc',
                         },
+                        include: { skills: true },
                     },
                     educations: {
                         orderBy: {
                             startDate: 'desc',
                         },
+                        include: { skills: true },
                     },
                     portfolioItems: { orderBy: { order: 'asc' } },
                 },

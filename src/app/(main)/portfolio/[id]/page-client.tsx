@@ -1,6 +1,6 @@
 'use client';
 
-import AttachOrDetachSkillForm from '@/components/AttachSkillForm';
+import AttachOrDetachSkillForm from '@/components/AttachOrDetachSkillForm';
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
 import { TextArea } from '@/components/TextArea';
@@ -176,9 +176,6 @@ export default function PageClient({ initialPortfolioItem }: { initialPortfolioI
         const parentRect = attachSkillFormRef.current.offsetParent?.getBoundingClientRect();
         if (!parentRect) return;
 
-        const buttonCenterX = buttonRect.left + Math.floor(buttonRect.width / 2);
-        const formWidth = attachSkillFormRef.current.offsetWidth;
-
         attachSkillFormRef.current.style.left = `${buttonRect.left - parentRect.left}px`;
         attachSkillFormRef.current.style.top = `${buttonRect.bottom - parentRect.top + 4}px`;
     }
@@ -315,12 +312,13 @@ export default function PageClient({ initialPortfolioItem }: { initialPortfolioI
                 </div>
 
                 <AttachOrDetachSkillForm
-                    portfolioItemId={portfolioItem.id}
+                    entityType="portfolioItem"
+                    entityId={portfolioItem.id}
                     attachedSkills={portfolioItem.skills}
                     attachSkillFormRef={attachSkillFormRef}
                     isAttachSkillFormHidden={isAttachSkillFormHidden}
                     setIsAttachSkillFormHidden={setIsAttachSkillFormHidden}
-                    refreshPortfolioItem={refreshPortfolioItem}
+                    onRefresh={refreshPortfolioItem}
                 />
             </div>
 
