@@ -1,73 +1,76 @@
 'use client';
 
 import { Button } from '@/components/Button';
-import { ExperienceForm } from '@/components/resume/ExperienceForm';
-import { ExperienceItem } from '@/components/resume/ExperienceItem';
+import { EducationForm } from '@/components/resume/educations/EducationForm';
+import { EducationItem } from '@/components/resume/educations/EducationItem';
 import { SectionHeader } from '@/components/resume/SectionHeader';
-import { TimelineSectionShell } from '@/components/resume/TimelineSectionShell';
+import { TimelineSectionShell } from '@/components/resume/timeline/TimelineSectionShell';
 import { ButtonVariant } from '@/enums/button-variant.enum';
-import { Experience } from '@/generated/client';
+import { Education } from '@/generated/client';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { userActions } from '@/store/slices/user-slice';
-import { CreateExperienceDto } from '@/types/dto/experience/create-experience.dto';
+import { CreateEducationDto } from '@/types/dto/education/create-education.dto';
 import { ResponseBase } from '@/types/response/response-base';
-import { ChangeEvent, useEffect, useState } from 'react';
+import React, { ChangeEvent, useState } from 'react';
 
-export function ExperiencesSection({ id }: { id?: string }) {
+export function EducationsSection({ id }: { id?: string }) {
     const dispatch = useAppDispatch();
     const user = useAppSelector((state) => state.user);
     const isAdmin = useAppSelector((state) => state.isAdmin);
     const [isEditMode, setIsEditMode] = useState<boolean>(false);
-    const [editingExperienceId, setEditingExperienceId] = useState<string | null>(null);
-    const [experienceForm, setExperienceForm] = useState<Partial<CreateExperienceDto & { id?: string }>>({});
-    const [isAddingExperience, setIsAddingExperience] = useState<boolean>(false);
+    const [editingEducationId, setEditingEducationId] = useState<string | null>(null);
+    const [educationForm, setEducationForm] = useState<Partial<CreateEducationDto & { id?: string }>>({});
+    const [isAddingEducation, setIsAddingEducation] = useState<boolean>(false);
     const [isSaving, setIsSaving] = useState(false);
 
-    useEffect(() => {
-        if (experienceForm.isCurrent === true) {
-            setExperienceForm(prev => ({
+    React.useEffect(() => {
+        if (educationForm.isCurrent === true) {
+            setEducationForm(prev => ({
                 ...prev,
                 endDate: undefined
             }));
         }
-    }, [experienceForm.isCurrent]);
+    }, [educationForm.isCurrent]);
 
     function toggleEditMode() {
-        setEditingExperienceId(null);
-        setExperienceForm({});
-        setIsAddingExperience(false);
+        setEditingEducationId(null);
+        setEducationForm({});
+        setIsAddingEducation(false);
         setIsEditMode((prev) => !prev);
     }
 
     function handleFormChange(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
         const { name, value, type } = event.currentTarget;
         const checked = event.currentTarget instanceof HTMLInputElement ? event.currentTarget.checked : undefined;
-        setExperienceForm((prev) => ({
+        setEducationForm((prev) => ({
             ...prev,
             [name]: type === 'checkbox' ? checked : value,
         }));
     }
 
-    function startEdit(experience: Experience) {
-        setEditingExperienceId(experience.id);
-        setExperienceForm({
-            id: experience.id,
-            title: experience.title,
-            company: experience.company,
-            isCurrent: experience.isCurrent,
-            startDate: new Date(experience.startDate).toISOString().slice(0, 7),
-            endDate: experience.endDate === null ? undefined : new Date(experience.endDate!).toISOString().slice(0, 7),
-            description: experience.description === null ? undefined : experience.description,
+    function startEdit(education: Education) {
+        setEditingEducationId(education.id);
+        setEducationForm({
+            id: education.id,
+            school: education.school,
+            degree: education.degree ?? '',
+            fieldOfStudy: education.fieldOfStudy ?? '',
+            description: education.description ?? '',
+            isCurrent: education.isCurrent,
+            startDate: new Date(education.startDate).toISOString().slice(0, 7),
+            endDate: education.endDate === null ? undefined : new Date(education.endDate!).toISOString().slice(0, 7),
         });
-        setIsAddingExperience(false);
+        setIsAddingEducation(false);
     }
 
     function startAdd() {
-        setIsAddingExperience(true);
-        setEditingExperienceId(null);
-        setExperienceForm({
-            title: '',
-            company: '',
+        setIsAddingEducation(true);
+        setEditingEducationId(null);
+        setEducationForm({
+            school: '',
+            degree: '',
+            fieldOfStudy: '',
+            description: '',
             isCurrent: false,
             startDate: '',
             endDate: '',
@@ -75,18 +78,18 @@ export function ExperiencesSection({ id }: { id?: string }) {
     }
 
     function cancelEdit() {
-        setEditingExperienceId(null);
-        setIsAddingExperience(false);
-        setExperienceForm({});
+        setEditingEducationId(null);
+        setIsAddingEducation(false);
+        setEducationForm({});
     }
 
-    async function createExperience() {
-        if (!experienceForm.title || !experienceForm.company || !experienceForm.startDate) {
-            alert('Please fill in title, company, and start date');
+    async function createEducation() {
+        if (!educationForm.school || !educationForm.startDate) {
+            alert('Please fill in school and start date');
             return;
         }
 
-        if (!experienceForm.isCurrent && experienceForm.endDate && experienceForm.endDate < experienceForm.startDate) {
+        if (!educationForm.isCurrent && educationForm.endDate && educationForm.endDate < educationForm.startDate) {
             alert('End date cannot be before start date');
             return;
         }
@@ -94,10 +97,10 @@ export function ExperiencesSection({ id }: { id?: string }) {
         setIsSaving(true);
         try {
             const response: ResponseBase = await (
-                await fetch('/api/admin/experience/create', {
+                await fetch('/api/admin/education/create', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(experienceForm),
+                    body: JSON.stringify(educationForm),
                 })
             ).json();
 
@@ -112,12 +115,12 @@ export function ExperiencesSection({ id }: { id?: string }) {
         }
     }
 
-    async function updateExperience() {
+    async function updateEducation() {
         if (
-            !experienceForm.isCurrent &&
-            experienceForm.endDate &&
-            experienceForm.startDate &&
-            experienceForm.endDate < experienceForm.startDate
+            !educationForm.isCurrent &&
+            educationForm.endDate &&
+            educationForm.startDate &&
+            educationForm.endDate < educationForm.startDate
         ) {
             alert('End date cannot be before start date');
             return;
@@ -125,11 +128,12 @@ export function ExperiencesSection({ id }: { id?: string }) {
 
         setIsSaving(true);
         try {
+            const { id: _id, ...educationBody } = educationForm;
             const response: ResponseBase = await (
-                await fetch(`/api/admin/experience/update/${editingExperienceId}`, {
+                await fetch(`/api/admin/education/update/${editingEducationId}`, {
                     method: 'PATCH',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(experienceForm),
+                    body: JSON.stringify(educationBody),
                 })
             ).json();
 
@@ -144,16 +148,14 @@ export function ExperiencesSection({ id }: { id?: string }) {
         }
     }
 
-    async function deleteExperience(id: string) {
-        if (!confirm('Are you sure you want to delete this experience?')) return;
+    async function deleteEducation(id: string) {
+        if (!confirm('Are you sure you want to delete this education?')) return;
 
         setIsSaving(true);
         try {
             const response: ResponseBase = await (
-                await fetch(`/api/admin/experience/delete/${id}`, {
+                await fetch(`/api/admin/education/delete/${id}`, {
                     method: 'DELETE',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ id }),
                 })
             ).json();
 
@@ -167,7 +169,7 @@ export function ExperiencesSection({ id }: { id?: string }) {
         }
     }
 
-    return (user.experiences.length === 0 && !isAdmin ?
+    return (user.educations.length === 0 && !isAdmin ?
         <></>
         :
         <div id={id} className="relative w-[300px] sm:w-[700px] py-10 md:px-0">
@@ -180,10 +182,22 @@ export function ExperiencesSection({ id }: { id?: string }) {
                                     strokeLinecap="round"
                                     strokeLinejoin="round"
                                     strokeWidth={2}
-                                    d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                                    d="M12 14l9-5-9-5-9 5 9 5z"
+                                />
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"
+                                />
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222"
                                 />
                             </svg>
-                            <p>Experience</p>
+                            <p>Education</p>
                         </>
                     }
                 />
@@ -194,39 +208,39 @@ export function ExperiencesSection({ id }: { id?: string }) {
                 isEditMode={isEditMode}
                 onToggleEditMode={toggleEditMode}
             >
-                
-            {user.experiences.map((experience, index) => (
-                <div key={experience.id} className="w-full">
-                    {editingExperienceId === experience.id ? (
+
+            {user.educations.map((education, index) => (
+                <div key={education.id} className="w-full">
+                    {editingEducationId === education.id ? (
                         <div className="ml-10 md:ml-10 mb-4">
-                            <ExperienceForm
-                                form={experienceForm}
+                            <EducationForm
+                                form={educationForm}
                                 onChange={handleFormChange}
-                                onSave={updateExperience}
+                                onSave={updateEducation}
                                 onCancel={cancelEdit}
                                 saveLabel="Save"
                                 isSaving={isSaving}
                             />
                         </div>
                     ) : (
-                        <ExperienceItem
-                            experience={experience}
+                        <EducationItem
+                            education={education}
                             isEditMode={isEditMode}
-                            onEdit={() => startEdit(experience)}
-                            onDelete={() => deleteExperience(experience.id)}
-                            isLast={index === user.experiences.length - 1 && !isAddingExperience}
+                            onEdit={() => startEdit(education)}
+                            onDelete={() => deleteEducation(education.id)}
+                            isLast={index === user.educations.length - 1 && !isAddingEducation}
                             isSaving={isSaving}
                         />
                     )}
                 </div>
             ))}
 
-            {isAddingExperience && (
+            {isAddingEducation && (
                 <div className="ml-10 md:ml-10">
-                    <ExperienceForm
-                        form={experienceForm}
+                    <EducationForm
+                        form={educationForm}
                         onChange={handleFormChange}
-                        onSave={createExperience}
+                        onSave={createEducation}
                         onCancel={cancelEdit}
                         saveLabel="Add"
                         isSaving={isSaving}
@@ -234,10 +248,10 @@ export function ExperiencesSection({ id }: { id?: string }) {
                 </div>
             )}
 
-            {isEditMode && !isAddingExperience && !editingExperienceId && (
+            {isEditMode && !isAddingEducation && !editingEducationId && (
                 <div className="ml-10 md:ml-10 mt-2">
                     <Button onClick={startAdd} variant={ButtonVariant.PRIMARY}>
-                        + Add Experience
+                        + Add Education
                     </Button>
                 </div>
             )}

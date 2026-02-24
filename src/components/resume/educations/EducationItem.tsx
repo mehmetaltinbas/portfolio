@@ -1,6 +1,6 @@
 'use client';
 
-import { TimelineItemCard } from '@/components/resume/TimelineItemCard';
+import { TimelineItemCard } from '@/components/resume/timeline/TimelineItemCard';
 import { Education } from '@/generated/client';
 
 export function EducationItem({

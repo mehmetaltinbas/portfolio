@@ -94,10 +94,8 @@ export function SkillsSection({ id }: { id?: string }) {
         setIsSaving(true);
         try {
             const response: ResponseBase = await (
-                await fetch('/api/admin/skill/delete', {
+                await fetch(`/api/admin/skill/delete/${id}`, {
                     method: 'DELETE',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ id }),
                 })
             ).json();
 
