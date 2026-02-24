@@ -5,6 +5,7 @@ import LoadingSpinner from '@/components/LoadingSpinner';
 import CreatePortfolioItemForm from '@/components/portfolio/CreatePortfolioItemForm';
 import { PlaceholderSortablePortfolioItemCard } from '@/components/portfolio/PlaceholderSortablePortfolioItemCard';
 import PortfolioItemCard from '@/components/portfolio/PortfolioItemCard';
+import { PortfolioItemDragOverlay } from '@/components/portfolio/PortfolioItemDragOverlay';
 import { SortablePortfolioItemCard } from '@/components/portfolio/SortablePortfolioItemCard';
 import { ButtonVariant } from '@/enums/button-variant.enum';
 import { useAppSelector } from '@/store/hooks';
@@ -18,12 +19,12 @@ import {
     DragStartEvent,
     KeyboardSensor,
     PointerSensor,
+    TouchSensor,
     closestCenter,
     useSensor,
-    useSensors,
+    useSensors
 } from '@dnd-kit/core';
 import { SortableContext, arrayMove, rectSortingStrategy, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
-import { GripVertical } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
 export default function Page() {
@@ -64,6 +65,7 @@ export default function Page() {
 
     const sensors = useSensors(
         useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+        useSensor(TouchSensor, { activationConstraint: { delay: 200, tolerance: 5 } }),
         useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
     );
 
@@ -166,24 +168,17 @@ export default function Page() {
                                         key={portfolioItem.id}
                                         portfolioItem={portfolioItem}
                                         refreshPortfolioItems={refreshPortfolioItems}
+                                        isAnyDragging={!!activeId}
                                     />
                                 ))}
                                 {placeholderIds.map((id) => (
-                                    <PlaceholderSortablePortfolioItemCard key={id} id={id} />
+                                    <PlaceholderSortablePortfolioItemCard key={id} id={id} isAnyDragging={!!activeId} />
                                 ))}
                             </div>
                         </SortableContext>
                         <DragOverlay>
                             {activeItem ? (
-                                <div className="relative bg-white p-6 rounded-2xl shadow-lg border flex flex-col justify-center items-center gap-0 select-none">
-                                    <div className="absolute top-2 left-2 text-gray-400">
-                                        <GripVertical size={16} />
-                                    </div>
-                                    {/* <div className="w-full flex justify-between items-center gap-2">
-                                        <FaFolder className="text-xl" />
-                                    </div> */}
-                                    <p className="text-lg font-semibold">{activeItem.title}</p>
-                                </div>
+                                <PortfolioItemDragOverlay portfolioItem={activeItem} />
                             ) : null}
                         </DragOverlay>
                     </DndContext>

@@ -19,6 +19,7 @@ import {
     DragStartEvent,
     KeyboardSensor,
     PointerSensor,
+    TouchSensor,
     closestCenter,
     useSensor,
     useSensors,
@@ -55,6 +56,7 @@ export function SkillsSection({ id }: { id?: string }) {
 
     const sensors = useSensors(
         useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+        useSensor(TouchSensor, { activationConstraint: { delay: 200, tolerance: 5 } }),
         useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
     );
 
