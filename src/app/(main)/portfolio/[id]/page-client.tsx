@@ -6,7 +6,8 @@ import { Input } from '@/components/Input';
 import { TextArea } from '@/components/TextArea';
 import ContentEditor from '@/components/tiptap/TipTapContentEditor';
 import TipTapContentViewer from '@/components/tiptap/TipTapContentViewer';
-import { NAVBAR_HEIGHT } from '@/constants/navbar-height.constant';
+import { ADMIN_NAVBAR_HEIGHT } from '@/constants/navbar-height/admin-navbar-height.constant';
+import { VISITOR_NAVBAR_HEIGHT } from '@/constants/navbar-height/visitor-navbar-height.constant';
 import { PORTFOLIO_ITEM_DESCRIPTION_CHAR_LIMIT } from '@/constants/portfolio-item/portfolio-item-description-char-limit.constant';
 import { PORTFOLIO_ITEM_TITLE_CHAR_LIMIT } from '@/constants/portfolio-item/portfolio-item-title-char-limit.constant';
 import { ButtonVariant } from '@/enums/button-variant.enum';
@@ -327,7 +328,7 @@ export default function PageClient({ initialPortfolioItem }: { initialPortfolioI
 
             <div className="w-full p-[25px]">
                 {isAdmin && !isEditingContent && (
-                    <div className="sticky flex justify-end p-2 z-40 bg-surface" style={{ top: NAVBAR_HEIGHT }}>
+                    <div className="sticky flex justify-end p-2 z-40 bg-surface" style={{ top: isAdmin ? ADMIN_NAVBAR_HEIGHT : VISITOR_NAVBAR_HEIGHT }}>
                         <Button onClick={toggleContentEditMode} variant={ButtonVariant.PRIMARY}>
                             Edit
                         </Button>

@@ -4,7 +4,8 @@ import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
 import ContentEditor from '@/components/tiptap/TipTapContentEditor';
 import TipTapContentViewer from '@/components/tiptap/TipTapContentViewer';
-import { NAVBAR_HEIGHT } from '@/constants/navbar-height.constant';
+import { ADMIN_NAVBAR_HEIGHT } from '@/constants/navbar-height/admin-navbar-height.constant';
+import { VISITOR_NAVBAR_HEIGHT } from '@/constants/navbar-height/visitor-navbar-height.constant';
 import { ButtonVariant } from '@/enums/button-variant.enum';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { userActions } from '@/store/slices/user.slice';
@@ -135,7 +136,7 @@ export default function PageClient({ skill }: { skill: ExtendedSkillModel }) {
 
             <div className="p-[25px]">
                 {isAdmin && !isEditingContent && (
-                    <div className="sticky flex justify-end p-2 z-40 bg-surface" style={{ top: NAVBAR_HEIGHT }}>
+                    <div className="sticky flex justify-end p-2 z-40 bg-surface" style={{ top: isAdmin ? ADMIN_NAVBAR_HEIGHT :VISITOR_NAVBAR_HEIGHT }}>
                         <Button onClick={toggleContentEditMode} variant={ButtonVariant.PRIMARY}>
                             Edit
                         </Button>

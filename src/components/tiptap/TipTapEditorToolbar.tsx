@@ -1,8 +1,10 @@
 'use client';
 
 import { Button } from '@/components/Button';
-import { NAVBAR_HEIGHT } from '@/constants/navbar-height.constant';
+import { ADMIN_NAVBAR_HEIGHT } from '@/constants/navbar-height/admin-navbar-height.constant';
+import { VISITOR_NAVBAR_HEIGHT } from '@/constants/navbar-height/visitor-navbar-height.constant';
 import { ButtonVariant } from '@/enums/button-variant.enum';
+import { useAppSelector } from '@/store/hooks';
 import { ResponseBase } from '@/types/response/response-base';
 import { Editor } from '@tiptap/react';
 import { ChangeEvent, useRef, useState } from 'react';
@@ -26,6 +28,7 @@ export default function EditorToolbar({
 }) {
     const [isUploading, setIsUploading] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const isAdmin = useAppSelector(state => state.isAdmin);
 
     async function addImage(event: ChangeEvent<HTMLInputElement>) {
         const file = event.currentTarget.files?.[0];
@@ -67,7 +70,7 @@ export default function EditorToolbar({
     return (
         <div
             className="sticky flex flex-wrap items-center gap-2 p-2 border-b border-border-muted z-40 bg-surface"
-            style={{ top: NAVBAR_HEIGHT }}
+            style={{ top: isAdmin ? ADMIN_NAVBAR_HEIGHT : VISITOR_NAVBAR_HEIGHT }}
         >
             <Button
                 onClick={() => editor.chain().focus().toggleBold().run()}
