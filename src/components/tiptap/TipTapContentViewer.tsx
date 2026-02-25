@@ -16,7 +16,7 @@ export default function TipTapContentViewer({ content }: { content: object }) {
         editable: false,
         editorProps: {
             attributes: {
-                class: 'prose prose-sm sm:prose mx-auto focus:outline-none',
+                class: 'prose prose-sm sm:prose dark:prose-invert mx-auto focus:outline-none',
             },
         },
     });

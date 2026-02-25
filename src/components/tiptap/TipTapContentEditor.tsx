@@ -40,7 +40,7 @@ export default function ContentEditor({
         content: initialContent || '',
         editorProps: {
             attributes: {
-                class: 'prose prose-sm sm:prose mx-auto focus:outline-none min-h-[500px] p-4',
+                class: 'prose prose-sm sm:prose dark:prose-invert mx-auto focus:outline-none min-h-[500px] p-4',
             },
         },
         onUpdate: ({ editor }) => {
