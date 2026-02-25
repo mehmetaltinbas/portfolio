@@ -249,7 +249,7 @@ export default function PageClient({ initialPortfolioItem }: { initialPortfolioI
                     <div className='w-[300px] h-auto items-center flex flex-col gap-2'>
                         <Image
                             alt='portfolio item cover image'
-                            src={portfolioItem.coverImageUrl ? portfolioItem.coverImageUrl : '/portfolio-item-cover-placeholder-image.png'}
+                            src={coverImage ? URL.createObjectURL(coverImage) : portfolioItem.coverImageUrl ? portfolioItem.coverImageUrl : '/portfolio-item-cover-placeholder-image.png'}
                             width={300}
                             height={150}
                             className="object-contain w-auto h-[150] max-w-[300] rounded-[20px]"
@@ -273,7 +273,7 @@ export default function PageClient({ initialPortfolioItem }: { initialPortfolioI
                                         onChange={(event) => {
                                             if (event.currentTarget.files?.[0].type.startsWith('image/'))
                                                 setCoverImage(event.currentTarget.files?.[0] ?? null);
-                                            else alert('uploaded file must be type of pdf');
+                                            else alert('uploaded file must be type of image');
                                         }}
                                     />
                                 </label>
