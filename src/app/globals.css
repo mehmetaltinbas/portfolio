@@ -153,6 +153,13 @@ html {
     scroll-margin-top: 68px;
 }
 
+.prose iframe,
+.prose [data-youtube-video] iframe {
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 16 / 9 !important;
+}
+
 .prose img {
     max-width: 100% !important;
     height: auto !important;
