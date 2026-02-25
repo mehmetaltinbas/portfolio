@@ -10,6 +10,7 @@ import { NAVBAR_HEIGHT } from '@/constants/navbar-height.constant';
 import { PORTFOLIO_ITEM_DESCRIPTION_CHAR_LIMIT } from '@/constants/portfolio-item/portfolio-item-description-char-limit.constant';
 import { PORTFOLIO_ITEM_TITLE_CHAR_LIMIT } from '@/constants/portfolio-item/portfolio-item-title-char-limit.constant';
 import { ButtonVariant } from '@/enums/button-variant.enum';
+import { SkillAttachableOrDetachableEntity } from '@/enums/skill-attachable-or-detachable-entity.enum';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { userActions } from '@/store/slices/user.slice';
 import { ExtendedPortfolioItemModel } from '@/types/db/extended-portfolio-item.model';
@@ -312,7 +313,7 @@ export default function PageClient({ initialPortfolioItem }: { initialPortfolioI
                 </div>
 
                 <AttachOrDetachSkillForm
-                    entityType="portfolio-item"
+                    entityType={SkillAttachableOrDetachableEntity.PORTFOLIO_ITEM}
                     entityId={portfolioItem.id}
                     attachedSkills={portfolioItem.skills}
                     attachSkillFormRef={attachSkillFormRef}

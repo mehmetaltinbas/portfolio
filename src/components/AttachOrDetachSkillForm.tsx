@@ -2,6 +2,7 @@ import { Button } from "@/components/Button";
 import { SKILL_NAME_CHAR_LIMIT } from "@/constants/skill-name-char-limit.constant";
 import { ButtonSize } from "@/enums/button-size.enum";
 import { ButtonVariant } from "@/enums/button-variant.enum";
+import { SkillAttachableOrDetachableEntity } from "@/enums/skill-attachable-or-detachable-entity.enum";
 import { Skill } from "@/generated/client";
 import { useAppSelector } from "@/store/hooks";
 import { ResponseBase } from "@/types/response/response-base";
@@ -18,7 +19,7 @@ export default function AttachOrDetachSkillForm(
         setIsAttachSkillFormHidden,
         onRefresh,
     }: {
-        entityType: 'portfolio-item' | 'experience' | 'education';
+        entityType: SkillAttachableOrDetachableEntity;
         entityId: string;
         attachedSkills: Skill[];
         attachSkillFormRef: React.RefObject<HTMLDivElement | null>;
@@ -30,10 +31,10 @@ export default function AttachOrDetachSkillForm(
     const user = useAppSelector(state => state.user);
     const [isSaving, setIsSaving] = React.useState<boolean>(false);
 
-    const idFieldMap = {
-        'portfolio-item': 'portfolio-itemId',
-        'experience': 'experienceId',
-        'education': 'educationId',
+    const idFieldMap: Record<SkillAttachableOrDetachableEntity, string> = {
+        [SkillAttachableOrDetachableEntity.PORTFOLIO_ITEM]: 'portfolioItemId',
+        [SkillAttachableOrDetachableEntity.EXPERIENCE]: 'experienceId',
+        [SkillAttachableOrDetachableEntity.EDUCATION]: 'educationId',
     } as const;
 
     function cancel() {
