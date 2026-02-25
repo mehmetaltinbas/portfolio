@@ -33,7 +33,7 @@ export function ResumeNavigationSidebar() {
     }, []);
 
     return (
-        <nav className="hidden md:flex fixed left-8 lg:left-16 top-1/2 -translate-y-1/2 z-40 flex-col gap-3">
+        <nav className="hidden xl:flex fixed left-32 top-1/2 -translate-y-1/2 z-40 flex-col gap-3">
             {RESUME_NAVIGATION_ITEMS.map((item) => (
                 <a
                     key={item.id}
