@@ -312,7 +312,7 @@ export default function PageClient({ initialPortfolioItem }: { initialPortfolioI
                 </div>
 
                 <AttachOrDetachSkillForm
-                    entityType="portfolioItem"
+                    entityType="portfolio-item"
                     entityId={portfolioItem.id}
                     attachedSkills={portfolioItem.skills}
                     attachSkillFormRef={attachSkillFormRef}
