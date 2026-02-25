@@ -260,9 +260,9 @@ export default function PageClient({ initialPortfolioItem }: { initialPortfolioI
                             <div className='w-auto h-auto flex flex-col gap-2'>
                                 <label
                                     className={`cursor-pointer right-0 px-2 py-1 text-center
-                                    border-2 border-black rounded-[10px]
-                                    bg-black text-white text-sm
-                                    hover:bg-white hover:text-black
+                                    border-2 border-btn-primary-border rounded-[10px]
+                                    bg-btn-primary-bg text-btn-primary-text text-sm
+                                    hover:bg-btn-primary-hover-bg hover:text-btn-primary-hover-text
                                     duration-300 ${isSaving ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''}`}
                                 >
                                     Change Cover Image
@@ -323,11 +323,11 @@ export default function PageClient({ initialPortfolioItem }: { initialPortfolioI
                 />
             </div>
 
-            <span className="block w-[full] h-[2px] rounded-full bg-black"></span>
+            <span className="block w-[full] h-[2px] rounded-full bg-border-theme"></span>
 
             <div className="w-full p-[25px]">
                 {isAdmin && !isEditingContent && (
-                    <div className="sticky flex justify-end p-2 z-40 bg-white" style={{ top: NAVBAR_HEIGHT }}>
+                    <div className="sticky flex justify-end p-2 z-40 bg-surface" style={{ top: NAVBAR_HEIGHT }}>
                         <Button onClick={toggleContentEditMode} variant={ButtonVariant.PRIMARY}>
                             Edit
                         </Button>

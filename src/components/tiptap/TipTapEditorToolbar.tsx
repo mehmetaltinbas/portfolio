@@ -66,7 +66,7 @@ export default function EditorToolbar({
 
     return (
         <div
-            className="sticky flex flex-wrap items-center gap-2 p-2 border-b z-40 bg-white"
+            className="sticky flex flex-wrap items-center gap-2 p-2 border-b border-border-muted z-40 bg-surface"
             style={{ top: NAVBAR_HEIGHT }}
         >
             <Button
@@ -150,7 +150,7 @@ export default function EditorToolbar({
             </Button>
 
             <label
-                className={`cursor-pointer px-3 py-1 rounded border text-sm hover:bg-gray-100 border-gray-300 ${isUploading ? 'opacity-50 pointer-events-none' : ''}`}
+                className={`cursor-pointer px-3 py-1 rounded border text-sm text-text-primary hover:bg-surface-tertiary border-border-muted ${isUploading ? 'opacity-50 pointer-events-none' : ''}`}
             >
                 {isUploading ? 'Uploading...' : 'Image'}
                 <input

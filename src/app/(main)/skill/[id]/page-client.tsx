@@ -131,11 +131,11 @@ export default function PageClient({ skill }: { skill: ExtendedSkillModel }) {
                 </div>
             </div>
 
-            <span className="block w-[full] h-[2px] rounded-full bg-black"></span>
+            <span className="block w-[full] h-[2px] rounded-full bg-border-theme"></span>
 
             <div className="p-[25px]">
                 {isAdmin && !isEditingContent && (
-                    <div className="sticky flex justify-end p-2 z-40 bg-white" style={{ top: NAVBAR_HEIGHT }}>
+                    <div className="sticky flex justify-end p-2 z-40 bg-surface" style={{ top: NAVBAR_HEIGHT }}>
                         <Button onClick={toggleContentEditMode} variant={ButtonVariant.PRIMARY}>
                             Edit
                         </Button>

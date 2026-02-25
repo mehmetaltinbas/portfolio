@@ -39,7 +39,7 @@ export function ResumeNavigationSidebar() {
                     key={item.id}
                     href={`/resume#${item.id}`}
                     className={`text-sm transition-colors duration-200 ${
-                        activeId === item.id ? 'text-black font-semibold' : 'text-gray-400 hover:text-gray-700'
+                        activeId === item.id ? 'text-text-primary font-semibold' : 'text-text-muted hover:text-text-secondary'
                     }`}
                 >
                     {item.label}

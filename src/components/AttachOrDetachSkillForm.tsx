@@ -104,14 +104,14 @@ export default function AttachOrDetachSkillForm(
             ref={attachSkillFormRef}
             className={`
                 ${isAttachSkillFormHidden ? 'invisible opacity-0 pointer-events-none' : 'visible opacity-100'}
-                z-50 absolute bg-white
-                border rounded-xl shadow-lg
+                z-50 absolute bg-surface
+                border border-border-muted rounded-xl shadow-lg
             `}
             style={{ width: '300px', height: '400px', padding: '36px' }}
         >
             <button
                 onClick={() => setIsAttachSkillFormHidden(true)}
-                className="absolute text-gray-400 hover:text-black duration-300 cursor-pointer"
+                className="absolute text-text-muted hover:text-text-primary duration-300 cursor-pointer"
                 style={{ top: '14px', right: '14px' }}
             >
                 <X size={16} />
