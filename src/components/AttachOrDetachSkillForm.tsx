@@ -18,7 +18,7 @@ export default function AttachOrDetachSkillForm(
         setIsAttachSkillFormHidden,
         onRefresh,
     }: {
-        entityType: 'portfolioItem' | 'experience' | 'education';
+        entityType: 'portfolio-item' | 'experience' | 'education';
         entityId: string;
         attachedSkills: Skill[];
         attachSkillFormRef: React.RefObject<HTMLDivElement | null>;
@@ -31,7 +31,7 @@ export default function AttachOrDetachSkillForm(
     const [isSaving, setIsSaving] = React.useState<boolean>(false);
 
     const idFieldMap = {
-        'portfolioItem': 'portfolioItemId',
+        'portfolio-item': 'portfolio-itemId',
         'experience': 'experienceId',
         'education': 'educationId',
     } as const;
