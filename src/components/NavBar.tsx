@@ -28,16 +28,16 @@ export default function NavBar() {
 
     return (
         <nav className="fixed top-0 z-50 w-full h-auto flex flex-col justify-center items-center bg-navbar-bg border-b border-border-muted/10">
-            {isAdmin && (
-                <div className="absolute left-2 md:left-6 top-1 flex flex-col justify-center items-center">
-                    <p className="text-[10px] text-red-500 uppercase font-bold">Admin</p>
-                    <Button onClick={signOut} variant={ButtonVariant.PRIMARY}>
-                        SignOut
-                    </Button>
-                </div>
-            )}
 
-            <div className="w-full h-auto p-4 flex flex-row justify-center items-center gap-8 md:gap-12 text-navbar-text text-sm overflow-x-auto whitespace-nowrap scrollbar-hide">
+            <div className={`w-full h-auto p-4 flex flex-row justify-center items-center ${isAdmin ? 'gap-6' : 'gap-10'} md:gap-12 text-navbar-text text-sm overflow-x-auto whitespace-nowrap scrollbar-hide`}>
+                {isAdmin && (
+                    <div className="flex flex-col justify-center items-center gap-1">
+                        <p className="text-[10px] text-red-500 uppercase font-bold">Admin</p>
+                        <Button onClick={signOut} variant={ButtonVariant.PRIMARY}>
+                            SignOut
+                        </Button>
+                    </div>
+                )}
                 {links.map((link, index) => (
                     <Link
                         key={`link-${index}-${link.name}`}
@@ -47,6 +47,7 @@ export default function NavBar() {
                         <p>{link.name}</p>
                     </Link>
                 ))}
+
                 <ThemeToggle />
             </div>
         </nav>
