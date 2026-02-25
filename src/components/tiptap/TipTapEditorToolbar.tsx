@@ -141,12 +141,29 @@ export default function EditorToolbar({
                     const input = window.prompt('URL:');
                     if (!input) return;
                     const href = /^\w+:\/\//.test(input) ? input : `https://${input}`;
-                    editor.chain().focus().setLink({ href, target: '_blank' }).run();
+                    const { from, to } = editor.state.selection;
+                    if (from === to) {
+                        editor.chain().focus().insertContent(`<a href="${href}" target="_blank">${href}</a>`).run();
+                    } else {
+                        editor.chain().focus().setLink({ href, target: '_blank' }).run();
+                    }
                 }}
                 variant={ButtonVariant.TOOLBAR}
                 isActive={editor.isActive('link')}
             >
                 Link
+            </Button>
+
+            <Button
+                onClick={() => {
+                    const input = window.prompt('Enter a YouTube link:');
+                    if (!input) return;
+                    const href = /^\w+:\/\//.test(input) ? input : `https://${input}`;
+                    editor.commands.setYoutubeVideo({ src: href });
+                }}
+                variant={ButtonVariant.TOOLBAR}
+            >
+                Video
             </Button>
 
             <label

@@ -5,6 +5,7 @@ import EditorToolbar from '@/components/tiptap/TipTapEditorToolbar';
 import HorizontalRule from '@tiptap/extension-horizontal-rule';
 import Image from '@tiptap/extension-image';
 import Link from '@tiptap/extension-link';
+import Youtube from '@tiptap/extension-youtube';
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 
@@ -35,7 +36,8 @@ export default function ContentEditor({
             Link.configure({
                 openOnClick: false,
             }),
-            HorizontalRule
+            HorizontalRule,
+            Youtube.configure({ controls: true, nocookie: true }),
         ],
         content: initialContent || '',
         editorProps: {
