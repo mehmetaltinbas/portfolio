@@ -19,13 +19,17 @@ import { ReadSingleExtendedPortfolioItemResponse } from '@/types/response/portfo
 import { ResponseBase } from '@/types/response/response-base';
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React from 'react';
 
 export default function PageClient({ initialPortfolioItem }: { initialPortfolioItem: ExtendedPortfolioItemModel }) {
     const dispatch = useAppDispatch();
     const isAdmin = useAppSelector((state) => state.isAdmin);
 
-    const [portfolioItem, setPortfolioItem] = useState<ExtendedPortfolioItemModel>(initialPortfolioItem);
+    const [portfolioItem, setPortfolioItem] = React.useState<ExtendedPortfolioItemModel>(initialPortfolioItem);
+
+    React.useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
 
     async function refreshPortfolioItem() {
         const response: ReadSingleExtendedPortfolioItemResponse = await (
@@ -39,16 +43,16 @@ export default function PageClient({ initialPortfolioItem }: { initialPortfolioI
         }
     }
 
-    const [isEditingMeta, setIsEditingMeta] = useState(false);
-    const [isEditingContent, setIsEditingContent] = useState(false);
+    const [isEditingMeta, setIsEditingMeta] = React.useState(false);
+    const [isEditingContent, setIsEditingContent] = React.useState(false);
 
-    const [title, setTitle] = useState(portfolioItem.title);
-    const [description, setDescription] = useState(portfolioItem.description ?? '');
-    const [content, setContent] = useState<object>(portfolioItem.content as object);
-    const [coverImage, setCoverImage] = useState<File | null>(null);
-    const [isAttachSkillFormHidden, setIsAttachSkillFormHidden] = useState<boolean>(true);
+    const [title, setTitle] = React.useState(portfolioItem.title);
+    const [description, setDescription] = React.useState(portfolioItem.description ?? '');
+    const [content, setContent] = React.useState<object>(portfolioItem.content as object);
+    const [coverImage, setCoverImage] = React.useState<File | null>(null);
+    const [isAttachSkillFormHidden, setIsAttachSkillFormHidden] = React.useState<boolean>(true);
 
-    const [isSaving, setIsSaving] = useState(false);
+    const [isSaving, setIsSaving] = React.useState(false);
 
     const attachSkillFormRef = React.useRef<HTMLDivElement>(null);
 

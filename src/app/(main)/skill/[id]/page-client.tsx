@@ -12,19 +12,23 @@ import { userActions } from '@/store/slices/user.slice';
 import { ExtendedSkillModel } from '@/types/db/extended-skill-model';
 import { ResponseBase } from '@/types/response/response-base';
 import Link from 'next/link';
-import { useState } from 'react';
+import React from 'react';
 
 export default function PageClient({ skill }: { skill: ExtendedSkillModel }) {
     const dispatch = useAppDispatch();
     const isAdmin = useAppSelector((state) => state.isAdmin);
 
-    const [isEditingMeta, setIsEditingMeta] = useState(false);
-    const [isEditingContent, setIsEditingContent] = useState(false);
+    const [isEditingMeta, setIsEditingMeta] = React.useState(false);
+    const [isEditingContent, setIsEditingContent] = React.useState(false);
 
-    const [name, setName] = useState(skill.name);
-    const [content, setContent] = useState<object>(skill.content as object);
+    const [name, setName] = React.useState(skill.name);
+    const [content, setContent] = React.useState<object>(skill.content as object);
 
-    const [isSaving, setIsSaving] = useState(false);
+    const [isSaving, setIsSaving] = React.useState(false);
+
+    React.useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
 
     function toggleMetaEditMode() {
         if (!isEditingMeta) {
