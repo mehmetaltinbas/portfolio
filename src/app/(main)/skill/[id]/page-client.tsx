@@ -11,6 +11,7 @@ import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { userActions } from '@/store/slices/user.slice';
 import { ExtendedSkillModel } from '@/types/db/extended-skill-model';
 import { ResponseBase } from '@/types/response/response-base';
+import AssociatedItemsRow from '@/components/AssociatedItemsRow';
 import Link from 'next/link';
 import React from 'react';
 
@@ -134,6 +135,23 @@ export default function PageClient({ skill }: { skill: ExtendedSkillModel }) {
                         <p className="font-semibold text-2xl">{skill.name}</p>
                     )}
                 </div>
+
+                {!isEditingMeta && (
+                    <div className="w-full flex flex-col gap-2 px-2 sm:px-6">
+                        <AssociatedItemsRow
+                            title="Associated Portfolio Items"
+                            items={skill.portfolioItems.map(item => ({ id: item.id, label: item.title, href: `/portfolio/${item.id}` }))}
+                        />
+                        <AssociatedItemsRow
+                            title="Associated Experiences"
+                            items={skill.experiences.map(item => ({ id: item.id, label: item.title, href: '/resume#experiences' }))}
+                        />
+                        <AssociatedItemsRow
+                            title="Associated Educations"
+                            items={skill.educations.map(item => ({ id: item.id, label: item.school, href: '/resume#educations' }))}
+                        />
+                    </div>
+                )}
             </div>
 
             <span className="block w-[full] h-[2px] rounded-full bg-border-theme"></span>
