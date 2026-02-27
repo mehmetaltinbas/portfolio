@@ -119,7 +119,7 @@ export default function PageClient({ skill }: { skill: ExtendedSkillModel }) {
                         </Button>
                     </div>
                 )}
-                <div className="w-full h-auto flex justify-start items-center gap-8 p-6 pr-32">
+                <div className="w-full h-auto flex justify-start items-center gap-4 sm:gap-8 p-2 sm:p-6">
                     <Link href={'/resume#skills'}>
                         <Button variant={ButtonVariant.PRIMARY}>←</Button>
                     </Link>
