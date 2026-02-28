@@ -9,6 +9,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 import { FaFolder } from 'react-icons/fa6';
+import ScrollableRow from '../ScrollableRow';
 
 export default function PortfolioItemCard(
     {
@@ -76,13 +77,11 @@ export default function PortfolioItemCard(
                 {portfolioItem.description}
             </p>
 
-            <div 
-                className="w-full h-[30px] flex justify-start items-center gap-3 overflow-x-auto text-xs whitespace-nowrap"
-            >
+            <ScrollableRow className="h-[30px] gap-3 text-xs">
                 {portfolioItem.skills.map(skill => (
                     <p key={skill.id}>• {skill.name}</p>
                 ))}
-            </div>
+            </ScrollableRow>
 
             {isAdmin && (
                 <div className="absolute top-3 right-3">

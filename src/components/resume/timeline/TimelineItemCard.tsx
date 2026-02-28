@@ -5,6 +5,7 @@ import { DESCRIPTION_CHAR_LIMIT } from '@/constants/description-char-limit.const
 import { ButtonVariant } from '@/enums/button-variant.enum';
 import { Skill } from '@/generated/client';
 import { calculateDuration } from '@/utils/calculate-duration.util';
+import ScrollableRow from '@/components/ScrollableRow';
 import React, { useState } from 'react';
 
 export function TimelineItemCard({
@@ -176,14 +177,11 @@ export function TimelineItemCard({
 
                     {skills && skills.length > 0 && !isEditMode && (
                         <div className="mt-3">
-                            <div
-                                className="w-full h-[40px] flex justify-start items-center gap-4 p-2 overflow-x-auto text-sm whitespace-nowrap"
-                                style={{ overflowX: 'auto', overflowY: 'hidden' }}
-                            >
+                            <ScrollableRow className="h-[40px] gap-4 p-2 text-sm">
                                 {skills.map(skill => (
                                     <p key={skill.id}>• {skill.name}</p>
                                 ))}
-                            </div>
+                            </ScrollableRow>
                         </div>
                     )}
 
