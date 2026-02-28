@@ -1,5 +1,6 @@
 'use client';
 
+import AssociatedItemsRow from '@/components/AssociatedItemsRow';
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
 import ContentEditor from '@/components/tiptap/TipTapContentEditor';
@@ -7,11 +8,11 @@ import TipTapContentViewer from '@/components/tiptap/TipTapContentViewer';
 import { ADMIN_NAVBAR_HEIGHT } from '@/constants/navbar-height/admin-navbar-height.constant';
 import { VISITOR_NAVBAR_HEIGHT } from '@/constants/navbar-height/visitor-navbar-height.constant';
 import { ButtonVariant } from '@/enums/button-variant.enum';
+import { ResumeNavigationItemId } from '@/enums/resume-navigation-item-id.enum';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { userActions } from '@/store/slices/user.slice';
 import { ExtendedSkillModel } from '@/types/db/extended-skill-model';
 import { ResponseBase } from '@/types/response/response-base';
-import AssociatedItemsRow from '@/components/AssociatedItemsRow';
 import Link from 'next/link';
 import React from 'react';
 
@@ -145,12 +146,12 @@ export default function PageClient({ skill }: { skill: ExtendedSkillModel }) {
                         />
                         <AssociatedItemsRow
                             title="Associated Experience"
-                            items={skill.experiences.map(item => ({ id: item.id, label: item.title, href: '/resume#experiences' }))}
+                            items={skill.experiences.map(item => ({ id: item.id, label: item.title, href: `/resume#${ResumeNavigationItemId.EXPERIENCE}` }))}
                             openInNewTab
                         />
                         <AssociatedItemsRow
                             title="Associated Education"
-                            items={skill.educations.map(item => ({ id: item.id, label: item.school, href: '/resume#educations' }))}
+                            items={skill.educations.map(item => ({ id: item.id, label: item.school, href: `/resume#${ResumeNavigationItemId.EDUCATION}` }))}
                             openInNewTab
                         />
                     </div>
