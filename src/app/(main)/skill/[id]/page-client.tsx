@@ -141,14 +141,17 @@ export default function PageClient({ skill }: { skill: ExtendedSkillModel }) {
                         <AssociatedItemsRow
                             title="Associated Portfolio Items"
                             items={skill.portfolioItems.map(item => ({ id: item.id, label: item.title, href: `/portfolio/${item.id}` }))}
+                            openInNewTab
                         />
                         <AssociatedItemsRow
-                            title="Associated Experiences"
+                            title="Associated Experience"
                             items={skill.experiences.map(item => ({ id: item.id, label: item.title, href: '/resume#experiences' }))}
+                            openInNewTab
                         />
                         <AssociatedItemsRow
-                            title="Associated Educations"
+                            title="Associated Education"
                             items={skill.educations.map(item => ({ id: item.id, label: item.school, href: '/resume#educations' }))}
+                            openInNewTab
                         />
                     </div>
                 )}

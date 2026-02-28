@@ -5,8 +5,19 @@ import { EducationsSection } from '@/components/resume/educations/EducationsSect
 import { ExperiencesSection } from '@/components/resume/experiences/ExperiencesSection';
 import { ResumeNavigationSidebar } from '@/components/resume/ResumeNavigationSidebar';
 import { SkillsSection } from '@/components/resume/skills/SkillsSection';
+import { useEffect } from 'react';
 
 export default function Page() {
+    useEffect(() => {
+        const hash = window.location.hash;
+        if (hash) {
+            const element = document.querySelector(hash);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+    }, []);
+
     return (
         <div className="relative w-full h-full">
             <ResumeNavigationSidebar />

@@ -1,15 +1,16 @@
 'use client';
 
+import AssociatedItemsRow from '@/components/AssociatedItemsRow';
 import { Button } from '@/components/Button';
+import { AssociatedItemsRowSize } from '@/enums/associated-items-row-size.enum';
 import { ButtonVariant } from '@/enums/button-variant.enum';
 import { useAppSelector } from '@/store/hooks';
 import { ExtendedPortfolioItemModel } from '@/types/db/extended-portfolio-item.model';
 import { ResponseBase } from '@/types/response/response-base';
 import Image from 'next/image';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 import { FaFolder } from 'react-icons/fa6';
-import ScrollableRow from '../ScrollableRow';
 
 export default function PortfolioItemCard(
     {
@@ -20,6 +21,7 @@ export default function PortfolioItemCard(
         refreshPortfolioItems(): Promise<void>;
     }
 ) {
+    const router = useRouter();
     const isAdmin = useAppSelector((state) => state.isAdmin);
     const [isDeleting, setIsDeleting] = React.useState<boolean>(false);
 
@@ -50,8 +52,8 @@ export default function PortfolioItemCard(
     }
 
     return (
-        <Link
-            href={`/portfolio/${portfolioItem.id}`}
+        <div
+            onClick={() => router.push(`/portfolio/${portfolioItem.id}`)}
             className="relative w-[300px] h-[350px] bg-surface p-4 rounded-2xl shadow-md border border-border-muted
             flex flex-col justify-between items-center gap-0 transition-all
             hover:border-brand-accent duration-300 hover:cursor-pointer
@@ -63,7 +65,7 @@ export default function PortfolioItemCard(
                 </div>
             )}
 
-            <Image 
+            <Image
                 alt='portfolio item cover image'
                 src={portfolioItem.coverImageUrl || '/portfolio-item-cover-placeholder-image.png'}
                 width={200}
@@ -77,11 +79,13 @@ export default function PortfolioItemCard(
                 {portfolioItem.description}
             </p>
 
-            <ScrollableRow className="h-[30px] gap-3 text-xs">
-                {portfolioItem.skills.map(skill => (
-                    <p key={skill.id}>• {skill.name}</p>
-                ))}
-            </ScrollableRow>
+            <AssociatedItemsRow
+                title="Skills"
+                items={portfolioItem.skills.map(skill => ({ id: skill.id, label: skill.name, href: `/skill/${skill.id}` }))}
+                size={AssociatedItemsRowSize.SMALL}
+                hideTitle
+                openInNewTab
+            />
 
             {isAdmin && (
                 <div className="absolute top-3 right-3">
@@ -92,6 +96,6 @@ export default function PortfolioItemCard(
                     />
                 </div>
             )}
-        </Link>
+        </div>
     );
 }
