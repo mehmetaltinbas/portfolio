@@ -1,6 +1,7 @@
 'use client';
 
 import AssociatedItemsRow from '@/components/AssociatedItemsRow';
+import BackButton from '@/components/BackButton';
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
 import ContentEditor from '@/components/tiptap/TipTapContentEditor';
@@ -13,7 +14,6 @@ import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { userActions } from '@/store/slices/user.slice';
 import { ExtendedSkillModel } from '@/types/db/extended-skill-model';
 import { ResponseBase } from '@/types/response/response-base';
-import Link from 'next/link';
 import React from 'react';
 
 export default function PageClient({ skill }: { skill: ExtendedSkillModel }) {
@@ -122,9 +122,7 @@ export default function PageClient({ skill }: { skill: ExtendedSkillModel }) {
                     </div>
                 )}
                 <div className="w-full h-auto flex justify-start items-center gap-4 sm:gap-8 p-2 sm:p-6">
-                    <Link href={'/resume#skills'}>
-                        <Button variant={ButtonVariant.PRIMARY}>←</Button>
-                    </Link>
+                    <BackButton href={`/resume#${ResumeNavigationItemId.SKILLS}`} tooltip="Back to Skills" />
                     {isEditingMeta ? (
                         <Input
                             value={name}
