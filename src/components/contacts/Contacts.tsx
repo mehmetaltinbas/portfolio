@@ -191,15 +191,10 @@ export function Contacts({ contacts }: { contacts: Contact[] }) {
     const activeContact = activeId ? localContacts.find((c) => c.id === activeId) : null;
 
     return (localContacts.length !== 0 || isAdmin ? (
-        <div
-            className={`fixed left-2 bottom-0 sm:left-8 md:left-12 sm:bottom-0 z-50
-                flex flex-col gap-4 sm:gap-4 justify-center items-center`}
-        >
+        <div className="relative w-full flex flex-row flex-wrap gap-5 justify-center items-center">
             {localContacts.map((contact) => (
                 <ContactLink key={contact.id} contact={contact} />
             ))}
-
-            <span className={`block w-[2px] ${localContacts.length > 7 ? 'h-[125px]' : 'h-[150px]'} rounded-full bg-border-theme`}></span>
 
             {isAdmin && (
                 <button
@@ -210,11 +205,8 @@ export function Contacts({ contacts }: { contacts: Contact[] }) {
                 </button>
             )}
 
-            {isAdmin && (
-                <div className="relative">
-
-                    {isPanelOpen && (
-                        <div className="absolute left-2 bottom-1 sm:bottom-[150px] sm:left-8 md:left-12 w-[350px] bg-surface border border-border-muted rounded-xl shadow-lg p-4">
+            {isAdmin && isPanelOpen && (
+                <div className="absolute top-full mt-3 left-1/2 -translate-x-1/2 w-[350px] max-w-[90vw] bg-surface border border-border-muted rounded-xl shadow-lg p-4 z-50">
                             <div className="flex justify-between items-center mb-3">
                                 <h3 className="font-semibold text-sm">Contacts</h3>
                                 <button
@@ -288,8 +280,6 @@ export function Contacts({ contacts }: { contacts: Contact[] }) {
                                     />
                                 </div>
                             )}
-                        </div>
-                    )}
                 </div>
             )}
         </div>
