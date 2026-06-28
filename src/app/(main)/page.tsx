@@ -331,6 +331,8 @@ export default function Page() {
             </div>
 
             <Contacts contacts={user.contacts} />
+
+            <div className='h-4 w-full pt-4'></div>
         </div>
     );
 }
